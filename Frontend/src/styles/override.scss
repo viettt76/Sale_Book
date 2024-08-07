@@ -1,0 +1,126 @@
+@import 'variables';
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    font-size: 62.5%;
+}
+
+body {
+    font-family: $font-family;
+}
+
+ul,
+li,
+ol {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+.fz-16 {
+    font-size: 1.6rem;
+}
+
+/**
+    React toastify
+**/
+.Toastify__toast-body {
+    font-size: 1.6rem;
+}
+
+/**
+    React-slick
+**/
+.slick-track {
+    margin-left: 0 !important;
+    display: flex !important;
+}
+
+.slick-list {
+    overflow: unset !important;
+}
+
+.slick-slide {
+    height: inherit !important;
+
+    & > div {
+        height: 100%;
+        & > div {
+            height: 100%;
+            & > div {
+                height: 100%;
+            }
+        }
+    }
+}
+
+.slick-track-number-of-slide-less-slides-to-show {
+    .slick-track {
+        transform: translate3d(0, 0, 0) !important;
+    }
+
+    button.slick-arrow {
+        display: none !important;
+    }
+}
+
+.slick-slider {
+    .slick-prev,
+    .slick-next {
+        z-index: 9;
+    }
+
+    .slick-prev {
+        left: 15px;
+    }
+
+    .slick-next {
+        right: 15px;
+    }
+
+    .slick-prev:before,
+    .slick-next:before {
+        font-size: 4rem;
+        color: $main-color;
+        background-color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 3rem;
+        border-radius: 50%;
+    }
+}
+
+/** 
+    Bootstrap
+**/
+.carousel-control-prev,
+.carousel-control-next {
+    width: 5% !important;
+}
+
+form {
+    .form-label {
+        font-size: 1.6rem;
+    }
+    .form-control {
+        font-size: 1.6rem;
+    }
+    .form-select {
+        font-size: 1.6rem;
+    }
+}
+
+body {
+    .mb-3 {
+        margin-bottom: 1.6rem !important;
+    }
+}
