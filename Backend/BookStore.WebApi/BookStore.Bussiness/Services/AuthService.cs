@@ -78,7 +78,7 @@ namespace BookStore.Bussiness.Services
         {
             var userExist = await _userManager.FindByEmailAsync(register.Email);
 
-            if (userExist == null) {
+            if (userExist != null) {
                 return null;
             }
 
