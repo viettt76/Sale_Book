@@ -1,4 +1,5 @@
 ﻿using BookStore.Bussiness.ViewModel;
+using BookStore.Models.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace BookStore.Bussiness.Interfaces
     public interface IAuthService
     {
         Task<AuthResultViewModel> Login(LoginViewModel login);
-        Task<AuthResultViewModel> Register(RegisterViewModel register);
+        Task<User> Register(RegisterViewModel register);
         Task<AuthResultViewModel> RefreshToken(RefreshTokenRequestViewModel request);
     }
 }

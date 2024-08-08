@@ -1,9 +1,20 @@
-﻿using Newtonsoft.Json;
+﻿
 using System.Net;
 using System.Text.Json;
 
 namespace BookStore.WebApi.Middlewares
 {
+    public class ErrorDetails
+    {
+        public int StatusCode { get; set; }
+        public string Message { get; set; }
+
+        public override string ToString()
+        {
+            return JsonSerializer.Serialize(this);
+        }
+    }
+
     public class ErrorHandlingMiddleware
     {
         private readonly RequestDelegate _next;
@@ -28,25 +39,25 @@ namespace BookStore.WebApi.Middlewares
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
             // Customize the error response to avoid serialization issues
-            var errorResponse = new
+            var errorResponse = new ErrorDetails
             {
-                Message = "An error occurred while processing your request.",
-                Detail = exception.Message
-                // Add other relevant details here if needed
+                StatusCode = (int)HttpStatusCode.InternalServerError,
+                Message = exception.Message,
             };
 
-            var errorJson = System.Text.Json.JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            //var options = new JsonSerializerOptions
+            //{
+            //    PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            //    DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            //};
 
-            return context.Response.WriteAsync(errorJson);
+            await context.Response.WriteAsync(errorResponse.ToString());
         }
     }
 }

@@ -4,13 +4,17 @@ using BookStore.Bussiness.ViewModel;
 using BookStore.Datas.DbContexts;
 using BookStore.Models.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Encodings.Web;
 
 namespace BookStore.Bussiness.Services
 {
@@ -32,6 +36,12 @@ namespace BookStore.Bussiness.Services
         public async Task<AuthResultViewModel> Login(LoginViewModel login)
         {
             var user = await _userManager.FindByNameAsync(login.UserName);
+
+            if (!user.EmailConfirmed)
+            {
+                throw new Exception("Bạn chưa xác nhận email.");
+            }
+
             if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
             {
                 var token = GenerateJwtToken(user);
@@ -74,13 +84,13 @@ namespace BookStore.Bussiness.Services
             };
         }
 
-        public async Task<AuthResultViewModel> Register(RegisterViewModel register)
+        public async Task<User> Register(RegisterViewModel register)
         {
             var userExist = await _userManager.FindByEmailAsync(register.Email);
 
             if (userExist != null) {
                 return null;
-            }
+            }            
 
             var newUser = new User
             {
@@ -95,17 +105,19 @@ namespace BookStore.Bussiness.Services
             {
                 return null;
             }
-
+            
             var role = await _userManager.AddToRoleAsync(newUser, "User");
 
-            var token = GenerateJwtToken(newUser);
-            return new AuthResultViewModel
-            {
-                UserInformation = JsonConvert.SerializeObject(user),
-                Token = token.Item1,
-                RefreshToken = token.Item2,
-                ExpiresAt = DateTime.UtcNow.AddHours(1)
-            };
+            //var token = GenerateJwtToken(newUser);
+            //return new AuthResultViewModel
+            //{
+            //    UserInformation = JsonConvert.SerializeObject(user),
+            //    Token = token.Item1,
+            //    RefreshToken = token.Item2,
+            //    ExpiresAt = DateTime.UtcNow.AddHours(1)
+            //};
+
+            return newUser;
         }
 
         private ClaimsPrincipal GetPrincipalFromExpiredToken(string token)

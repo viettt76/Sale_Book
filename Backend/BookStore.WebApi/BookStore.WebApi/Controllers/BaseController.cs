@@ -1,15 +1,16 @@
 ﻿using BookStore.Businesses.Interfaces;
+using BookStore.Bussiness.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace HealthcareAppointment.WebApi.Controllers
+namespace BookStore.WebApi.Controllers
 {
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin, User")]
+    // [Authorize(Roles = "Admin, User")]
     public class BaseController<TViewModel, TCreate, TUpdate> : ControllerBase where TViewModel : class where TCreate : class where TUpdate : class
     {
         private readonly IBaseService<TViewModel, TCreate, TUpdate> _baseService;
@@ -22,6 +23,7 @@ namespace HealthcareAppointment.WebApi.Controllers
         // GET: api/<BaseController>
         [HttpGet]
         [Route("get-all")]
+        [AllowAnonymous]
         public virtual async Task<IActionResult> GetAll()
         {
             try
@@ -41,14 +43,38 @@ namespace HealthcareAppointment.WebApi.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("get-all-paging")]
+        [AllowAnonymous]
+        public virtual async Task<IActionResult> GetAllPaging([FromQuery] BaseSpecification spec, [FromQuery] PaginationParams pageParams)
+        {
+            try
+            {
+                var res = await _baseService.GetAllPagingAsync(spec, pageParams);
+
+                if (res == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // GET api/<BaseController>/5
         [HttpGet]
         [Route("get-by-id/{id}")]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetById(int id)
         {
             try
             {
@@ -71,10 +97,11 @@ namespace HealthcareAppointment.WebApi.Controllers
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create(TCreate viewModel)
+        public async Task<IActionResult> Create([FromBody] TCreate viewModel)
         {
             try
             {
@@ -97,10 +124,11 @@ namespace HealthcareAppointment.WebApi.Controllers
         [HttpPut]
         [Route("update/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(Guid id, TUpdate createUpdate)
+        public async Task<IActionResult> Update(int id, [FromBody] TUpdate createUpdate)
         {
             try
             {
@@ -123,10 +151,11 @@ namespace HealthcareAppointment.WebApi.Controllers
         [HttpDelete]
         [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> Delete(int id)
         {
             try
             {

@@ -1,4 +1,6 @@
-﻿using BookStore.Businesses.Interfaces;
+﻿using AutoMapper;
+using BookStore.Businesses.Interfaces;
+using BookStore.Bussiness.Extensions;
 using BookStore.Datas.Interfaces;
 
 namespace BookStore.Businesses.Services
@@ -7,10 +9,12 @@ namespace BookStore.Businesses.Services
         : IBaseService<TViewModel, TCreate, TUpdate> where TViewModel : class where TEntity : class where TCreate : class where TUpdate : class
     {
         private readonly IBaseRepository<TEntity> _baseRepository;
+        private readonly IMapper _mapper;
 
-        public BaseService(IBaseRepository<TEntity> baseRepository)
+        public BaseService(IBaseRepository<TEntity> baseRepository, IMapper mapper)
         {
             _baseRepository = baseRepository;
+            _mapper = mapper;
         }
 
         protected virtual TEntity ChangeToEntity (TViewModel viewModel) => throw new NotImplementedException();
@@ -23,7 +27,7 @@ namespace BookStore.Businesses.Services
             return await _baseRepository.CreateAsync(ChangeToEntity(create));
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(int id)
         {
             return await _baseRepository.DeleteAsync(id);
         }
@@ -34,14 +38,26 @@ namespace BookStore.Businesses.Services
             return entities.Select(x => ChangeToViewModel(x));
         }
 
-        public async Task<TViewModel> GetByIdAsync(Guid id, string[] includes = null)
+        public async Task<TViewModel> GetByIdAsync(int id, string[] includes = null)
         {
             return ChangeToViewModel(await _baseRepository.GetByIdAsync(id));
         }
 
-        public async Task<int> UpdateAsync(Guid id, TUpdate update)
+        public async Task<int> UpdateAsync(int id, TUpdate update)
         {
             return await _baseRepository.UpdateAsync(id, ChangeToEntity(update));
+        }
+
+        public async Task<PaginationSet<TViewModel>> GetAllPagingAsync(BaseSpecification spec, PaginationParams pageParams, string[] includes = null)
+        {
+            var entities = await _baseRepository.GetAllAsync(includes);
+
+            var pagingList = PaginationList<TEntity>.Create(entities, pageParams.PageNumber, pageParams.PageSize);
+
+            var pagingList_map = _mapper.Map<PaginationList<TViewModel>>(pagingList);
+
+            return new PaginationSet<TViewModel>(pageParams.PageNumber, pageParams.PageSize, pagingList_map.TotalCount, pagingList_map.TotalPage, pagingList_map);
+
         }
     }
     

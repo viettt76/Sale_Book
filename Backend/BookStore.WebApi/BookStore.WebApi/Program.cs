@@ -15,6 +15,10 @@ using Microsoft.IdentityModel.Tokens;
 using BookStore.Bussiness.ObjectMapping;
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.Services;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using BookStore.Datas.Interfaces;
+using BookStore.Datas.Repositories;
+using AutoMapper;
 
 namespace BookStore.WebApi
 {
@@ -44,6 +48,9 @@ namespace BookStore.WebApi
             {
                 var builder = WebApplication.CreateBuilder(args);
 
+                builder.Services.AddSerilog();
+                builder.Services.AddLogging();
+
                 // Add services to the container.
 
                 builder.Services.AddControllers();
@@ -55,7 +62,7 @@ namespace BookStore.WebApi
                     {
                         Version = "v1",
                         Title = "BookStore API",
-                        Description = "An ASP.NET Core Web API for managing Quizz items",
+                        Description = "An ASP.NET Core Web API for managing books items",
                         TermsOfService = new Uri("https://example.com/terms"),
                         Contact = new OpenApiContact
                         {
@@ -185,11 +192,26 @@ namespace BookStore.WebApi
                     options.ValidationInterval = TimeSpan.FromSeconds(5);
                 });
 
-                builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+                #region AutoMapper configuration
+                var mapperConfig = new MapperConfiguration(mc =>
+                {
+                    mc.AddProfile(new AutoMapperProfile());
+                });
+                IMapper mapper = mapperConfig.CreateMapper();
+                builder.Services.AddSingleton(mapper);
+                #endregion
+
+                builder.Services.AddOptions();                                        // Kích hoạt Options
+                builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+                builder.Services.AddTransient<IEmailSender, SendMailService>();        // Đăng ký dịch vụ Mail
 
                 builder.Services.AddScoped<IAuthService, AuthService>();
+                builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
+                builder.Services.AddScoped<IPublisherService, PublisherService>();
 
                 var app = builder.Build();
+
+                Log.Information("Start app!");
 
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
@@ -198,15 +220,18 @@ namespace BookStore.WebApi
                     app.UseSwaggerUI();
                 }
 
+                app.UseSerilogRequestLogging();
+
                 app.UseCors("AllowSpecificOrigin");
 
                 app.UseHttpsRedirection();
 
+                app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.MapControllers();
 
-                app.UseMiddleware<ErrorHandlingMiddleware>();
+                //app.UseMiddleware<ErrorHandlingMiddleware>();
 
                 using var scope = app.Services.CreateScope();
                 var services = scope.ServiceProvider;

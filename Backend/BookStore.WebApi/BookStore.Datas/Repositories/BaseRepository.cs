@@ -21,7 +21,7 @@ namespace HealthcareAppointment.Data.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> DeleteAsync(Guid id)
+        public async Task<int> DeleteAsync(int id)
         {
             var del = await _dbSet.FindAsync(id);
             if (del != null)
@@ -38,12 +38,12 @@ namespace HealthcareAppointment.Data.Repositories
             return _dbSet.AsEnumerable();
         }
 
-        public async Task<TEntity> GetByIdAsync(Guid id)
+        public async Task<TEntity> GetByIdAsync(int id)
         {
             return await _dbSet.FindAsync(id);
         }
 
-        public async Task<int> UpdateAsync(Guid id, TEntity entity)
+        public async Task<int> UpdateAsync(int id, TEntity entity)
         {
             _dbSet.Update(entity);
             return await _dbContext.SaveChangesAsync();
