@@ -1,6 +1,8 @@
-﻿
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 using System.Net;
-using System.Text.Json;
 
 namespace BookStore.WebApi.Middlewares
 {
@@ -11,7 +13,7 @@ namespace BookStore.WebApi.Middlewares
 
         public override string ToString()
         {
-            return JsonSerializer.Serialize(this);
+            return JsonConvert.SerializeObject(this);
         }
     }
 

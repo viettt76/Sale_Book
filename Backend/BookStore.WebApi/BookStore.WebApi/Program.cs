@@ -36,7 +36,7 @@ namespace BookStore.WebApi
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
                 .WriteTo.Async(c => c.File("Logs/log_errors.txt", restrictedToMinimumLevel: LogEventLevel.Error))
-                .WriteTo.Async(c => c.File("Logs/logs_infos.txt", restrictedToMinimumLevel: LogEventLevel.Information))
+                // .WriteTo.Async(c => c.File("Logs/logs_infos.txt", restrictedToMinimumLevel: LogEventLevel.Information))
                 .WriteTo.Async(c => c.Console());
             //.WriteTo.MSSqlServer(
             //    connectionString: "Server=localhost,1433;Database=QuizApp;Trusted_Connection=True;MultipleActiveResultSets=true;",
@@ -117,24 +117,13 @@ namespace BookStore.WebApi
                     options.ApiVersionReader = new UrlSegmentApiVersionReader();
                 });
 
-                //builder.Services.AddCors(options =>
-                //{
-                //    options.AddPolicy("AllowSpecificOrigin",
-                //        builder =>
-                //        {
-                //            builder.WithOrigins("http://localhost:3000/")
-                //                   .AllowAnyHeader()
-                //                   .AllowAnyMethod();
-                //        });
-                //});
-
                 builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
-                    build =>
-                    {
-                        build.WithOrigins("http://localhost:3000")
-                                .AllowAnyMethod()
-                                .AllowAnyHeader();
-                    }));
+                build =>
+                {
+                    build.WithOrigins("*")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                }));
 
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
@@ -219,6 +208,14 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
                 builder.Services.AddScoped<IPublisherService, PublisherService>();
+                builder.Services.AddScoped<IAuthorRepository, AuthorRepository>();
+                builder.Services.AddScoped<IAuthorService, AuthorService>();
+                builder.Services.AddScoped<IBookRepository, BookRepository>();
+                builder.Services.AddScoped<IBookService, BookService>();
+                builder.Services.AddScoped<IBookAuthorRepository, BookAuthorRepository>();
+                builder.Services.AddScoped<IBookAuthorService, BookAuthorService>();
+                builder.Services.AddScoped<IBookGroupRepository, BookGroupRepository>();
+                builder.Services.AddScoped<IBookGroupService, BookGroupService>();
 
                 var app = builder.Build();
 
@@ -234,13 +231,20 @@ namespace BookStore.WebApi
                 app.UseSerilogRequestLogging();
 
                 app.UseHttpsRedirection();
-                app.UseCors();
+
+                app.UseCors(builder =>
+                {
+                    builder.AllowAnyOrigin()
+                           .AllowAnyMethod()
+                           .AllowAnyHeader();
+                });
+
                 app.UseAuthentication();
                 app.UseAuthorization();
 
                 app.MapControllers();
 
-                //app.UseMiddleware<ErrorHandlingMiddleware>();
+                // app.UseMiddleware<ErrorHandlingMiddleware>();
 
                 using var scope = app.Services.CreateScope();
                 var services = scope.ServiceProvider;

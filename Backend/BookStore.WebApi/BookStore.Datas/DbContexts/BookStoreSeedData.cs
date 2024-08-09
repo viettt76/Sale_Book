@@ -1,12 +1,9 @@
 ﻿using BookStore.Models.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BookStore.Datas.DbContexts
 {
@@ -43,14 +40,41 @@ namespace BookStore.Datas.DbContexts
                         Email = "admin@example.com",
                         PhoneNumber = "0123456789",
                         IsActive = true,
+                        EmailConfirmed = true,
                     };
 
                     var userResult = await userManager.CreateAsync(user, "123456789");
+
+                    var userId = await userManager.GetUserIdAsync(user);
+                    var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                    await userManager.ConfirmEmailAsync(user, code);
 
                     if (userResult.Succeeded)
                     {
                         await userManager.AddToRoleAsync(user, roles[0].Name);
                     }
+                }
+
+
+                if (!context.BookGroups.Any())
+                {
+                    var bookGroups = new List<BookGroup>
+                    {
+                        new BookGroup { Name = "Truyện thiếu nhi"},
+                        new BookGroup { Name = "Kiến thức - kỹ năng sống"},
+                        new BookGroup { Name = "Kiến thức bách khoa"},
+                        new BookGroup { Name = "Sách âm nhạc"},
+                        new BookGroup { Name = "Truyện tranh"},
+                        new BookGroup { Name = "Tiểu thyết"},
+                    };
+
+                    context.BookGroups.AddRange(bookGroups);
+                }
+
+                if (context.ChangeTracker.HasChanges())
+                {
+                    await context.SaveChangesAsync();
                 }
             }
         }

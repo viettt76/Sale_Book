@@ -32,7 +32,7 @@ namespace BookStore.Datas.DbContexts
             modelBuilder.Entity<BookAuthor>()
                 .HasOne<Book>(x => x.Book)
                 .WithMany(s => s.BookAuthors)
-                .HasForeignKey(x => x.BookId);
+                .HasForeignKey(x => x.BookId);                
 
             modelBuilder.Entity<BookAuthor>()
                 .HasOne<Author>(x => x.Author)

@@ -105,6 +105,7 @@ namespace BookStore.WebApi.Controllers
         }
 
         [HttpGet]
+        [Route("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)
         {
             try

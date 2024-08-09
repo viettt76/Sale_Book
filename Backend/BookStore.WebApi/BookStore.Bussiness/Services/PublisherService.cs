@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using BookStore.Businesses.Services;
+using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
+using HealthcareAppointment.Data.Repositories;
 
 namespace BookStore.Bussiness.Services
 {
@@ -36,6 +38,28 @@ namespace BookStore.Bussiness.Services
         protected override PublisherViewModel ChangeToViewModel(Publisher entity)
         {
             return _mapper.Map<PublisherViewModel>(entity);
+        }
+
+        public override async Task<PaginationSet<PublisherViewModel>> GetAllPagingAsync(BaseSpecification spec, PaginationParams pageParams, string[] includes = null)
+        {
+            var entities = await _publisherRepository.GetAllAsync(includes);
+
+            if (spec != null && !string.IsNullOrEmpty(spec.Filter))
+            {
+                entities = entities.Where(x => x.Name.Contains(spec.Filter));
+            }
+
+            entities = spec.Sorting switch
+            {
+                "name" => entities.OrderBy(x => x.Name),
+                _ => entities.OrderBy(x => x.Name),
+            };
+
+            var pagingList = PaginationList<Publisher>.Create(entities, pageParams.PageNumber, pageParams.PageSize);
+
+            var pagingList_map = _mapper.Map<PaginationList<PublisherViewModel>>(pagingList);
+
+            return new PaginationSet<PublisherViewModel>(pageParams.PageNumber, pageParams.PageSize, pagingList_map.TotalCount, pagingList_map.TotalPage, pagingList_map);
         }
     }
 }

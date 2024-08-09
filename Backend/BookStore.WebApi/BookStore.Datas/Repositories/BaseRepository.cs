@@ -15,10 +15,12 @@ namespace HealthcareAppointment.Data.Repositories
             _dbSet = _dbContext.Set<TEntity>();
         }
 
-        public async Task<int> CreateAsync(TEntity entity)
+        public async Task<TEntity> CreateAsync(TEntity entity)
         {
-            await _dbSet.AddAsync(entity);
-            return await _dbContext.SaveChangesAsync();
+            var res = await _dbSet.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+
+            return res.Entity;
         }
 
         public async Task<int> DeleteAsync(int id)
@@ -35,10 +37,21 @@ namespace HealthcareAppointment.Data.Repositories
 
         public async Task<IEnumerable<TEntity>> GetAllAsync(string[] includes = null)
         {
+            if (includes != null && includes.Count() > 0)
+            {
+                var query = _dbSet.Include(includes.First());
+                foreach (var include in includes.Skip(1))
+                {
+                    query = query.Include(include);
+                }
+
+                return query.ToList();
+            }
+
             return _dbSet.AsEnumerable();
         }
 
-        public async Task<TEntity> GetByIdAsync(int id)
+        public virtual async Task<TEntity> GetByIdAsync(int id, string[] includes = null)
         {
             return await _dbSet.FindAsync(id);
         }

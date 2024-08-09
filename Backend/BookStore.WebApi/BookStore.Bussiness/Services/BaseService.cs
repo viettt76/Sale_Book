@@ -22,9 +22,14 @@ namespace BookStore.Businesses.Services
         protected virtual TEntity ChangeToEntity (TUpdate update) => throw new NotImplementedException();
         protected virtual TViewModel ChangeToViewModel (TEntity entity) => throw new NotImplementedException();
 
-        public async Task<int> CreateAsync(TCreate create)
+        public virtual async Task<int> CreateAsync(TCreate create)
         {
-            return await _baseRepository.CreateAsync(ChangeToEntity(create));
+            var res = await _baseRepository.CreateAsync(ChangeToEntity(create));
+
+            if (res == null)
+                return 0;
+
+            return 1;
         }
 
         public async Task<int> DeleteAsync(int id)
@@ -38,9 +43,9 @@ namespace BookStore.Businesses.Services
             return entities.Select(x => ChangeToViewModel(x));
         }
 
-        public async Task<TViewModel> GetByIdAsync(int id, string[] includes = null)
+        public virtual async Task<TViewModel> GetByIdAsync(int id, string[] includes = null)
         {
-            return ChangeToViewModel(await _baseRepository.GetByIdAsync(id));
+            return ChangeToViewModel(await _baseRepository.GetByIdAsync(id, includes));
         }
 
         public async Task<int> UpdateAsync(int id, TUpdate update)
@@ -48,7 +53,7 @@ namespace BookStore.Businesses.Services
             return await _baseRepository.UpdateAsync(id, ChangeToEntity(update));
         }
 
-        public async Task<PaginationSet<TViewModel>> GetAllPagingAsync(BaseSpecification spec, PaginationParams pageParams, string[] includes = null)
+        public virtual async Task<PaginationSet<TViewModel>> GetAllPagingAsync(BaseSpecification spec, PaginationParams pageParams, string[] includes = null)
         {
             var entities = await _baseRepository.GetAllAsync(includes);
 
@@ -59,6 +64,8 @@ namespace BookStore.Businesses.Services
             return new PaginationSet<TViewModel>(pageParams.PageNumber, pageParams.PageSize, pagingList_map.TotalCount, pagingList_map.TotalPage, pagingList_map);
 
         }
+
+
     }
     
 }
