@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import routes from '~/routes';
+import routes, { adminRoutes } from '~/routes';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
 
@@ -9,6 +9,26 @@ function App() {
         <BrowserRouter>
             <Routes>
                 {routes.map((route, index) => {
+                    const Page = route.element;
+                    let Layout = DefaultLayout;
+                    if (route.layout) {
+                        Layout = route.layout;
+                    } else if (route.layout === null) {
+                        Layout = React.Fragment;
+                    }
+                    return (
+                        <Route
+                            key={`route-${index}`}
+                            path={route.path}
+                            element={
+                                <Layout>
+                                    <Page />
+                                </Layout>
+                            }
+                        ></Route>
+                    );
+                })}
+                {adminRoutes.map((route, index) => {
                     const Page = route.element;
                     let Layout = DefaultLayout;
                     if (route.layout) {

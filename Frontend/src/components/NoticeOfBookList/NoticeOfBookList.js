@@ -25,25 +25,25 @@ const NoticeOfBookList = ({ title, icon, textWhenEmpty, textLinkWhenEmpty, linkW
                 id: '1',
                 name: 'name',
                 img: 'img',
-                price: 'price',
+                price: 2,
             },
             {
                 id: '1',
                 name: 'name',
                 img: 'img',
-                price: 'price',
+                price: 2,
             },
             {
                 id: '1',
                 name: 'name',
                 img: 'img',
-                price: 'price',
+                price: 2,
             },
             {
                 id: '1',
                 name: 'name',
                 img: 'img',
-                price: 'price',
+                price: 2,
             },
         ]);
     }, []);
@@ -153,7 +153,7 @@ const NoticeOfBookList = ({ title, icon, textWhenEmpty, textLinkWhenEmpty, linkW
                     })}
                 >
                     <p>{textWhenEmpty}</p>
-                    <Link to={linkWhenEmpty}>{textLinkWhenEmpty}</Link>
+                    {textLinkWhenEmpty && linkWhenEmpty && <Link to={linkWhenEmpty}>{textLinkWhenEmpty}</Link>}
                 </div>
             )}
         </div>

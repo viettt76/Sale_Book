@@ -4,7 +4,6 @@ import styles from './Book.module.scss';
 import { formatPrice } from '~/utils/commonUtils';
 
 const Book = ({ bookId, img, name, authorId, imgAuthor, nameAuthor, time, price }) => {
-    console.log(price);
     return (
         <div className={clsx(styles['wrapper'])}>
             <img className={clsx(styles['img'])} src={img} alt={name} />

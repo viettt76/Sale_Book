@@ -55,7 +55,7 @@ const AccountAvatar = () => {
                 <div className={clsx(styles['menu'])}>
                     <div className={clsx(styles['menu-user-info'])}>
                         <img className={clsx('rounded-circle', styles['menu-avatar'])} src={avatarDefault} />
-                        <div className={clsx(styles['menu-name-email'])}>
+                        <div>
                             <span className={clsx(styles['menu-user-name'])}>name</span>
                         </div>
                     </div>

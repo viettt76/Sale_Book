@@ -1,10 +1,12 @@
 import Header from '~/containers/Header';
+import Footer from '~/containers/Footer';
 
 const DefaultLayout = ({ children }) => {
     return (
         <div>
             <Header />
-            <div className="d-flex justify-content-between">{children}</div>
+            {children}
+            <Footer />
         </div>
     );
 };

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faMagnifyingGlass, faHeart, faReceipt } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faMagnifyingGlass, faHeart, faReceipt, faTicket } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import styles from './Header.module.scss';
 import logo from '~/assets/imgs/VEdu.png';
@@ -31,11 +31,11 @@ const Header = () => {
                     linkWhenEmpty="/"
                 />
                 <NoticeOfBookList
-                    title="Sách yêu thích"
-                    type="favorites"
-                    icon={faHeart}
-                    textWhenEmpty="Danh sách yêu thích của bạn đang trống."
-                    textLinkWhenEmpty="Khám phá thêm"
+                    title="Voucher"
+                    type="voucher"
+                    icon={faTicket}
+                    textWhenEmpty="Bạn không có voucher nào"
+                    textLinkWhenEmpty=""
                     linkWhenEmpty="/"
                 />
                 <NoticeOfBookList
