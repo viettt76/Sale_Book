@@ -117,13 +117,24 @@ namespace BookStore.WebApi
                     options.ApiVersionReader = new UrlSegmentApiVersionReader();
                 });
 
-                builder.Services.AddCors(options =>
-                {
-                    options.AddPolicy("AllowSpecificOrigin",
-                        builder => builder.WithOrigins("http://localhost:3000")
-                                          .AllowAnyMethod()
-                                          .AllowAnyHeader());
-                });
+                //builder.Services.AddCors(options =>
+                //{
+                //    options.AddPolicy("AllowSpecificOrigin",
+                //        builder =>
+                //        {
+                //            builder.WithOrigins("http://localhost:3000/")
+                //                   .AllowAnyHeader()
+                //                   .AllowAnyMethod();
+                //        });
+                //});
+
+                builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
+                    build =>
+                    {
+                        build.WithOrigins("http://localhost:3000")
+                                .AllowAnyMethod()
+                                .AllowAnyHeader();
+                    }));
 
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
@@ -222,10 +233,8 @@ namespace BookStore.WebApi
 
                 app.UseSerilogRequestLogging();
 
-                app.UseCors("AllowSpecificOrigin");
-
                 app.UseHttpsRedirection();
-
+                app.UseCors();
                 app.UseAuthentication();
                 app.UseAuthorization();
 
