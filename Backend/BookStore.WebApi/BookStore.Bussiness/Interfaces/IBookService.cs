@@ -1,6 +1,6 @@
 ﻿using BookStore.Businesses.Interfaces;
 using BookStore.Bussiness.Extensions;
-using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.Book;
 
 namespace BookStore.Bussiness.Interfaces
 {

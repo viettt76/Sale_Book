@@ -3,6 +3,8 @@ using BookStore.Businesses.Services;
 using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.Book;
+using BookStore.Bussiness.ViewModel.BookAuthor;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
 using HealthcareAppointment.Data.Repositories;
@@ -115,10 +117,10 @@ namespace BookStore.Bussiness.Services
                     entities = entities.Where(x => x.BookAuthors.Any(s => s.AuthorId == spec.AuthorId));
                 }
 
-                if (spec.PublisherId != null)
-                {
-                    entities = entities.Where(x => x.PublisherId == spec.PublisherId);
-                }
+                //if (spec.PublisherId != null)
+                //{
+                //    entities = entities.Where(x => x.PublisherId == spec.PublisherId);
+                //}
 
                 if (spec.BookGroupId != null)
                 {

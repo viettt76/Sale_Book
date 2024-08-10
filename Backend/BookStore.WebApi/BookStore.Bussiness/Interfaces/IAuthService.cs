@@ -1,4 +1,4 @@
-﻿using BookStore.Bussiness.ViewModel;
+﻿using BookStore.Bussiness.ViewModel.Auth;
 using BookStore.Models.Models;
 using System;
 using System.Collections.Generic;

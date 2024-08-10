@@ -1,6 +1,6 @@
 ﻿using BookStore.Businesses.Interfaces;
 using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.BookGroup;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

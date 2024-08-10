@@ -1,6 +1,6 @@
 ﻿using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.Book;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
@@ -18,7 +18,7 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                var res = await _bookService.GetAllPagingAsync(spec, pageParams, new[] { "BookGroup", "Publisher" } );
+                var res = await _bookService.GetAllPagingAsync(spec, pageParams, new[] { "BookGroup", "Reviews" } );
 
                 if (res == null)
                 {
@@ -37,7 +37,7 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                var res = await _bookService.GetByIdAsync(id, new[] { "BookGroup", "Publisher" });
+                var res = await _bookService.GetByIdAsync(id, new[] { "BookGroup", "Reviews" });
 
                 if (res == null)
                 {

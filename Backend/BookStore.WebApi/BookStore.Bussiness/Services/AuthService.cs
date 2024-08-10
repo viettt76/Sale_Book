@@ -1,11 +1,12 @@
 ﻿using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.Auth;
 using BookStore.Datas.DbContexts;
 using BookStore.Models.Models;
+using BookStore.WebApi.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -41,7 +42,7 @@ namespace BookStore.Bussiness.Services
                 var token = GenerateJwtToken(user);
                 return new AuthResultViewModel
                 {
-                    UserInformation = JsonConvert.SerializeObject(user),
+                    // UserInformation = JsonConvert.SerializeObject(user),
                     Token = token.Item1,
                     RefreshToken = token.Item2,
                     ExpiresAt = DateTime.UtcNow.AddHours(1)
@@ -71,7 +72,7 @@ namespace BookStore.Bussiness.Services
             var token = GenerateJwtToken(user);
             return new AuthResultViewModel
             {
-                UserInformation = JsonConvert.SerializeObject(user),
+                // UserInformation = JsonConvert.SerializeObject(user),
                 Token = token.Item1,
                 RefreshToken = token.Item2,
                 ExpiresAt = DateTime.UtcNow.AddHours(1)
@@ -90,6 +91,8 @@ namespace BookStore.Bussiness.Services
             {
                 UserName = register.Email,
                 Email = register.Email,
+                PhoneNumber = register.PhoneNumber,
+                Address = register.Address,
                 SecurityStamp = new Guid().ToString()
             };
 
@@ -97,9 +100,10 @@ namespace BookStore.Bussiness.Services
 
             if (!user.Succeeded)
             {
-                return null;
+                var errors = new ErrorDetails(StatusCodes.Status400BadRequest, user.Errors);
+                throw new Exception(errors.ToString());
             }
-            
+
             var role = await _userManager.AddToRoleAsync(newUser, "User");
 
             //var token = GenerateJwtToken(newUser);

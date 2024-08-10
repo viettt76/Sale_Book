@@ -29,15 +29,16 @@ namespace BookStore.Models.Models
         [ForeignKey(nameof(BookGroupId))]
         public BookGroup BookGroup { get; set; }
 
-        [Required]
-        public int PublisherId { get; set; }
+        //[Required]
+        //public int PublisherId { get; set; }
 
-        [ForeignKey(nameof(PublisherId))]
-        public Publisher Publisher { get; set; }
+        //[ForeignKey(nameof(PublisherId))]
+        //public Publisher Publisher { get; set; }
 
         public DateTime PublishedAt { get; set; }
 
-        public List<BookAuthor> BookAuthors { get; set; }
+        public IEnumerable<BookAuthor> BookAuthors { get; set; }
+        public IEnumerable<Review> Reviews { get; set; }
 
     }
 }

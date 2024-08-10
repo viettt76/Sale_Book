@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BookStore.Businesses.Services;
 using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.BookAuthor;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
 

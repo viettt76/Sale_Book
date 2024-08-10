@@ -43,7 +43,7 @@ namespace BookStore.Datas.DbContexts
                         EmailConfirmed = true,
                     };
 
-                    var userResult = await userManager.CreateAsync(user, "123456789");
+                    var userResult = await userManager.CreateAsync(user, "@Abc123456");
 
                     var userId = await userManager.GetUserIdAsync(user);
                     var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -53,6 +53,27 @@ namespace BookStore.Datas.DbContexts
                     if (userResult.Succeeded)
                     {
                         await userManager.AddToRoleAsync(user, roles[0].Name);
+                    }
+
+                    var user2 = new User
+                    {
+                        UserName = "admin2@gmail.com",
+                        Email = "admin2@gmail.com",
+                        PhoneNumber = "0123456789",
+                        IsActive = true,
+                        EmailConfirmed = true,
+                    };
+
+                    var user2Result = await userManager.CreateAsync(user2, "@Abc123456");
+
+                    var user2Id = await userManager.GetUserIdAsync(user2);
+                    var code2 = await userManager.GenerateEmailConfirmationTokenAsync(user2);
+                    code2 = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code2));
+                    await userManager.ConfirmEmailAsync(user2, code2);
+
+                    if (user2Result.Succeeded)
+                    {
+                        await userManager.AddToRoleAsync(user2, roles[0].Name);
                     }
                 }
 
