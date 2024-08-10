@@ -9,10 +9,11 @@ const Logout = () => {
 
     const handleLogout = () => {
         // logoutService();
-        if (location.pathname !== '/') {
-            navigate('/');
-        }
-        window.location.reload();
+        // if (location.pathname !== '/') {
+        //     navigate('/');
+        // }
+        // window.location.reload();
+        navigate('/login');
     };
     return (
         <div onClick={handleLogout}>

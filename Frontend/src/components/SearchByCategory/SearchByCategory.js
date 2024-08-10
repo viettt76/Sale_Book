@@ -30,7 +30,7 @@ const SearchByCategory = () => {
             publicationDate: 'April 10, 1925',
             totalPageNumber: '180',
             rated: '4.5/5',
-            remaining: '20',
+            remaining: 20,
             image: avatar,
         },
         {
@@ -42,7 +42,7 @@ const SearchByCategory = () => {
             publicationDate: 'April 10, 1925',
             totalPageNumber: '180',
             rated: '4.5/5',
-            remaining: '20',
+            remaining: 20,
             image: avatar,
         },
         {
@@ -54,7 +54,7 @@ const SearchByCategory = () => {
             publicationDate: 'April 10, 1925',
             totalPageNumber: '180',
             rated: '4.5/5',
-            remaining: '20',
+            remaining: 20,
             image: avatar,
         },
         {
@@ -66,7 +66,7 @@ const SearchByCategory = () => {
             publicationDate: 'April 10, 1925',
             totalPageNumber: '180',
             rated: '4.5/5',
-            remaining: '20',
+            remaining: 20,
             image: avatar,
         },
         {
@@ -78,7 +78,7 @@ const SearchByCategory = () => {
             publicationDate: 'April 10, 1925',
             totalPageNumber: '180',
             rated: '4.5/5',
-            remaining: '20',
+            remaining: 20,
             image: avatar,
         },
         {
@@ -90,7 +90,7 @@ const SearchByCategory = () => {
             publicationDate: 'April 10, 1925',
             totalPageNumber: '180',
             rated: '4.5/5',
-            remaining: '20',
+            remaining: 20,
             image: avatar,
         },
     ];

@@ -45,7 +45,7 @@
         .book-quantity-btn {
             width: 3.2rem;
             height: 3.2rem;
-            border: 1px solid rgba(0, 0, 0, 0.09);
+            border: 0.1rem solid rgba(0, 0, 0, 0.09);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -66,8 +66,8 @@
             outline: none;
             border: none;
             text-align: center;
-            border-top: 1px solid rgba(0, 0, 0, 0.09);
-            border-bottom: 1px solid rgba(0, 0, 0, 0.09);
+            border-top: 0.1rem solid rgba(0, 0, 0, 0.09);
+            border-bottom: 0.1rem solid rgba(0, 0, 0, 0.09);
         }
     }
 

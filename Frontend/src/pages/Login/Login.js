@@ -61,8 +61,8 @@ function Login() {
                 setValidatedFormLogin(true);
             } else {
                 const res = await loginService(loginInfo);
-                if (res?.token) {
-                    localStorage.setItem('token', res?.token);
+                if (res?.data?.token) {
+                    localStorage.setItem('token', res?.data?.token);
                     navigate('/');
 
                     const fetchGetPersonalInfo = async () => {
