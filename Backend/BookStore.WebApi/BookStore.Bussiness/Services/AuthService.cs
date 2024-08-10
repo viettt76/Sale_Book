@@ -1,20 +1,14 @@
-﻿using Azure.Core;
-using BookStore.Bussiness.Interfaces;
+﻿using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel;
 using BookStore.Datas.DbContexts;
 using BookStore.Models.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
-using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Encodings.Web;
 
 namespace BookStore.Bussiness.Services
 {

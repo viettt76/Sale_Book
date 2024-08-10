@@ -3,10 +3,23 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import routes, { adminRoutes } from '~/routes';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
+const ScrollToTop = () => {
+    const { pathname } = useLocation();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+
+    return null;
+};
 
 function App() {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Routes>
                 {routes.map((route, index) => {
                     const Page = route.element;
