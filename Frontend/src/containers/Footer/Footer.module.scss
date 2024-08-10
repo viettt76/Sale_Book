@@ -1,5 +1,89 @@
 .footer-wrapper {
-    background-color: purple;
-    height: 300px;
-    margin-top: 3rem;
+    p {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+        .content{
+        position: relative;
+        padding: 5rem 5rem;
+        display: flex;
+        justify-content: space-between;
+        border-top: 0.3rem solid red;
+        background-color: #fff;
+
+            .contact{
+                .contact-info{
+                    .store-name{
+                        font-size: 1.8rem;
+                        font-weight: bold;
+                        color: #333;
+                        margin: 18px 0 18px 0;
+                        text-transform: uppercase;
+                    }
+                    .contact-des{
+                        display: flex;
+                        align-items: center;
+                        position: relative;
+                        margin-bottom: 15px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        color: #282828;
+                        line-height: inherit;
+
+                        .icon{
+                            margin-right: 1.5rem;
+                            width: 2rem;
+                            height: 2rem;
+                            color: #ce0021;
+                        }
+                    }
+                    .box-bct{
+                        margin-top: 36px;
+                    }
+                }
+            }
+            .introduce-info{
+                width: 30%;
+                padding-left: 75px;
+                .title{
+                    margin: 10px 0 18px;
+                    font-size: 1.8rem;
+                    font-weight: bold;
+                }
+                .item{
+                    display: inline-block;
+                    width: 100%;
+                    margin-bottom: 15px;
+                    font-size: 1.4rem;
+                    font-weight: 500;
+                    color: #282828;
+                }
+                .item:hover{
+                    color: #ce0021;
+                }
+            }
+            .social{
+                .title-menu{
+                    margin: 10px 0 18px;
+                    font-size: 1.8rem;
+                    font-weight: bold;
+                }
+                .social-icon{
+                    display: inline-flex;
+                    justify-content: start
+                    ;
+                    .item{
+                        margin-right: 20px;
+                    }
+                }
+            }
+    }
+    .coppyright-info{
+        border-top: 1px solid #e5e5ee;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 1.5rem;
+        color: #A4A9AE;
+        font-weight: 5000;
+    }
 }
