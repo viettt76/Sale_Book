@@ -1,8 +1,5 @@
-﻿using BookStore.Businesses.Interfaces;
-using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using BookStore.Bussiness.Interfaces;
+using BookStore.Bussiness.ViewModel.Publisher;
 
 namespace BookStore.WebApi.Controllers
 {

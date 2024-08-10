@@ -10,7 +10,7 @@ namespace BookStore.WebApi.Controllers
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiController]
-    // [Authorize(Roles = "Admin, User")]
+    [Authorize(Roles = "Admin, User")]
     public class BaseController<TViewModel, TCreate, TUpdate> : ControllerBase where TViewModel : class where TCreate : class where TUpdate : class
     {
         private readonly IBaseService<TViewModel, TCreate, TUpdate> _baseService;
@@ -138,7 +138,7 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(int id, [FromBody] TUpdate createUpdate)
+        public virtual async Task<IActionResult> Update(int id, [FromBody] TUpdate createUpdate)
         {
             try
             {

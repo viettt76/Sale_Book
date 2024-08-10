@@ -2,7 +2,7 @@
 using BookStore.Businesses.Services;
 using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.Author;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
 using HealthcareAppointment.Data.Repositories;

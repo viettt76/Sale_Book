@@ -48,7 +48,7 @@ namespace BookStore.Businesses.Services
             return ChangeToViewModel(await _baseRepository.GetByIdAsync(id, includes));
         }
 
-        public async Task<int> UpdateAsync(int id, TUpdate update)
+        public virtual async Task<int> UpdateAsync(int id, TUpdate update)
         {
             return await _baseRepository.UpdateAsync(id, ChangeToEntity(update));
         }

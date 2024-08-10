@@ -1,5 +1,6 @@
-﻿using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel;
+﻿using AutoMapper;
+using BookStore.Bussiness.Interfaces;
+using BookStore.Bussiness.ViewModel.Auth;
 using BookStore.Models.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -21,17 +22,22 @@ namespace BookStore.WebApi.Controllers
         private readonly ILogger<LoginController> _logger;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<User> _userManager;
+        private readonly IMapper _mapper;
 
-        public LoginController(IAuthService authService, ILogger<LoginController> logger, IEmailSender emailSender, UserManager<User> userManager)
+        public LoginController(IAuthService authService, ILogger<LoginController> logger, IEmailSender emailSender, UserManager<User> userManager, IMapper mapper)
         {
             _authService = authService;
             _logger = logger;
             _emailSender = emailSender;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         [HttpPost]
         [Route("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody] LoginViewModel login)
         {
             try
@@ -52,6 +58,9 @@ namespace BookStore.WebApi.Controllers
 
         [HttpPost]
         [Route("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register([FromBody] RegisterViewModel register)
         {
             try
@@ -75,7 +84,9 @@ namespace BookStore.WebApi.Controllers
                 await _emailSender.SendEmailAsync(res.Email, "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                return Ok(res);
+                var uservm = _mapper.Map<UserViewModel>(res);
+
+                return Ok(uservm);
             }
             catch (Exception ex)
             {

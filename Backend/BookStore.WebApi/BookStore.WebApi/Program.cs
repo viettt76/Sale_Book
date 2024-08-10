@@ -36,7 +36,7 @@ namespace BookStore.WebApi
                 .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
                 .Enrich.FromLogContext()
                 .WriteTo.Async(c => c.File("Logs/log_errors.txt", restrictedToMinimumLevel: LogEventLevel.Error))
-                // .WriteTo.Async(c => c.File("Logs/logs_infos.txt", restrictedToMinimumLevel: LogEventLevel.Information))
+                .WriteTo.Async(c => c.File("Logs/logs_infos.txt", restrictedToMinimumLevel: LogEventLevel.Information))
                 .WriteTo.Async(c => c.Console());
             //.WriteTo.MSSqlServer(
             //    connectionString: "Server=localhost,1433;Database=QuizApp;Trusted_Connection=True;MultipleActiveResultSets=true;",
@@ -53,9 +53,11 @@ namespace BookStore.WebApi
 
                 // Add services to the container.
 
-                builder.Services.AddControllers();
+                builder.Services.AddControllers().AddNewtonsoftJson();
                 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                 builder.Services.AddEndpointsApiExplorer();
+
+                #region Swagger
                 builder.Services.AddSwaggerGen(options =>
                 {
                     options.SwaggerDoc("v1", new OpenApiInfo
@@ -116,15 +118,16 @@ namespace BookStore.WebApi
                     options.DefaultApiVersion = new ApiVersion(1, 0);
                     options.ApiVersionReader = new UrlSegmentApiVersionReader();
                 });
+                #endregion 
 
                 builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
-                     build =>
-                     {
-                         build.WithOrigins("http://localhost:3000") 
-                                  .AllowAnyMethod()
-                                  .AllowAnyHeader()
-                                  .AllowCredentials(); 
-                     }));
+                build =>
+                {
+                    build.WithOrigins("http://localhost:3000") // Chỉ định chính xác URL frontend
+                             .AllowAnyMethod()
+                             .AllowAnyHeader()
+                             .AllowCredentials(); // Cho phép gửi thông tin đăng nhập
+                }));
 
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
@@ -132,6 +135,7 @@ namespace BookStore.WebApi
                     .EnableSensitiveDataLogging();
                 });
 
+                #region Config identity
                 builder.Services.AddIdentity<User, IdentityRole>(options =>
                 {
                     options.Stores.MaxLengthForKeys = 128;
@@ -164,10 +168,10 @@ namespace BookStore.WebApi
                 builder.Services.Configure<IdentityOptions>(options =>
                 {
                     // Thiết lập về Password
-                    options.Password.RequireDigit = false; // bắt phải có số
-                    options.Password.RequireLowercase = false; // bắt phải có chữ thường
-                    options.Password.RequireNonAlphanumeric = false; // bắt ký tự đặc biệt
-                    options.Password.RequireUppercase = false; // bắt buộc chữ in
+                    options.Password.RequireDigit = true; // bắt phải có số
+                    options.Password.RequireLowercase = true; // bắt phải có chữ thường
+                    options.Password.RequireNonAlphanumeric = true; // bắt ký tự đặc biệt
+                    options.Password.RequireUppercase = true; // bắt buộc chữ in
                     options.Password.RequiredLength = 6; // Số ký tự tối thiểu của password
                     options.Password.RequiredUniqueChars = 1; // Số ký tự riêng biệt
 
@@ -182,7 +186,7 @@ namespace BookStore.WebApi
                     options.User.RequireUniqueEmail = true; // Email là duy nhất
 
                     // Cấu hình đăng nhập.
-                    options.SignIn.RequireConfirmedEmail = false; // Cấu hình xác thực địa chỉ email (email phải tồn tại)
+                    options.SignIn.RequireConfirmedEmail = true; // Cấu hình xác thực địa chỉ email (email phải tồn tại)
                     options.SignIn.RequireConfirmedPhoneNumber = false; // Xác thực số điện thoại
                 });
 
@@ -192,6 +196,7 @@ namespace BookStore.WebApi
                     // SecurityStamp trong bảng User đổi -> nạp lại thông tinn Security
                     options.ValidationInterval = TimeSpan.FromSeconds(5);
                 });
+#endregion
 
                 #region AutoMapper configuration
                 var mapperConfig = new MapperConfiguration(mc =>
@@ -202,10 +207,13 @@ namespace BookStore.WebApi
                 builder.Services.AddSingleton(mapper);
                 #endregion
 
-                builder.Services.AddOptions();                                        // Kích hoạt Options
+                #region Đăng ký dịch vụ email
+                builder.Services.AddOptions(); // Kích hoạt Options
                 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
-                builder.Services.AddTransient<IEmailSender, SendMailService>();        // Đăng ký dịch vụ Mail
+                builder.Services.AddTransient<IEmailSender, SendMailService>(); // Đăng ký dịch vụ Mail
+                #endregion
 
+                #region Đăng ký các dịch vụ hệ thống
                 builder.Services.AddScoped<IAuthService, AuthService>();
                 builder.Services.AddScoped<IPublisherRepository, PublisherRepository>();
                 builder.Services.AddScoped<IPublisherService, PublisherService>();
@@ -217,6 +225,15 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IBookAuthorService, BookAuthorService>();
                 builder.Services.AddScoped<IBookGroupRepository, BookGroupRepository>();
                 builder.Services.AddScoped<IBookGroupService, BookGroupService>();
+                builder.Services.AddScoped<ICartRepository, CartRepository>();
+                builder.Services.AddScoped<ICartService, CartService>();
+                builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+                builder.Services.AddScoped<IOrderService, OrderService>();
+                builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+                //builder.Services.AddScoped<IOrderItemService, OrderItemService>();
+                builder.Services.AddScoped<IReviewService, ReviewService>();
+                builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+                #endregion
 
                 var app = builder.Build();
 
@@ -240,8 +257,9 @@ namespace BookStore.WebApi
 
                 app.MapControllers();
 
-                // app.UseMiddleware<ErrorHandlingMiddleware>();
+                app.UseMiddleware<ErrorHandlingMiddleware>();
 
+                #region Chạy Seeding data
                 using var scope = app.Services.CreateScope();
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
@@ -253,6 +271,8 @@ namespace BookStore.WebApi
                 {
                     logger.LogError(ex, $"An error occured during migration: {ex.Message}");
                 }
+                #endregion
+
 
                 app.Run();
             }

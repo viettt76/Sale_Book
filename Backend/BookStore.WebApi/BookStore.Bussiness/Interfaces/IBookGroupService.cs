@@ -1,5 +1,5 @@
 ﻿using BookStore.Businesses.Interfaces;
-using BookStore.Bussiness.ViewModel;
+using BookStore.Bussiness.ViewModel.BookGroup;
 using System;
 using System.Collections.Generic;
 using System.Linq;
