@@ -60,16 +60,20 @@ function Login() {
                 e.stopPropagation();
                 setValidatedFormLogin(true);
             } else {
-                await loginService(loginInfo);
-                navigate('/');
-                const fetchGetPersonalInfo = async () => {
-                    try {
-                        await getPersonalInfoService();
-                    } catch (error) {
-                        console.log(error);
-                    }
-                };
-                fetchGetPersonalInfo();
+                const res = await loginService(loginInfo);
+                if (res?.token) {
+                    localStorage.setItem('token', res?.token);
+                    navigate('/');
+
+                    const fetchGetPersonalInfo = async () => {
+                        try {
+                            await getPersonalInfoService();
+                        } catch (error) {
+                            console.log(error);
+                        }
+                    };
+                    fetchGetPersonalInfo();
+                }
             }
         } catch (error) {
             setErrorLogin('Tài khoản hoặc mật khẩu của bạn không chính xác');

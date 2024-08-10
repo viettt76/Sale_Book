@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'https://localhost:44386/api/v1.0',
+    baseURL: 'https://localhost:7193/api/v1.0',
 });
 
 instance.defaults.withCredentials = true;
@@ -18,7 +18,7 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     function (response) {
         const customResponse = {
-            data: response.data?.data,
+            data: response.data,
             status: response.status,
         };
         return customResponse;
@@ -27,7 +27,7 @@ instance.interceptors.response.use(
         if (error?.response?.data)
             return Promise.reject({
                 status: error?.response?.status,
-                data: error?.response?.data,
+                data: error?.response,
             });
         return Promise.reject(error);
     },

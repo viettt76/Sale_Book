@@ -118,12 +118,13 @@ namespace BookStore.WebApi
                 });
 
                 builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
-                build =>
-                {
-                    build.WithOrigins("*")
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                }));
+                     build =>
+                     {
+                         build.WithOrigins("http://localhost:3000") 
+                                  .AllowAnyMethod()
+                                  .AllowAnyHeader()
+                                  .AllowCredentials(); 
+                     }));
 
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
@@ -232,12 +233,7 @@ namespace BookStore.WebApi
 
                 app.UseHttpsRedirection();
 
-                app.UseCors(builder =>
-                {
-                    builder.AllowAnyOrigin()
-                           .AllowAnyMethod()
-                           .AllowAnyHeader();
-                });
+                app.UseCors("BookStoreAPIPolicy");
 
                 app.UseAuthentication();
                 app.UseAuthorization();

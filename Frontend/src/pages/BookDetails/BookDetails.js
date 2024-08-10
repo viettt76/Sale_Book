@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Modal, Tab, Tabs } from 'react-bootstrap';
 import { faStarHalfStroke, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
@@ -11,6 +11,7 @@ import { formatPrice } from '~/utils/commonUtils';
 
 const BookDetails = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const [quantity, setQuantity] = useState(1);
 
@@ -88,7 +89,14 @@ const BookDetails = () => {
                         </div>
                         <div>
                             <button className={clsx(styles['btn'], styles['btn-cart'])}>Thêm vào giỏ hàng</button>
-                            <button className={clsx(styles['btn'], styles['btn-buy-now'])}>Mua ngay</button>
+                            <button
+                                className={clsx(styles['btn'], styles['btn-buy-now'])}
+                                onClick={() => {
+                                    navigate(`/book/${id}/pay?quantity=${quantity}`);
+                                }}
+                            >
+                                Mua ngay
+                            </button>
                         </div>
                         <button className={clsx(styles['btn'], styles['btn-reviews'])} onClick={handleShowModalReview}>
                             Đánh giá
@@ -103,13 +111,6 @@ const BookDetails = () => {
                             </Modal.Header>
                             <Modal.Body className={clsx(styles['review-body'])}>
                                 <div className={clsx(styles['review-rated'])}>
-                                    {/* {[...Array(5).keys()].map((i) => (
-                                        <FontAwesomeIcon
-                                            key={`number-of-rates-reject-${i}`}
-                                            icon={faStarRegular}
-                                            onClick={() => setReviewRate(i + 1)}
-                                        />
-                                    ))} */}
                                     {[...Array(reviewRate).keys()].map((i) => (
                                         <FontAwesomeIcon
                                             className={clsx(styles['active'])}

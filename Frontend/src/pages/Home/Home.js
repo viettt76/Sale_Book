@@ -2,6 +2,7 @@ import clsx from 'clsx';
 import GroupBooks from '~/components/GroupBooks';
 import avatarDefault from '~/assets/imgs/avatar-default.png';
 import styles from './Home.module.scss';
+import SearchByCategory from '~/components/SearchByCategory';
 
 const Home = () => {
     const groupBooks = [
@@ -92,6 +93,7 @@ const Home = () => {
         <div className={clsx('container', styles['home-wrapper'])}>
             <GroupBooks className={clsx(styles['group-books'])} title="Sách việt nam" groupBooks={groupBooks} />
             <GroupBooks className={clsx(styles['group-books'])} title="Sách nước ngoài" groupBooks={groupBooks} />
+            <SearchByCategory />
         </div>
     );
 };
