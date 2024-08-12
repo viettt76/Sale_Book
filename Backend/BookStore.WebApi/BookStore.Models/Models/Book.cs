@@ -22,6 +22,10 @@ namespace BookStore.Models.Models
 
         public decimal Price { get; set; }
 
+        public int TotalPageNumber { get; set; } = 0;
+
+        public int Remaining { get; set; } = 0;
+
         [Range(0, 5)]
         public double Rate { get; set; } = 0.0;
 

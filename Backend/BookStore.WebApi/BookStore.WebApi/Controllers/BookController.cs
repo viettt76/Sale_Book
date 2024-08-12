@@ -1,6 +1,7 @@
 ﻿using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel.Book;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
@@ -52,8 +53,23 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Tìm kiếm sách
+        /// </summary>
+        /// <param name="spec"></param>
+        /// <param name="pageParams"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpGet]
         [Route("search")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [AllowAnonymous]
         public async Task<IActionResult> Search([FromQuery] BookSpecification spec, [FromQuery] PaginationParams pageParams)
         {
             try

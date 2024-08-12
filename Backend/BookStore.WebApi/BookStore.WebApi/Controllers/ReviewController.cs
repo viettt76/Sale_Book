@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
 {
-    public class ReviewController : BaseController<RegisterViewModel, ReviewCreateViewModel, ReviewUpdateViewModel>
+    public class ReviewController : BaseController<ReviewViewModel, ReviewCreateViewModel, ReviewUpdateViewModel>
     {
         private readonly IReviewService _reviewService;
         private readonly UserManager<User> _userManager;
@@ -42,7 +42,15 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                // createUpdate.UserId = _userManager.GetUserId(User);
+                var review = await _reviewService.GetByIdAsync(id);
+                var userId = _userManager.GetUserId(User);
+
+                if (review.UserId != userId)
+                    return BadRequest("Bạn không thể sửa review của người khác!");
+
+                if (review.BookId != createUpdate.BookId) 
+                    return BadRequest("Bạn đang sửa review củ sách khác với sách ban đầu!");
+
                 var res = await _reviewService.UpdateAsync(id, createUpdate);
 
                 if (res == 0)

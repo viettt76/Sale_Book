@@ -10,20 +10,22 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.Bussiness.Services
 {
-    public class ReviewService : BaseService<RegisterViewModel, Review, ReviewCreateViewModel, ReviewUpdateViewModel>, IReviewService
+    public class ReviewService : BaseService<ReviewViewModel, Review, ReviewCreateViewModel, ReviewUpdateViewModel>, IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
         private readonly UserManager<User> _userManager;
+        private readonly IBookRepository _bookRepository;
         private readonly IMapper _mapper;
 
-        public ReviewService(IReviewRepository reviewRepository, UserManager<User> userManager, IMapper mapper) : base(reviewRepository, mapper)
+        public ReviewService(IReviewRepository reviewRepository, UserManager<User> userManager, IBookRepository bookRepository, IMapper mapper) : base(reviewRepository, mapper)
         {
             _reviewRepository = reviewRepository;
             _userManager = userManager;
+            _bookRepository = bookRepository;
             _mapper = mapper;
         }
 
-        protected override Review ChangeToEntity(RegisterViewModel viewModel)
+        protected override Review ChangeToEntity(ReviewViewModel viewModel)
         {
             return _mapper.Map<Review>(viewModel);
         }
@@ -38,9 +40,9 @@ namespace BookStore.Bussiness.Services
             return _mapper.Map<Review>(update);
         }
 
-        protected override RegisterViewModel ChangeToViewModel(Review entity)
+        protected override ReviewViewModel ChangeToViewModel(Review entity)
         {
-            return _mapper.Map<RegisterViewModel>(entity);
+            return _mapper.Map<ReviewViewModel>(entity);
         }
 
         public override async Task<int> CreateAsync(ReviewCreateViewModel create)
@@ -54,6 +56,10 @@ namespace BookStore.Bussiness.Services
             }            
 
             var res = await _reviewRepository.CreateAsync(vm);
+            var listRate = await _reviewRepository.GetRateOfBook(res.BookId);
+            var averageRate = (listRate.Sum(x => x)) / listRate.Count();
+
+            var bookRate = await _bookRepository.UpdateBookAverageRate(res.BookId, averageRate);
 
             if (res == null)
                 return 0;

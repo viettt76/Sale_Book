@@ -1,5 +1,6 @@
 ﻿using BookStore.Businesses.Interfaces;
 using BookStore.Bussiness.ViewModel.Order;
+using BookStore.Models.Enums;
 
 namespace BookStore.Bussiness.Interfaces
 {
@@ -7,5 +8,6 @@ namespace BookStore.Bussiness.Interfaces
     {
         Task<IEnumerable<OrderViewModel>> GetOrder(OrderSpecification spec);
         Task<int> CancelledOrder(int id);
+        Task<int> UpdateOrderStatus(int id, OrderStatusEnum statusOrder);
     }
 }

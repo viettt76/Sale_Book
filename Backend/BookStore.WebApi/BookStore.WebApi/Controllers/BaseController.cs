@@ -21,6 +21,15 @@ namespace BookStore.WebApi.Controllers
         }
 
         // GET: api/<BaseController>
+        /// <summary>
+        /// Lấy toàn bộ bản ghi không phân trang, không bộ lọc
+        /// </summary>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpGet]
         [Route("get-all")]
         [AllowAnonymous]
@@ -48,6 +57,21 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy toàn bộ bản ghi có phân trang
+        /// </summary>
+        /// <param name="spec"></param>
+        /// <param name="pageParams"></param>
+        /// <returns></returns>
+        /// <remarks>
+        ///     GET /get-all-paging/1
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpGet]
         [Route("get-all-paging")]
         [AllowAnonymous]
@@ -76,6 +100,19 @@ namespace BookStore.WebApi.Controllers
         }
 
         // GET api/<BaseController>/5
+        /// <summary>
+        /// Lấy một bản ghi theo id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <remarks>
+        ///     GET /get-by-id/1
+        /// </remarks>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpGet]
         [Route("get-by-id/{id}")]
         [AllowAnonymous]
@@ -104,6 +141,16 @@ namespace BookStore.WebApi.Controllers
         }
 
         // POST api/<BaseController>
+        /// <summary>
+        /// Tạo mới một bản ghi
+        /// </summary>
+        /// <param name="viewModel"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpPost]
         [Route("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -111,6 +158,7 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
         public virtual async Task<IActionResult> Create([FromBody] TCreate viewModel)
         {
             try
@@ -131,6 +179,25 @@ namespace BookStore.WebApi.Controllers
         }
 
         // PUT api/<BaseController>/5
+        /// <summary>
+        /// cập nhật 1 bản ghi
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     PUT
+        ///     {
+        ///        "id": 1,
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpPut]
         [Route("update/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -138,6 +205,7 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
         public virtual async Task<IActionResult> Update(int id, [FromBody] TUpdate createUpdate)
         {
             try
@@ -158,6 +226,25 @@ namespace BookStore.WebApi.Controllers
         }
 
         // DELETE api/<BaseController>/5
+        /// <summary>
+        /// Xóa 1 bản ghi
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     DELETE
+        ///     {
+        ///        "id": 1,
+        ///     }
+        ///
+        /// </remarks>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpDelete]
         [Route("delete/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -165,6 +252,7 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             try
