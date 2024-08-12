@@ -15,6 +15,8 @@ namespace BookStore.Bussiness.ViewModel.Book
 
         public decimal Price { get; set; }
 
+        public int TotalPageNumber { get; set; } = 0;
+
         public double Rate { get; set; } = 0.0;
 
         public int BookGroupId { get; set; }

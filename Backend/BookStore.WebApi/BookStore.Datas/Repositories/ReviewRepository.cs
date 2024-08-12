@@ -17,6 +17,11 @@ namespace BookStore.Datas.Repositories
             _dbContext = dbContext;
         }
 
+        public async Task<List<int>> GetRateOfBook(int bookId)
+        {
+            return _dbContext.Reviews.Where(x => x.BookId == bookId).Select(x => x.Rate).ToList();
+        }
+
         public async Task<Review> GetReviewByUserId(string userId, int bookId)
         {
             return await _dbContext.Reviews.Where(x => x.BookId == bookId && x.UserId == userId).FirstOrDefaultAsync();

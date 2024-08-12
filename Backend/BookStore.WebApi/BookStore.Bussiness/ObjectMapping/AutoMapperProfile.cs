@@ -53,8 +53,12 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<CartUpdateViewModel, Cart>();
 
             CreateMap<User, UserViewModel>();
+            CreateMap<UserCreateViewModel, User>();
 
-            CreateMap<Order, OrderViewModel>();
+            CreateMap<Order, OrderViewModel>()
+                .ForMember(x => x.UserName, e => e.MapFrom(x => x.User.UserName))
+                .ForMember(x => x.UserEmail, e => e.MapFrom(x => x.User.Email))
+                .ForMember(x => x.UserPhoneNumber, e => e.MapFrom(x => x.User.PhoneNumber));
             CreateMap<OrderViewModel, Order>();
             CreateMap<OrderCreateViewModel, Order>();
             CreateMap<OrderUpdateViewModel, Order>();

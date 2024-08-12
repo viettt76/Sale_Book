@@ -22,10 +22,9 @@ namespace BookStore.Bussiness.ViewModel.Book
 
         // public string Author { get; set; }
 
-        public decimal Price { get; set; }
+        public int TotalPageNumber { get; set; } = 0;
 
-        [Range(0, 5)]
-        public double Rate { get; set; } = 0.0;
+        public decimal Price { get; set; }
 
         public int BookGroupId { get; set; }
 

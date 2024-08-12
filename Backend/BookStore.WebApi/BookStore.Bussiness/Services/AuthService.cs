@@ -89,7 +89,7 @@ namespace BookStore.Bussiness.Services
 
             var newUser = new User
             {
-                UserName = register.Email,
+                UserName = register.UserName,
                 Email = register.Email,
                 PhoneNumber = register.PhoneNumber,
                 Address = register.Address,

@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using BookStore.Datas.Interfaces;
 using BookStore.Datas.Repositories;
 using AutoMapper;
+using System.Reflection;
 
 namespace BookStore.WebApi
 {
@@ -60,6 +61,8 @@ namespace BookStore.WebApi
                 #region Swagger
                 builder.Services.AddSwaggerGen(options =>
                 {
+                    options.EnableAnnotations();
+
                     options.SwaggerDoc("v1", new OpenApiInfo
                     {
                         Version = "v1",
@@ -68,19 +71,19 @@ namespace BookStore.WebApi
                         TermsOfService = new Uri("https://example.com/terms"),
                         Contact = new OpenApiContact
                         {
-                            Name = "Example Contact",
+                            Name = "Contact",
+                            //Email = "anh038953@gmail.com",
                             Url = new Uri("https://example.com/contact")
                         },
                         License = new OpenApiLicense
                         {
-                            Name = "Example License",
+                            Name = "License",
                             Url = new Uri("https://example.com/license")
                         }
                     });
 
-                    // using System.Reflection;
-                    //var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                    //options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+                    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
                     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     {
@@ -233,6 +236,7 @@ namespace BookStore.WebApi
                 //builder.Services.AddScoped<IOrderItemService, OrderItemService>();
                 builder.Services.AddScoped<IReviewService, ReviewService>();
                 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+                builder.Services.AddScoped<IUserRepository, UserRepository>();
                 #endregion
 
                 var app = builder.Build();
@@ -243,7 +247,10 @@ namespace BookStore.WebApi
                 if (app.Environment.IsDevelopment())
                 {
                     app.UseSwagger();
-                    app.UseSwaggerUI();
+                    app.UseSwaggerUI(c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+                    });
                 }
 
                 app.UseSerilogRequestLogging();

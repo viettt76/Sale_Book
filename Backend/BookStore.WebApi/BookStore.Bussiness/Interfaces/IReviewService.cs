@@ -5,7 +5,7 @@ using BookStore.Bussiness.ViewModel.Review;
 
 namespace BookStore.Bussiness.Interfaces
 {
-    public interface IReviewService : IBaseService<RegisterViewModel, ReviewCreateViewModel, ReviewUpdateViewModel>
+    public interface IReviewService : IBaseService<ReviewViewModel, ReviewCreateViewModel, ReviewUpdateViewModel>
     {
     }
 }

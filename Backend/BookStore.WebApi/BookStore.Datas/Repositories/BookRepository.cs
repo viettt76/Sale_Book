@@ -47,5 +47,67 @@ namespace BookStore.Datas.Repositories
 
             return await query.FirstOrDefaultAsync(x => x.Id == id);
         }
+
+        public async Task<int> UpdateBookAverageRate(int bookId, double averageRate)
+        {
+            var book = await _dbContext.Books.FindAsync(bookId);
+
+            if (book == null)
+                return 0;
+
+            if (averageRate < 0 || averageRate > 5)
+            {
+                return 0;
+            }
+
+            if (averageRate >= 0 && averageRate <= 0.2)
+            {
+                averageRate = 0;
+            }
+            else if (averageRate > 0.2 && averageRate <= 0.6)
+            {
+                averageRate = 0.5;
+            }
+            else if (averageRate >= 0.6 && averageRate <= 1.2)
+            {
+                averageRate = 1;
+            }
+            else if (averageRate > 1.2 && averageRate <= 1.6)
+            {
+                averageRate = 1.5;
+            }
+            else if (averageRate > 1.6 && averageRate <= 2.2)
+            {
+                averageRate = 2;
+            }
+            else if (averageRate > 2.2 && averageRate <= 2.6)
+            {
+                averageRate = 2.5;
+            }
+            else if (averageRate > 2.6 && averageRate <= 3.2)
+            {
+                averageRate = 3;
+            }
+            else if (averageRate > 3.2 && averageRate <= 3.6)
+            {
+                averageRate = 3.5;
+            }
+            else if (averageRate > 3.6 && averageRate <= 4.2)
+            {
+                averageRate = 4;
+            }
+            else if (averageRate > 4.2 && averageRate <= 4.6)
+            {
+                averageRate = 4.5;
+            }
+            else if (averageRate > 4.6 && averageRate <= 5)
+            {
+                averageRate = 5;
+            }
+
+            book.Rate = averageRate;
+
+            return await _dbContext.SaveChangesAsync();
+        }
     }
 }

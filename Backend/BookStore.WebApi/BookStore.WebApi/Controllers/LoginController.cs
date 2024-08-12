@@ -33,6 +33,30 @@ namespace BookStore.WebApi.Controllers
             _mapper = mapper;
         }
 
+
+        /// <summary>
+        /// Đăng nhập vào hệ thông
+        /// </summary>
+        /// <param name="login">
+        ///     {
+        ///         "userName",
+        ///         "password"
+        ///     }
+        /// </param>
+        /// <returns></returns>
+        /// <remarks>
+        ///     POST /Login/login
+        ///     {
+        ///         "userName" = "admin@example.com,
+        ///         "password" = "@Abc123456"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpPost]
         [Route("login")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -56,6 +80,16 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Đăng ký mới tài khoản
+        /// </summary>
+        /// <param name="register"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpPost]
         [Route("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -95,6 +129,16 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Refresh token
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpPost]
         [Route("refress-token")]
         public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequestViewModel request)
@@ -115,6 +159,17 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Xác nhận email khi đăng ký mới được đăng nhập
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        /// <response code="200">Returns the newly created item</response>
+        /// <response code="401">Unauthorize</response>
+        /// <response code="404">If not found any item</response>
+        /// <response code="403">Access denined</response>
+        /// <response code="400">If the item is null</response>
         [HttpGet]
         [Route("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string userId, string token)

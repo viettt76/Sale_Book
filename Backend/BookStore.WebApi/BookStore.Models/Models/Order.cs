@@ -19,9 +19,9 @@ namespace BookStore.Models.Models
         public decimal TotalAmount { get; set; }
 
         [Required]
-        public StatusEnum Status { get; set; }
+        public OrderStatusEnum Status { get; set; }
 
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now;
 
         public ICollection<OrderItem> OrderItems { get; set; }
     }

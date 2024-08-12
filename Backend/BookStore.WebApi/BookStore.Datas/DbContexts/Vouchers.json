@@ -1,0 +1,77 @@
+[
+  {
+    "UserId": 1,
+    "Percent": 10,
+    "Used": true
+  },
+  {
+    "UserId": 2,
+    "Percent": 11,
+    "Used": false
+  },
+  {
+    "UserId": 3,
+    "Percent": 12,
+    "Used": true
+  },
+  {
+    "UserId": 4,
+    "Percent": 13,
+    "Used": false
+  },
+  {
+    "UserId": 5,
+    "Percent": 14,
+    "Used": true
+  },
+  {
+    "UserId": 6,
+    "Percent": 15,
+    "Used": false
+  },
+  {
+    "UserId": 7,
+    "Percent": 16,
+    "Used": true
+  },
+  {
+    "UserId": 8,
+    "Percent": 17,
+    "Used": false
+  },
+  {
+    "UserId": 9,
+    "Percent": 18,
+    "Used": true
+  },
+  {
+    "UserId": 10,
+    "Percent": 19,
+    "Used": false
+  },
+  {
+    "UserId": 11,
+    "Percent": 20,
+    "Used": true
+  },
+  {
+    "UserId": 12,
+    "Percent": 21,
+    "Used": false
+  },
+  {
+    "UserId": 13,
+    "Percent": 22,
+    "Used": true
+  },
+  {
+    "UserId": 14,
+    "Percent": 23,
+    "Used": false
+  },
+  {
+    "UserId": 15,
+    "Percent": 24,
+    "Used": true
+  }
+]

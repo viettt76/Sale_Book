@@ -3,7 +3,9 @@ using BookStore.Businesses.Services;
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Datas.Interfaces;
+using BookStore.Models.Enums;
 using BookStore.Models.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.Bussiness.Services
 {
@@ -12,15 +14,19 @@ namespace BookStore.Bussiness.Services
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderItemRepository _orderItemRepository;
         private readonly IBookRepository _bookRepository;
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
 
         public OrderService(IOrderRepository orderRepository, 
             IOrderItemRepository orderItemRepository, 
-            IBookRepository bookRepository, IMapper mapper) : base(orderRepository, mapper)
+            IBookRepository bookRepository,
+            UserManager<User> userManager,
+            IMapper mapper) : base(orderRepository, mapper)
         {
             _orderRepository = orderRepository;
             _orderItemRepository = orderItemRepository;
             _bookRepository = bookRepository;
+            _userManager = userManager;
             _mapper = mapper;
         }
 
@@ -51,24 +57,23 @@ namespace BookStore.Bussiness.Services
                 return 0;
             }
 
-            var books = new List<Book>();
+            decimal totalAmount = 0;
             foreach (var item in create.OrderItems)
             {
                 var book = await _bookRepository.GetByIdAsync(item.BookId);
 
-                item.Price = book.Price;
+                totalAmount += item.Quantity * book.Price;
             }
 
-            create.TotalAmount = create.OrderItems.Sum(x => x.Quantity * x.Price);
+            var entity = ChangeToEntity(create);
+            entity.TotalAmount = totalAmount;
 
-            var order = await _orderRepository.CreateAsync(ChangeToEntity(create));
+            var order = await _orderRepository.CreateAsync(entity);
 
             if (order == null)
             {
                 return 0;
             }
-
-
 
             return 1;
         }
@@ -79,7 +84,7 @@ namespace BookStore.Bussiness.Services
 
             if (spec != null)
             {
-                if (spec.Status != Models.Enums.StatusEnum.All)
+                if (spec.Status != Models.Enums.OrderStatusEnum.All)
                     entities = entities.Where(x => x.Status == spec.Status);
 
                 entities = spec.Sorted switch
@@ -102,6 +107,11 @@ namespace BookStore.Bussiness.Services
                 return 0;
 
             return res;
+        }
+
+        public async Task<int> UpdateOrderStatus(int id, OrderStatusEnum statusOrder)
+        {
+            return await _orderRepository.UpdateOrderStatus(id, statusOrder);
         }
     }
 }

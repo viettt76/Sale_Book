@@ -4,7 +4,7 @@ namespace BookStore.Bussiness.ViewModel.Order
 {
     public class OrderSpecification
     {
-        public StatusEnum Status { get; set; } = StatusEnum.All;
+        public OrderStatusEnum Status { get; set; } = OrderStatusEnum.All;
         public string Sorted { get; set; } = "date";
     }
 }

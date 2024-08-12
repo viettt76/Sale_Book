@@ -24,10 +24,22 @@ namespace BookStore.Datas.Repositories
                 return 0;
             }
 
-            if (order.Status == StatusEnum.DaThanhToan || order.Status == StatusEnum.DaHuy)
+            if (order.Status == OrderStatusEnum.DaThanhToan || order.Status == OrderStatusEnum.DaHuy)
                 return 0;
 
-            order.Status = StatusEnum.DaThanhToan;
+            order.Status = OrderStatusEnum.DaThanhToan;
+
+            return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<int> UpdateOrderStatus(int id, OrderStatusEnum orderStatus)
+        {
+            var entity = _dbContext.Orders.Find(id);
+
+            if (entity == null)
+                return 0;
+
+            entity.Status = orderStatus;
 
             return await _dbContext.SaveChangesAsync();
         }
