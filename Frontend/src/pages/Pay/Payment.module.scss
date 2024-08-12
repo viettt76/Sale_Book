@@ -1,0 +1,115 @@
+@import '~/styles/variables';
+
+.overlay {
+    background-color: #fefefe;
+    display: flex;
+    justify-content: center;
+}
+.pay-wrapper {
+    margin-top: 1rem;
+    padding: 1.6rem;
+    max-width: 50rem;
+    min-width: 40rem;
+    background-color: #fff;
+    box-shadow: 0 0 0.3rem 0 #7d7c7c;
+
+    .book-info {
+        display: flex;
+
+        .book-image {
+            width: 20rem;
+            height: auto;
+            margin-right: 2rem;
+        }
+
+        .book-name {
+            font-size: 2.6rem;
+        }
+
+        .book-price {
+            font-size: 1.8rem;
+        }
+
+        .book-quantity {
+            display: flex;
+            font-size: 1.6rem;
+            margin-top: 1rem;
+            margin-bottom: 1.6rem;
+
+            .book-quantity-btn {
+                width: 3.2rem;
+                height: 3.2rem;
+                border: 0.1rem solid rgba(0, 0, 0, 0.09);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                background-color: #dfdddd;
+
+                &:disabled {
+                    background-color: #f9f9f9;
+                }
+            }
+
+            .book-quantity-input {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 5rem;
+                height: 3.2rem;
+                outline: none;
+                border: none;
+                text-align: center;
+                border-top: 0.1rem solid rgba(0, 0, 0, 0.09);
+                border-bottom: 0.1rem solid rgba(0, 0, 0, 0.09);
+            }
+        }
+    }
+    .voucher-wrapper {
+        display: flex;
+        justify-content: space-between;
+        font-size: 1.8rem;
+        padding-top: 0.8rem;
+
+        .voucher-value {
+            color: #0055aa;
+            cursor: pointer;
+        }
+    }
+
+    .total-payment {
+        font-size: 1.8rem;
+        color: #ee4d2d;
+    }
+
+    .btn-pay {
+        margin-top: 1rem;
+        width: 100%;
+        padding: 0.8rem 1.2rem;
+        background-color: #ec6044;
+        color: #fff;
+        font-size: 1.8rem;
+        border: none;
+
+        &:hover {
+            background-color: #f3421f;
+        }
+    }
+}
+
+.fz-24 {
+    font-size: 2.4rem !important;
+}
+
+.voucher-item {
+    font-size: 1.8rem;
+    box-shadow: 0 0 0.2rem 0 $box-shadow;
+    padding: 1.2rem 1.6rem;
+    background-color: #f3421f;
+    color: #fff;
+    cursor: pointer;
+
+    & + .voucher-item {
+        margin-top: 1.6rem;
+    }
+}

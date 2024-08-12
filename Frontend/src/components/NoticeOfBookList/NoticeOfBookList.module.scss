@@ -31,34 +31,48 @@
             text-align: center;
             font-size: 2rem;
             font-weight: 600;
-            padding: 6px 0;
+            padding: 0.6rem 0;
         }
 
-        .book {
-            display: flex;
-            color: $main-color;
+        .books {
+            max-height: 30.4rem;
+            overflow-y: auto;
+
+            .book {
+                display: flex;
+                color: $main-color;
+                text-decoration: none;
+
+                .book-img {
+                    min-width: 10rem;
+                    height: 5rem;
+                    margin-right: 0.8rem;
+                }
+
+                .book-name {
+                    margin-bottom: 0rem;
+                    font-size: 1.4rem;
+                    overflow: hidden;
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    font-weight: 600;
+                }
+
+                .book-price {
+                    font-size: 1.1rem;
+                }
+            }
+        }
+
+        .link-when-not-empty {
+            font-size: 1.6rem;
             text-decoration: none;
-
-            .book-img {
-                min-width: 10rem;
-                height: 5rem;
-                margin-right: 0.8rem;
-            }
-
-            .book-name {
-                margin-bottom: 0rem;
-                font-size: 1.4rem;
-                overflow: hidden;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                line-clamp: 2;
-                -webkit-box-orient: vertical;
-                font-weight: 600;
-            }
-
-            .book-price {
-                font-size: 1.1rem;
-            }
+            text-align: center;
+            display: block;
+            margin-top: 0.4rem;
+            margin-bottom: 1rem;
         }
     }
 

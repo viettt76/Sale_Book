@@ -34,3 +34,11 @@ export const secondsConvertHoursAndMinutesAndSeconds = (seconds) => {
     const s = seconds % 60;
     return { h, m, s };
 };
+
+export const totalPayment = (payment, voucher = { type: '', value: 0 }) => {
+    if (voucher?.type === '%') {
+        return (Number(payment) * (100 - Number(voucher?.value))) / 100;
+    } else if (voucher?.type === 'VND') {
+        return Number(payment) - Number(voucher?.value);
+    }
+};

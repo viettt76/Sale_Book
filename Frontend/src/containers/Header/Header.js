@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCartShopping, faMagnifyingGlass, faHeart, faReceipt, faTicket } from '@fortawesome/free-solid-svg-icons';
+import { faCartShopping, faMagnifyingGlass, faReceipt, faTicket } from '@fortawesome/free-solid-svg-icons';
 import clsx from 'clsx';
 import styles from './Header.module.scss';
 import logo from '~/assets/imgs/VEdu.png';
@@ -26,6 +26,8 @@ const Header = () => {
                     title="Giỏ hàng"
                     type="cart"
                     icon={faCartShopping}
+                    textLinkWhenNotEmpty="Tới giỏ hàng"
+                    linkWhenNotEmpty="/cart"
                     textWhenEmpty="Giỏ hàng của bạn đang trống."
                     textLinkWhenEmpty="Tiếp tục mua sắm"
                     linkWhenEmpty="/"
@@ -48,15 +50,6 @@ const Header = () => {
                 />
                 <AccountAvatar className={clsx(styles['user-action'])} />
             </div>
-
-            {/* <div>
-            <Link
-                className={clsx('btn btn-dark font-weight-bold text-nowrap', styles['btn-login'])}
-                to="/login"
-            >
-                Đăng nhập
-            </Link>
-        </div> */}
         </div>
     );
 };

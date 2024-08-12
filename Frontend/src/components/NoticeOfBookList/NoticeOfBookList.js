@@ -7,7 +7,15 @@ import { Link } from 'react-router-dom';
 import { formatPrice } from '~/utils/commonUtils';
 import avatarDefault from '~/assets/imgs/avatar-default.png';
 
-const NoticeOfBookList = ({ title, icon, textWhenEmpty, textLinkWhenEmpty, linkWhenEmpty }) => {
+const NoticeOfBookList = ({
+    title,
+    icon,
+    textLinkWhenNotEmpty,
+    linkWhenNotEmpty,
+    textWhenEmpty,
+    textLinkWhenEmpty,
+    linkWhenEmpty,
+}) => {
     const [bookListState, setBookListState] = useState([]);
     const [showBookList, setShowBookList] = useState(false);
 
@@ -21,6 +29,78 @@ const NoticeOfBookList = ({ title, icon, textWhenEmpty, textLinkWhenEmpty, linkW
 
     useEffect(() => {
         setBookListState([
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
+            {
+                id: '1',
+                name: 'name',
+                img: 'img',
+                price: 2,
+            },
             {
                 id: '1',
                 name: 'name',
@@ -125,25 +205,38 @@ const NoticeOfBookList = ({ title, icon, textWhenEmpty, textLinkWhenEmpty, linkW
                         })}
                     >
                         <h5 className={clsx(styles['title'])}>{title}</h5>
-                        {bookListState.map((item, index) => {
-                            return (
-                                <ListGroup.Item key={`book-${index}`}>
-                                    <Link className={clsx(styles['book'])} to={`/book/${item?.id}`}>
-                                        <img
-                                            className={clsx(styles['book-img'])}
-                                            src={avatarDefault}
-                                            alt={item?.name}
-                                        />
-                                        <div>
-                                            <h5 className={clsx(styles['book-name'])}>{item?.name}</h5>
-                                            <span className={clsx(styles['book-price'])}>
-                                                {formatPrice(item?.price, 'VND')}
-                                            </span>
-                                        </div>
-                                    </Link>
-                                </ListGroup.Item>
-                            );
-                        })}
+                        <div className={clsx(styles['books'])}>
+                            {bookListState.map((item, index) => {
+                                return (
+                                    <ListGroup.Item key={`book-${index}`}>
+                                        <Link
+                                            onClick={() => setShowBookList(false)}
+                                            className={clsx(styles['book'])}
+                                            to={`/book/${item?.id}`}
+                                        >
+                                            <img
+                                                className={clsx(styles['book-img'])}
+                                                src={avatarDefault}
+                                                alt={item?.name}
+                                            />
+                                            <div>
+                                                <h5 className={clsx(styles['book-name'])}>{item?.name}</h5>
+                                                <span className={clsx(styles['book-price'])}>
+                                                    {formatPrice(item?.price, 'VND')}
+                                                </span>
+                                            </div>
+                                        </Link>
+                                    </ListGroup.Item>
+                                );
+                            })}
+                        </div>
+                        <Link
+                            onClick={() => setShowBookList(false)}
+                            className={clsx(styles['link-when-not-empty'])}
+                            to={linkWhenNotEmpty}
+                        >
+                            {textLinkWhenNotEmpty}
+                        </Link>
                     </ListGroup>
                 </div>
             ) : (

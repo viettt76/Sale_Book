@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -61,8 +61,6 @@ function Login() {
                 setValidatedFormLogin(true);
             } else {
                 const res = await loginService(loginInfo);
-                console.log(res.data.token);
-                
                 if (res?.data?.token) {
                     localStorage.setItem('token', res?.data.token);
                     navigate('/');
