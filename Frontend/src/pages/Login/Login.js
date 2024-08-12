@@ -7,9 +7,12 @@ import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import styles from './Login.module.scss';
 import customToastify from '~/utils/customToastify';
 import { getPersonalInfoService, loginService, signUpService } from '~/services/userServices';
+import { useDispatch } from 'react-redux';
+import * as actions from '~/redux/actions';
 
 function Login() {
     const navigate = useNavigate(null);
+    const dispatch = useDispatch();
 
     const [loginInfo, setLoginInfo] = useState({ username: '', password: '' });
     const [showPasswordLogin, setShowPasswordLogin] = useState(false);
@@ -21,11 +24,12 @@ function Login() {
     const usernameSignupRef = useRef(null);
 
     const [signUpInfo, setSignUpInfo] = useState({
-        lastName: '',
-        firstName: '',
         username: '',
+        email: '',
         password: '',
         confirmPassword: '',
+        address: '',
+        phoneNumber: '',
     });
 
     const [showFormSignUp, setShowFormSignUp] = useState(false);
@@ -103,20 +107,33 @@ function Login() {
                 setValidatedFormSignUp(true);
             } else {
                 await signUpService({
-                    lastName: signUpInfo.lastName,
-                    firstName: signUpInfo.firstName,
                     username: signUpInfo.username,
+                    email: signUpInfo.email,
                     password: signUpInfo.password,
+                    address: signUpInfo.address,
+                    phoneNumber: signUpInfo.phoneNumber,
                 });
+
+                const res = await getPersonalInfoService();
+                dispatch(
+                    actions.saveUserInfo({
+                        username: res?.data?.userName,
+                        email: res?.data?.email,
+                        isActive: res?.data?.isActive,
+                        phoneNumber: res?.data?.phoneNumber,
+                        address: res?.data?.address,
+                    }),
+                );
 
                 customToastify.success('Đăng ký tài khoản thành công!');
 
                 setSignUpInfo({
-                    lastName: '',
-                    firstName: '',
                     username: '',
+                    email: '',
                     password: '',
                     confirmPassword: '',
+                    address: '',
+                    phoneNumber: '',
                 });
 
                 setValidatedFormSignUp(false);
@@ -146,7 +163,7 @@ function Login() {
                             name="username"
                             className="fz-16"
                             type="text"
-                            placeholder="Username"
+                            placeholder="Tài khoản"
                             required
                             onKeyUp={handleEnterToLogin}
                             onChange={handleChangeFormLogin}
@@ -158,7 +175,7 @@ function Login() {
                             name="password"
                             className="fz-16"
                             type={showPasswordLogin ? 'text' : 'password'}
-                            placeholder="Password"
+                            placeholder="Mật khẩu"
                             required
                             onKeyUp={handleEnterToLogin}
                             onChange={handleChangeFormLogin}
@@ -202,30 +219,6 @@ function Login() {
                         </Modal.Header>
                         <Modal.Body>
                             <Form ref={signUpFormRef} noValidate validated={validatedFormSignUp}>
-                                <Row>
-                                    <Form.Group className="mb-3" as={Col} md="6">
-                                        <Form.Control
-                                            value={signUpInfo.lastName}
-                                            name="lastName"
-                                            className="fz-16"
-                                            placeholder="Họ"
-                                            required
-                                            onKeyUp={handleEnterToSignup}
-                                            onChange={handleChangeFormSignUp}
-                                        />
-                                    </Form.Group>
-                                    <Form.Group className="mb-3" as={Col} md="6">
-                                        <Form.Control
-                                            value={signUpInfo.firstName}
-                                            name="firstName"
-                                            className="fz-16"
-                                            placeholder="Tên"
-                                            required
-                                            onKeyUp={handleEnterToSignup}
-                                            onChange={handleChangeFormSignUp}
-                                        />
-                                    </Form.Group>
-                                </Row>
                                 <Form.Group className="mb-3" as={Col} md="12">
                                     <Form.Control
                                         ref={usernameSignupRef}
@@ -234,7 +227,7 @@ function Login() {
                                         className={clsx('fz-16', {
                                             [styles['invalid']]: usernameExisted.includes(signUpInfo.username),
                                         })}
-                                        placeholder="Username"
+                                        placeholder="Tài khoản"
                                         required
                                         onKeyUp={handleEnterToSignup}
                                         isInvalid={usernameExisted.includes(signUpInfo.username)}
@@ -246,6 +239,21 @@ function Login() {
                                         </Form.Control.Feedback>
                                     )}
                                 </Form.Group>
+                                <Form.Group className="mb-3" as={Col} md="12">
+                                    <Form.Control
+                                        value={signUpInfo.email}
+                                        name="email"
+                                        type="email"
+                                        className="fz-16"
+                                        placeholder="Email"
+                                        required
+                                        onKeyUp={handleEnterToSignup}
+                                        onChange={handleChangeFormSignUp}
+                                    />
+                                    <Form.Control.Feedback className="fz-16" type="invalid">
+                                        Email không hợp lệ
+                                    </Form.Control.Feedback>
+                                </Form.Group>
                                 <Form.Group className="mb-3 position-relative" as={Col} md="12">
                                     <Form.Control
                                         value={signUpInfo.password}
@@ -253,7 +261,7 @@ function Login() {
                                         type={showPasswordSignUp ? 'text' : 'password'}
                                         className="fz-16"
                                         minLength={6}
-                                        placeholder="Password"
+                                        placeholder="Mật khẩu"
                                         required
                                         onKeyUp={handleEnterToSignup}
                                         onChange={handleChangeFormSignUp}
@@ -282,7 +290,7 @@ function Login() {
                                         type={showPasswordSignUp ? 'text' : 'password'}
                                         className="fz-16"
                                         minLength={6}
-                                        placeholder="Confirm Password"
+                                        placeholder="Mật khẩu xác nhận"
                                         required
                                         onKeyUp={handleEnterToSignup}
                                         pattern={signUpInfo.password}
@@ -293,6 +301,34 @@ function Login() {
                                     />
                                     <Form.Control.Feedback className="fz-16" type="invalid">
                                         Mật khẩu xác nhận sai
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group className="mb-3" as={Col} md="12">
+                                    <Form.Control
+                                        value={signUpInfo.address}
+                                        name="address"
+                                        className="fz-16"
+                                        placeholder="Địa chỉ"
+                                        required
+                                        onKeyUp={handleEnterToSignup}
+                                        onChange={handleChangeFormSignUp}
+                                    />
+                                    <Form.Control.Feedback className="fz-16" type="invalid">
+                                        Địa chỉ không được để trống
+                                    </Form.Control.Feedback>
+                                </Form.Group>
+                                <Form.Group className="mb-3" as={Col} md="12">
+                                    <Form.Control
+                                        value={signUpInfo.phoneNumber}
+                                        name="phoneNumber"
+                                        className="fz-16"
+                                        placeholder="Số điện thoại"
+                                        required
+                                        onKeyUp={handleEnterToSignup}
+                                        onChange={handleChangeFormSignUp}
+                                    />
+                                    <Form.Control.Feedback className="fz-16" type="invalid">
+                                        Số điện thoại không được để trống
                                     </Form.Control.Feedback>
                                 </Form.Group>
                             </Form>

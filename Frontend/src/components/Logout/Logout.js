@@ -13,11 +13,12 @@ const Logout = () => {
         //     navigate('/');
         // }
         // window.location.reload();
+        localStorage.removeItem('token');
         navigate('/login');
     };
     return (
         <div onClick={handleLogout}>
-            <FontAwesomeIcon icon={faArrowRightFromBracket} /> Đăng xuất
+            <FontAwesomeIcon icon={faArrowRightFromBracket} /> <span className="fz-16">Đăng xuất</span>
         </div>
     );
 };
