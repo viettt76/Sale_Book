@@ -4,6 +4,7 @@
     {
         public int Id { get; set; }
         public int Percent { get; set; }
-        public bool Used { get; set; }
+
+        public ICollection<VoucherUser> VoucherUsers { get; set; }
     }
 }

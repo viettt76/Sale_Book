@@ -1,4 +1,5 @@
-﻿using BookStore.Bussiness.ViewModel.Review;
+﻿using BookStore.Bussiness.ViewModel.Author;
+using BookStore.Bussiness.ViewModel.Review;
 
 namespace BookStore.Bussiness.ViewModel.Book
 {
@@ -29,7 +30,9 @@ namespace BookStore.Bussiness.ViewModel.Book
 
         public DateTime PublishedAt { get; set; }
 
-        public List<string> AuthorName { get; set; }
+        public int TotalReviewNumber { get; set; }
+
+        public List<AuthorViewModel> Author { get; set; }
         public List<ReviewViewModel> Reviews { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using BookStore.Bussiness.ViewModel.BookAuthor;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
 using HealthcareAppointment.Data.Repositories;
+using System.Linq;
 
 namespace BookStore.Bussiness.Services
 {
@@ -96,20 +97,23 @@ namespace BookStore.Bussiness.Services
         {
             var vm = _mapper.Map<BookViewModel>(await _bookRepository.GetByIdAsync(id, includes));
 
-            vm.AuthorName = await _bookRepository.GetAuthorNamesByBookIdAsync(id);
+            // vm.AuthorName = await _bookRepository.GetAuthorNamesByBookIdAsync(id);
 
             return vm;
         }
 
-        public async Task<PaginationSet<BookViewModel>> Search(BookSpecification spec, PaginationParams pageParams)
+        public async Task<PaginationSet<BookViewModel>> Search(BookSpecification spec, PaginationParams pageParams, string[] includes = null)
         {
-            var entities = await _bookRepository.GetAllAsync();
+            var entities = await _bookRepository.GetAllAsync(includes);
 
             if (entities != null && spec != null)
             {
                 if (!string.IsNullOrEmpty(spec.Filter))
                 {
-                    entities = entities.Where(x => x.Title.ToLower().Contains(spec.Filter.ToLower()));
+                    entities = entities.Where(x => 
+                        x.Title.ToLower().Contains(spec.Filter.ToLower()) ||
+                        x.BookAuthors.Any(x => x.Author.FullName.Contains(spec.Filter))
+                    );
                 }
 
                 if (spec.AuthorId != null)
@@ -122,9 +126,9 @@ namespace BookStore.Bussiness.Services
                 //    entities = entities.Where(x => x.PublisherId == spec.PublisherId);
                 //}
 
-                if (spec.BookGroupId != null)
+                if (spec.BookGroupIds != null)
                 {
-                    entities = entities.Where(x => x.BookGroupId == spec.BookGroupId);
+                    entities = entities.Where(x => x.BookAuthors.Any(ba => spec.BookGroupIds.Contains(ba.AuthorId)));
                 }
 
                 entities = spec.Sorting switch

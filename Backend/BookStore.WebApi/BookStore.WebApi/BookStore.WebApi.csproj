@@ -38,8 +38,4 @@
 		<ProjectReference Include="..\BookStore.Models\BookStore.Models.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Folder Include="Models\" />
-	</ItemGroup>
-
 </Project>

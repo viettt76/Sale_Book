@@ -80,7 +80,7 @@ namespace BookStore.Bussiness.Services
 
         public async Task<IEnumerable<OrderViewModel>> GetOrder(OrderSpecification spec)
         {
-            var entities = await _orderRepository.GetAllAsync(new[] { "OrderItems" });
+            var entities = await _orderRepository.GetAllAsync(new[] { "OrderItems", "OrderItems.Book", "User" });
 
             if (spec != null)
             {
