@@ -2,6 +2,7 @@
 using BookStore.Datas.DbContexts;
 using BookStore.Models.Enums;
 using BookStore.Models.Models;
+using MailKit.Search;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -42,66 +43,85 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
+                var userName = _userManager.GetUserName(User);
+
                 if (type == "DAY")
                 {
-                    var rep = from o in _dbContext.Orders
-                              join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
-                              where o.Status == OrderStatusEnum.DaGiaoHang
-                              group new { oi, o } by o.Date.Day into g
-                              select new
-                              {
-                                  Key = g.Key,
-                                  NumberOfBookSold = g.Sum(x => x.oi.Quantity),
-                                  Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
-                              };
+                    //var rep = from o in _dbContext.Orders
+                    //          join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
+                    //          where o.Status == OrderStatusEnum.DaGiaoHang
+                    //          group new { oi, o } by o.Date.Day into g
+                    //          select new
+                    //          {
+                    //              Key = g.Key,
+                    //              NumberOfBookSold = g.Sum(x => x.oi.Quantity),
+                    //              Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
+                    //          };
 
-                    return Ok(rep.ToList());
+                    var result = from o in _dbContext.Orders
+                                 join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
+                                 from subOrder in orderGroup.DefaultIfEmpty()
+                                 group subOrder by o.Date into g
+                                 select new
+                                 {
+                                     Key = g.Key,
+                                     DateTime = g.Key,
+                                     Revenue = g.Sum(x => x.Order.TotalAmount),
+                                     NumberOfBookSold = g.Sum(x => x.Quantity)
+                                 };
+                   
+
+                    return Ok(result.ToList());
                 }
 
                 if (type == "MONTH")
                 {
-                    var rep = from o in _dbContext.Orders
-                              join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
-                              where o.Status == OrderStatusEnum.DaGiaoHang
-                              group new { oi, o } by o.Date.Month into g
-                              select new
-                              {
-                                  Key = g.Key,
-                                  NumberOfBookSold = g.Sum(x => x.oi.Quantity),
-                                  Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
-                              };
+                    var result = from o in _dbContext.Orders
+                                 join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
+                                 from subOrder in orderGroup.DefaultIfEmpty()
+                                 group subOrder by new { Year = o.Date.Year, Month = o.Date.Month } into g
+                                 select new
+                                 {
+                                     Key = g.Key.Month,
+                                     DateTime = g.Key.Year + "-" + g.Key.Month,
+                                     Revenue = g.Sum(x => x.Order.TotalAmount),
+                                     NumberOfBookSold = g.Sum(x => x.Quantity)
+                                 };
 
-                    return Ok(rep.ToList());
+                    return Ok(result.ToList());
                 }
 
                 if (type == "YEAR")
                 {
-                    var rep = from o in _dbContext.Orders
-                              join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
-                              where o.Status == OrderStatusEnum.DaGiaoHang
-                              group new { oi, o } by o.Date.Year into g
-                              select new
-                              {
-                                  Key = g.Key,
-                                  NumberOfBookSold = g.Sum(x => x.oi.Quantity),
-                                  Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
-                              };
+                    var result = from o in _dbContext.Orders
+                                 join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
+                                 from subOrder in orderGroup.DefaultIfEmpty()
+                                 group subOrder by o.Date.Year into g
+                                 select new
+                                 {
+                                     Key = g.Key,
+                                     DateTime = g.Key,
+                                     Revenue = g.Sum(x => x.Order.TotalAmount),
+                                     NumberOfBookSold = g.Sum(x => x.Quantity)
+                                 };
 
-                    return Ok(rep.ToList());
+                    return Ok(result.ToList());
                 }
 
-                var repDay = from o in _dbContext.Orders
-                          join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
-                          where o.Status == OrderStatusEnum.DaGiaoHang
-                          group new { oi, o } by o.Date.Day into g
-                          select new
-                          {
-                              Key = g.Key,
-                              NumberOfBookSold = g.Sum(x => x.oi.Quantity),
-                              Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
-                          };
+                // Nếu không thuộc các trường hợp trên thì sắp xếp theo ngày
+                var resultDefault = from o in _dbContext.Orders
+                             join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
+                             from subOrder in orderGroup.DefaultIfEmpty()
+                             group subOrder by o.Date into g
+                             select new
+                             {
+                                 Key = g.Key,
+                                 DateTime = g.Key,
+                                 Revenue = g.Sum(x => x.Order.TotalAmount),
+                                 NumberOfBookSold = g.Sum(x => x.Quantity)
+                             };
 
-                return Ok(repDay.ToList());
+                return Ok(resultDefault.ToList());
             }
             catch (Exception ex)
             {
