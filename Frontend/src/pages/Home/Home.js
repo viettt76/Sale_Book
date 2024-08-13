@@ -1,98 +1,43 @@
 import clsx from 'clsx';
 import GroupBooks from '~/components/GroupBooks';
-import avatarDefault from '~/assets/imgs/avatar-default.png';
 import styles from './Home.module.scss';
 import SearchByCategory from '~/components/SearchByCategory';
+import { useEffect, useState } from 'react';
+import { getBookPagingService } from '~/services/bookService';
 
 const Home = () => {
-    const groupBooks = [
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Toán',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Việt',
-            price: '120000',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Văn',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Quốc',
-            price: '450000',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Anh',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Việt',
-            price: '23000',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Địa',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Văn',
-            price: '56800',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Sử',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Huyền',
-            price: '285000',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Lý',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Trang',
-            price: '257000',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Hoá',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Long',
-            price: '560000',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Sinh',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Vũ',
-            price: '458000',
-        },
-        {
-            id: '1',
-            img: avatarDefault,
-            name: 'Pháp luật',
-            authorId: '1',
-            imgAuthor: avatarDefault,
-            nameAuthor: 'Linh',
-            price: '246000',
-        },
-    ];
+    const [groupBooks, setGroupBooks] = useState([]);
 
+    useEffect(() => {
+        const fetchGetBookMostReviews = async () => {
+            try {
+                const getTotalCount = await getBookPagingService({ pageNumber: 1, pageSize: 1, sortBy: 'rate' });
+                const totalCount = getTotalCount?.data?.totalCount;
+                const res = await getBookPagingService({ pageNumber: 1, pageSize: totalCount, sortBy: 'rate' });
+                setGroupBooks(
+                    res?.data?.datas
+                        ?.slice(-15)
+                        .reverse()
+                        ?.map((book) => {
+                            return {
+                                id: book?.id,
+                                img: book?.image,
+                                name: book?.title,
+                                nameAuthor: book?.author?.map((a) => a.fullName).join(', '),
+                                price: book?.price,
+                                rated: book?.rate,
+                            };
+                        }),
+                );
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchGetBookMostReviews();
+    }, []);
     return (
         <div className={clsx('container', styles['home-wrapper'])}>
-            <GroupBooks className={clsx(styles['group-books'])} title="Sách việt nam" groupBooks={groupBooks} />
-            <GroupBooks className={clsx(styles['group-books'])} title="Sách nước ngoài" groupBooks={groupBooks} />
+            <GroupBooks className={clsx(styles['group-books'])} title="Sách nổi bật" groupBooks={groupBooks} />
             <SearchByCategory />
         </div>
     );

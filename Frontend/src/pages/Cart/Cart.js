@@ -4,88 +4,22 @@ import avatar from '~/assets/imgs/avatar-default.png';
 import { formatPrice, totalPayment } from '~/utils/commonUtils';
 import { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
+import { cartSelector } from '~/redux/selectors';
 
 const Cart = () => {
-    const [cart, setCart] = useState([
-        {
-            id: 'abc',
-            name: 'The Great Gatsby',
-            genres: [1],
-            price: 200000,
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            quantity: 2,
-            image: avatar,
-        },
-        {
-            id: 'def',
-            name: 'The Gôd',
-            genres: [2],
-            price: 200000,
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            quantity: 2,
-            image: avatar,
-        },
-        {
-            id: 'a',
-            name: 'A',
-            genres: [4],
-            price: 200000,
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            quantity: 2,
-            image: avatar,
-        },
-        {
-            id: 'b',
-            name: 'B',
-            genres: [1, 2],
-            price: 150000,
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            quantity: 2,
-            image: avatar,
-        },
-        {
-            id: 'c',
-            name: 'AC',
-            genres: [1, 3],
-            price: 33000,
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            quantity: 2,
-            image: avatar,
-        },
-        {
-            id: 'd',
-            name: 'D',
-            genres: [2, 3, 4],
-            price: 200000,
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            quantity: 2,
-            image: avatar,
-        },
-    ]);
+    // {
+    //     id: 'd',
+    //     name: 'D',
+    //     genres: [2, 3, 4],
+    //     price: 200000,
+    //     rated: '4.5/5',
+    //     remaining: 20,
+    //     quantity: 2,
+    //     image: avatar,
+    // }
+    const cart = useSelector(cartSelector);
+    console.log(cart);
 
     const [checkedBook, setCheckedBook] = useState([]);
     const [totalPay, setTotalPay] = useState(0);

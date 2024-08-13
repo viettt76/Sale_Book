@@ -1,10 +1,11 @@
 import axios from '~/utils/axios';
 
-export const getBookPagingService = ({ pageNumber = 1, pageSize = 10 }) => {
-    return axios.get('/Book/get-all-paging', {
+export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy }) => {
+    return axios.get('/Book/search', {
         params: {
             pageNumber,
             pageSize,
+            sorting: sortBy,
         },
     });
 };
@@ -13,8 +14,16 @@ export const getBookByIdService = (id) => {
     return axios.get(`/Book/get-by-id/${id}`);
 };
 
+export const searchBookByNameOrAuthor = (keyword) => {
+    return axios.get('/Book/search', {
+        params: {
+            filter: keyword,
+        },
+    });
+};
+
 export const createBookService = (data) => {
-    return axios.post('/create-book', data);
+    return axios.post('/Book/create', data);
 };
 
 export const updateBookService = (data) => {

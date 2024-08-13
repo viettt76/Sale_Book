@@ -45,11 +45,9 @@ const GroupBooks = ({ title, groupBooks }) => {
                                 bookId={book?.id}
                                 img={book?.img}
                                 name={book?.name}
-                                authorId={book?.authorId}
-                                imgAuthor={book?.imgAuthor}
                                 nameAuthor={book?.nameAuthor}
-                                time={book?.time}
                                 price={book?.price}
+                                rated={book?.rated}
                             />
                         </div>
                     );

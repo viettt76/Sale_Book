@@ -5,9 +5,11 @@ import DefaultLayout from '~/layouts/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getPersonalInfoService } from './services/userServices';
+import { getPersonalInfoService } from '~/services/userServices';
 import * as actions from '~/redux/actions';
 import { useDispatch } from 'react-redux';
+import customToastify from '~/utils/customToastify';
+import { getCartService } from '~/services/cartService';
 
 const ScrollToTop = () => {
     const { pathname } = useLocation();
@@ -27,24 +29,36 @@ function FetchUserInfo() {
     useEffect(() => {
         const fetchGetPersonalInfo = async () => {
             try {
-                const res = await getPersonalInfoService();
+                const resUserInfo = await getPersonalInfoService();
                 dispatch(
                     actions.saveUserInfo({
-                        username: res?.data?.userName,
-                        email: res?.data?.email,
-                        role: res?.data?.role,
-                        phoneNumber: res?.data?.phoneNumber,
-                        address: res?.data?.address,
+                        id: resUserInfo?.data?.id,
+                        username: resUserInfo?.data?.userName,
+                        email: resUserInfo?.data?.email,
+                        role: resUserInfo?.data?.role,
+                        phoneNumber: resUserInfo?.data?.phoneNumber,
+                        address: resUserInfo?.data?.address,
                     }),
                 );
             } catch (error) {
+                customToastify.info('Bạn đã hết phiên đăng nhập');
                 localStorage.removeItem('token');
                 navigate('/login');
             }
         };
 
+        const fetchGetCart = async () => {
+            try {
+                const resCart = await getCartService();
+                dispatch(actions.addBooksToCart(resCart?.data?.cartItems));
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
         if (location.pathname !== '/login') {
             fetchGetPersonalInfo();
+            fetchGetCart();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -105,55 +119,3 @@ function App() {
 }
 
 export default App;
-
-// import { useState } from 'react';
-// import axios from 'axios';
-
-// function ImageUpload() {
-//     const [image, setImage] = useState(null);
-//     const [url, setUrl] = useState('');
-//     // Xử lý khi chọn file ảnh
-//     const handleImageChange = (e) => {
-//         setImage(e.target.files[0]);
-//     };
-
-//     // Hàm upload ảnh lên Cloudinary
-//     const handleUpload = async () => {
-//         let formData = new FormData();
-//         formData.append('api_key', import.meta.env.VITE_CLOUDINARY_KEY);
-//         formData.append('file', image);
-//         formData.append('public_id', `file_${Date.now()}`);
-//         formData.append('timestamp', (Date.now() / 1000) | 0);
-//         formData.append('upload_preset', 'ml_default');
-
-//         axios
-//             .post(import.meta.env.VITE_CLOUDINARY_URL, formData)
-//             .then((result) => {
-//                 console.log(result);
-//                 setUrl(result.data.secure_url);
-//             })
-//             .catch((err) => {
-//                 console.log(err);
-//             });
-
-//         // try {
-//         //     const response = await axios.post(
-//         //         ``, // Thay 'your_cloud_name' bằng Cloud Name của bạn
-//         //         formData,
-//         //     );
-//         //     setUrl(response.data.secure_url); // Lưu URL của ảnh vừa upload
-//         // } catch (error) {
-//         //     console.error('Error uploading image:', error);
-//         // }
-//     };
-
-//     return (
-//         <div>
-//             <input type="file" onChange={handleImageChange} />
-//             <button onClick={handleUpload}>Upload Image</button>
-//             {url && <img src={url} alt="Uploaded Image" />}
-//         </div>
-//     );
-// }
-
-// export default ImageUpload;

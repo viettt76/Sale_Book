@@ -79,6 +79,8 @@ const ManageUser = () => {
         });
     };
 
+    const [errorMessage, setErrorMessage] = useState('');
+
     const handleSubmitFormCreateUser = async (e) => {
         try {
             const form = createUserFormRef.current;
@@ -229,12 +231,13 @@ const ManageUser = () => {
                                 className="fz-16"
                                 minLength={6}
                                 placeholder="Mật khẩu"
+                                pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}"
                                 required
                                 onKeyUp={handleEnterToSignup}
                                 onChange={handleChangeFormCreateUser}
                             />
                             <Form.Control.Feedback className="fz-16" type="invalid">
-                                Mật khẩu ít nhất 6 ký tự
+                                Mật khẩu phải có ít nhất 6 ký tự, bao gồm chữ thường, chữ hoa, số và ký tự đặc biệt.
                             </Form.Control.Feedback>
                             {showPasswordCreateUser ? (
                                 <FontAwesomeIcon
@@ -291,11 +294,13 @@ const ManageUser = () => {
                                 className="fz-16"
                                 placeholder="Số điện thoại"
                                 required
+                                minLength="10"
+                                maxLength={10}
                                 onKeyUp={handleEnterToSignup}
                                 onChange={handleChangeFormCreateUser}
                             />
                             <Form.Control.Feedback className="fz-16" type="invalid">
-                                Số điện thoại không được để trống
+                                Số điện thoại phải là 10 số
                             </Form.Control.Feedback>
                         </Form.Group>
                     </Form>

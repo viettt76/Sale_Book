@@ -4,6 +4,7 @@ import Book from '../Book';
 import styles from './SearchByCategory.module.scss';
 import { getBookPagingService } from '~/services/bookService';
 import { getAllGenresService } from '~/services/genreService';
+import { Pagination } from 'react-bootstrap';
 
 const SearchByCategory = () => {
     const [genres, setGenres] = useState([]);
@@ -21,13 +22,15 @@ const SearchByCategory = () => {
     }, []);
 
     const [bookList, setBookList] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const fetchGetAllBook = async () => {
             try {
-                const res = await getBookPagingService({ pageNumber: 1, pageSize: 8 });
+                const res = await getBookPagingService({ pageNumber: currentPage, pageSize: 8 });
                 if (res?.data?.datas) {
-                    // const totalPage = res.data?.totalPage
+                    setTotalPages(res.data?.totalPage);
                     const data = res.data.datas;
                     const clone = data?.map((book) => {
                         return {
@@ -54,7 +57,7 @@ const SearchByCategory = () => {
             }
         };
         fetchGetAllBook();
-    }, []);
+    }, [currentPage]);
 
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [filteredBooks, setFilteredBooks] = useState(bookList);
@@ -69,6 +72,10 @@ const SearchByCategory = () => {
 
     const handleSearch = () => {
         setFilteredBooks(bookList.filter((book) => selectedCategories.some((genresId) => genresId === book.genres)));
+    };
+
+    const handleChangePage = (i) => {
+        setCurrentPage(i);
     };
 
     return (
@@ -107,6 +114,20 @@ const SearchByCategory = () => {
                         </div>
                     ))}
                 </ul>
+                <Pagination className="d-flex justify-content-center">
+                    {Array.from({ length: totalPages }, (_, i) => (i = i + 1))?.map((i) => {
+                        return (
+                            <Pagination.Item
+                                key={i}
+                                className={clsx(styles['page-number'])}
+                                active={i === currentPage}
+                                onClick={() => handleChangePage(i)}
+                            >
+                                {i}
+                            </Pagination.Item>
+                        );
+                    })}
+                </Pagination>
             </div>
         </div>
     );

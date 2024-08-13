@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import DatePicker from 'react-datepicker';
-import { createBookService, deleteBookService, getBookPagingService } from '~/services/bookService';
+import { createBookService, deleteBookService, getBookPagingService, updateBookService } from '~/services/bookService';
 import { getAllGenresService } from '~/services/genreService';
 import { getAllAuthorsService } from '~/services/authorService';
 import ReactQuill from 'react-quill';
@@ -65,9 +65,9 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
 
     const [bookInfo, setBookInfo] = useState({
         name: '',
-        genres: '',
+        genres: '1',
         price: '',
-        author: [],
+        authors: [],
         description: '',
         publicationDate: new Date(),
         totalPageNumber: '',
@@ -83,7 +83,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                 price: data?.price,
                 author: data?.authorName,
                 description: data?.description,
-                publicationDate: moment(data?.publicationDate).format('DD/MM/YYYY'),
+                publicationDate: data?.publicationDate,
                 totalPageNumber: data?.totalPageNumber,
                 remaining: data?.remaining,
                 image: data?.image,
@@ -131,28 +131,41 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                 formData.append('timestamp', (Date.now() / 1000) | 0);
                 formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
 
-                axios
-                    .post(import.meta.env.VITE_CLOUDINARY_URL, formData)
-                    .then((result) => {
-                        console.log(result);
-                        setBookInfo({
-                            ...bookInfo,
-                            image: result.data.secure_url,
-                        });
-                    })
-                    .catch((err) => {
-                        console.log(err);
-                    });
-
-                await createBookService({
+                const res = await axios.post(import.meta.env.VITE_CLOUDINARY_URL, formData);
+                const imgUrl = res.data?.secure_url;
+                setBookInfo({
                     ...bookInfo,
-                    image: null,
+                    image: imgUrl,
                 });
+
+                if (action === 'update-book') {
+                    await updateBookService({
+                        id: data?.id,
+                        title: bookInfo?.name,
+                        description: bookInfo?.description,
+                        image: imgUrl,
+                        price: Number(bookInfo?.price),
+                        totalPageNumber: Number(bookInfo?.totalPageNumber),
+                        bookGroupId: Number(bookInfo?.genres),
+                        publishedAt: bookInfo?.publicationDate,
+                        authorId: bookInfo?.authors,
+                    });
+                } else if (action === 'create-book') {
+                    await createBookService({
+                        title: bookInfo?.name,
+                        description: bookInfo?.description,
+                        image: imgUrl,
+                        price: Number(bookInfo?.price),
+                        totalPageNumber: Number(bookInfo?.totalPageNumber),
+                        bookGroupId: Number(bookInfo?.genres),
+                        publishedAt: bookInfo?.publicationDate,
+                        authorId: bookInfo?.authors,
+                    });
+                }
+                handleCloseModal();
             }
         } catch (error) {
             console.log(error);
-        } finally {
-            handleCloseModal();
         }
     };
 
@@ -173,7 +186,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             <Form.Control name="name" value={bookInfo.name} onChange={handleChangeForm} required />
                         </Col>
                     </Form.Group>
-                    {/* <Form.Group as={Row} className="mb-3 align-items-center">
+                    <Form.Group as={Row} className="mb-3 align-items-center">
                         <Form.Label column sm="2">
                             Tác giả
                         </Form.Label>
@@ -194,7 +207,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                                 }
                             />
                         </Col>
-                    </Form.Group> */}
+                    </Form.Group>
                     <Form.Group as={Row} className="mb-3 align-items-center">
                         <Form.Label column sm="2">
                             Thể loại
@@ -219,19 +232,17 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             <Form.Control name="price" value={bookInfo.price} onChange={handleChangeForm} required />
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
+                    <Form.Group as={Row} className="mb-3 ">
                         <Form.Label column sm="2">
                             Mô tả
                         </Form.Label>
                         <Col sm="10">
-                            <ReactQuill
+                            <Form.Control
+                                as="textarea"
+                                rows={3}
+                                name="description"
                                 value={bookInfo.description}
-                                onChange={(content) =>
-                                    setBookInfo((prev) => ({
-                                        ...prev,
-                                        description: content,
-                                    }))
-                                }
+                                onChange={handleChangeForm}
                             />
                         </Col>
                     </Form.Group>

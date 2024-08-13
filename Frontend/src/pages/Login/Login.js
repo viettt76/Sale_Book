@@ -9,6 +9,7 @@ import customToastify from '~/utils/customToastify';
 import { getPersonalInfoService, loginService, signUpService } from '~/services/userServices';
 import { useDispatch } from 'react-redux';
 import * as actions from '~/redux/actions';
+import { getCartService } from '~/services/cartService';
 
 function Login() {
     const navigate = useNavigate(null);
@@ -73,6 +74,7 @@ function Login() {
                             const res = await getPersonalInfoService();
                             dispatch(
                                 actions.saveUserInfo({
+                                    id: res?.data?.id,
                                     username: res?.data?.userName,
                                     email: res?.data?.email,
                                     role: res?.data?.role,
@@ -80,6 +82,8 @@ function Login() {
                                     address: res?.data?.address,
                                 }),
                             );
+                            const resCart = await getCartService();
+                            dispatch(actions.addBooksToCart(resCart?.data?.cartItems));
                         } catch (error) {
                             console.log(error);
                         }

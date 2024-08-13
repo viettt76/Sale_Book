@@ -1,18 +1,15 @@
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useLocation, useNavigate } from 'react-router-dom';
-// import { logoutService } from '~/services';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { clearUserInfo } from '~/redux/actions/';
 
 const Logout = () => {
     const navigate = useNavigate();
-    const location = useLocation();
+    const dispatch = useDispatch();
 
     const handleLogout = () => {
-        // logoutService();
-        // if (location.pathname !== '/') {
-        //     navigate('/');
-        // }
-        // window.location.reload();
+        dispatch(clearUserInfo());
         localStorage.removeItem('token');
         navigate('/login');
     };

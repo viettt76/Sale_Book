@@ -1,3 +1,5 @@
+@import '~/styles/variables';
+
 .book-img {
     width: 100%;
 }
@@ -139,5 +141,60 @@
 
     .intro-tab-content {
         font-size: 1.6rem;
+    }
+}
+
+.comment-list {
+    margin-top: 8rem;
+
+    .comment-list-title {
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .comment {
+        display: flex;
+        margin-top: 0.4rem;
+        position: relative;
+
+        & + .comment {
+            margin-top: 1.2rem;
+        }
+
+        .comment-avatar-date {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .commentator-avatar {
+                width: 3.2rem;
+                height: 3.2rem;
+                border-radius: 50%;
+            }
+
+            .comment-date {
+                font-size: 1.4rem;
+            }
+        }
+
+        .comment-info-wrapper {
+            margin-left: 0.6rem;
+
+            .commentator-name-comment-content {
+                background-color: $background-color-medium-gray;
+                padding: 0.8rem 1.2rem;
+                border-radius: 1.2rem;
+
+                .commentator-name {
+                    font-size: 1.3rem;
+                    font-weight: 500;
+                }
+
+                .comment-content {
+                    font-size: 1.5rem;
+                }
+            }
+        }
     }
 }

@@ -10,10 +10,15 @@ import styles from './BookDetails.module.scss';
 import { formatPrice } from '~/utils/commonUtils';
 import { getBookByIdService } from '~/services/bookService';
 import moment from 'moment';
+import { submitReviewService } from '~/services/reviewService';
+import { useSelector } from 'react-redux';
+import { userInfoSelector } from '~/redux/selectors';
 
 const BookDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+
+    const userInfo = useSelector(userInfoSelector);
 
     const [quantity, setQuantity] = useState(1);
 
@@ -39,35 +44,52 @@ const BookDetails = () => {
         numberOfReview: 0,
     });
 
-    useEffect(() => {
-        const fetchGetBookById = async () => {
-            try {
-                const res = await getBookByIdService(id);
-                if (res?.data) {
-                    setBookInfo({
-                        name: res.data?.title,
-                        description: res.data?.description,
-                        image: res.data?.image,
-                        price: res.data?.price,
-                        totalPageNumber: res.data?.totalPageNumber,
-                        rated: res.data?.rate,
-                        bookGroupId: res.data?.bookGroupId,
-                        bookGroupName: res.data?.bookGroupName,
-                        publishedAt: res.data?.publishedAt,
-                        authorName: res.data?.authorName,
-                        reviews: res.data?.reviews,
-                    });
-                }
-            } catch (error) {
-                console.log(error);
+    const fetchGetBookById = async () => {
+        try {
+            const res = await getBookByIdService(id);
+            if (res?.data) {
+                setBookInfo({
+                    name: res.data?.title,
+                    description: res.data?.description,
+                    image: res.data?.image,
+                    price: res.data?.price,
+                    totalPageNumber: res.data?.totalPageNumber,
+                    rated: res.data?.rate,
+                    bookGroupId: res.data?.bookGroupId,
+                    bookGroupName: res.data?.bookGroupName,
+                    publishedAt: res.data?.publishedAt,
+                    authorName: res.data?.authorName,
+                    reviews: res.data?.reviews,
+                });
             }
-        };
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
         fetchGetBookById();
     }, [id]);
 
     const handleSetQuantity = (e) => {
         if (!isNaN(e.target.value)) {
             setQuantity(e.target.value);
+        }
+    };
+
+    const handleReview = async () => {
+        try {
+            await submitReviewService({
+                date: new Date().toISOString(),
+                content: reviewContent,
+                userId: userInfo?.id,
+                rate: reviewRate,
+                bookId: id,
+            });
+            handleCloseModalReview();
+            fetchGetBookById();
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -170,7 +192,11 @@ const BookDetails = () => {
                                 </div>
                             </Modal.Body>
                             <Modal.Footer>
-                                <button disabled={reviewRate <= 0} className="btn btn-primary fz-16">
+                                <button
+                                    disabled={reviewRate <= 0}
+                                    className="btn btn-primary fz-16"
+                                    onClick={handleReview}
+                                >
                                     Gửi đánh giá
                                 </button>
                             </Modal.Footer>
@@ -194,6 +220,29 @@ const BookDetails = () => {
                         </Tab>
                     </Tabs>
                 </div>
+            </div>
+            <div className={clsx(styles['comment-list'])}>
+                <div className={clsx(styles['comment-list-title'])}>Đánh giá</div>
+                {bookInfo?.reviews?.map((review) => {
+                    const s = review?.userName?.split('@')[0] ? review?.userName?.split('@')[0] : review?.userName;
+                    const usernameDisplay = s.slice(0, 2) + '***' + s.slice(5);
+                    return (
+                        <div key={`review-${review?.id}`} className={clsx(styles['comment'])}>
+                            <div className={clsx(styles['comment-avatar-date'])}>
+                                <img className={clsx(styles['commentator-avatar'])} src={avatarDefault} />
+                                <div className={clsx(styles['comment-date'])}>
+                                    {moment(review?.date).format('DD/MM/YYYY')}
+                                </div>
+                            </div>
+                            <div className={clsx(styles['comment-info-wrapper'])}>
+                                <div className={clsx(styles['commentator-name-comment-content'])}>
+                                    <div className={clsx(styles['commentator-name'])}>{usernameDisplay}</div>
+                                    <div className={clsx(styles['comment-content'])}>{review?.content}</div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
         </Container>
     );

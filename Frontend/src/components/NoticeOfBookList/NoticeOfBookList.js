@@ -6,18 +6,23 @@ import { ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '~/utils/commonUtils';
 import avatarDefault from '~/assets/imgs/avatar-default.png';
+import { useSelector } from 'react-redux';
+import { cartSelector } from '~/redux/selectors';
 
 const NoticeOfBookList = ({
     title,
     icon,
+    type,
     textLinkWhenNotEmpty,
     linkWhenNotEmpty,
     textWhenEmpty,
     textLinkWhenEmpty,
     linkWhenEmpty,
 }) => {
-    const [bookListState, setBookListState] = useState([]);
+    const [bookList, setBookList] = useState([]);
     const [showBookList, setShowBookList] = useState(false);
+
+    const cart = useSelector(cartSelector);
 
     const ref = useRef(null);
 
@@ -28,160 +33,20 @@ const NoticeOfBookList = ({
     };
 
     useEffect(() => {
-        setBookListState([
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-            {
-                id: '1',
-                name: 'name',
-                img: 'img',
-                price: 2,
-            },
-        ]);
-    }, []);
-
-    // useEffect(() => {
-    //     const fetchBookList = async () => {
-    //         try {
-    //             let res, clone;
-    //             switch (type) {
-    //                 case 'favorites':
-    //                     res = await getFavoriteBookListService();
-    //                     if (!res?.errCode) {
-    //                         clone = res?.data?.map((book) => {
-    //                             return {
-    //                                 id: book?.bookId,
-    //                                 name: book?.likedBookInfo?.name,
-    //                                 img: book?.likedBookInfo?.img,
-    //                                 price: book?.likedBookInfo?.price,
-    //                             };
-    //                         });
-    //                     }
-    //                     break;
-    //                 case 'cart':
-    //                     res = await getBookCartService();
-    //                     if (!res?.errCode) {
-    //                         clone = res?.data?.map((book) => {
-    //                             return {
-    //                                 id: book?.bookId,
-    //                                 name: book?.bookCartInfo?.name,
-    //                                 img: book?.bookCartInfo?.img,
-    //                                 price: book?.bookCartInfo?.price,
-    //                             };
-    //                         });
-    //                     }
-    //                     break;
-    //                 case 'studying':
-    //                     res = await getPurchasedBookService();
-    //                     if (!res?.errCode) {
-    //                         clone = res?.data?.map((book) => {
-    //                             return {
-    //                                 id: book?.bookId,
-    //                                 name: book?.purchasedBookInfo?.name,
-    //                                 img: book?.purchasedBookInfo?.img,
-    //                                 price: book?.purchasedBookInfo?.price,
-    //                             };
-    //                         });
-    //                     }
-    //                     break;
-    //                 default:
-    //                     throw Error('Error from server');
-    //             }
-    //             setBookListState(clone);
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     };
-    //     fetchBookList();
-    // }, [type, showBookList]);
+        if (type === 'cart') {
+            setBookList(
+                cart?.map((c) => {
+                    return {
+                        id: c?.bookId,
+                        name: c?.bookName,
+                        img: c?.img,
+                        price: c?.bookPrice,
+                        quantity: c?.quantity,
+                    };
+                }),
+            );
+        }
+    }, [type, cart]);
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside, true);
@@ -197,7 +62,7 @@ const NoticeOfBookList = ({
                 className={clsx(styles['icon'])}
                 icon={icon}
             />
-            {bookListState?.length > 0 ? (
+            {bookList?.length > 0 ? (
                 <div>
                     <ListGroup
                         className={clsx(styles['group-books'], {
@@ -206,7 +71,7 @@ const NoticeOfBookList = ({
                     >
                         <h5 className={clsx(styles['title'])}>{title}</h5>
                         <div className={clsx(styles['books'])}>
-                            {bookListState?.map((item, index) => {
+                            {bookList?.map((item, index) => {
                                 return (
                                     <ListGroup.Item key={`book-${index}`}>
                                         <Link
