@@ -4,32 +4,16 @@ import clsx from 'clsx';
 import styles from './AccountAvatar.module.scss';
 import Logout from '~/components/Logout';
 import avatarDefault from '~/assets/imgs/avatar-default.png';
+import { useSelector } from 'react-redux';
+import { userInfoSelector } from '~/redux/selectors';
 
 const AccountAvatar = () => {
-    // const [userInfo, setUserInfo] = useState(null);
+    const userInfo = useSelector(userInfoSelector);
 
-    const menu = [[{ title: 'Đăng xuất', component: Logout }]];
+    const menu = [[{ title: 'Admin Page', link: '/admin' }], [{ title: 'Đăng xuất', component: Logout }]];
     const [showMenu, setShowMenu] = useState(false);
 
     const ref = useRef(null);
-
-    // useEffect(() => {
-    //     const fetchUserInfo = async () => {
-    //         try {
-    //             const res = await getPersonalInfoService();
-    //             if (!res?.errCode) {
-    //                 setUserInfo(res?.data);
-    //             } else {
-    //                 setUserInfo(null);
-    //             }
-    //         } catch (error) {
-    //             console.log(error);
-    //             setUserInfo(null);
-    //         }
-    //     };
-
-    //     fetchUserInfo();
-    // }, []);
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside, true);
@@ -56,7 +40,7 @@ const AccountAvatar = () => {
                     <div className={clsx(styles['menu-user-info'])}>
                         <img className={clsx('rounded-circle', styles['menu-avatar'])} src={avatarDefault} />
                         <div>
-                            <span className={clsx(styles['menu-user-name'])}>name</span>
+                            <span className={clsx(styles['menu-user-name'])}>{userInfo?.username}</span>
                         </div>
                     </div>
                     <ul className={clsx(styles['menu-section'])}>
