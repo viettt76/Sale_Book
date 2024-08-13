@@ -10,6 +10,7 @@ using BookStore.Bussiness.ViewModel.CartItem;
 using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Bussiness.ViewModel.OrderItem;
 using BookStore.Bussiness.ViewModel.Publisher;
+using BookStore.Bussiness.ViewModel.Report;
 using BookStore.Bussiness.ViewModel.Review;
 using BookStore.Models.Models;
 
@@ -59,6 +60,10 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<CartItem, CartItemViewModel>()
                 .ForMember(x => x.BookName, x => x.MapFrom(e => e.Book.Title))
                 .ForMember(x => x.BookPrice, x => x.MapFrom(e => e.Book.Price))
+<<<<<<< HEAD
+=======
+                .ForMember(x => x.BookImage, x => x.MapFrom(e => e.Book.Image))
+>>>>>>> 11075048ff0f24e43d1fa0ac6a6b5af00c0ea429
                 .ForMember(x => x.TotalPrice, x => x.MapFrom(e => e.Book.Price * e.Quantity));
             CreateMap<CartItemViewModel, CartItem>();
             CreateMap<CartItemCreateViewModel, CartItem>();
@@ -77,6 +82,10 @@ namespace BookStore.Bussiness.ObjectMapping
 
             CreateMap<OrderItem, OrderItemViewModel>()
                 .ForMember(x => x.BookName, x => x.MapFrom(e => e.Book.Title))
+<<<<<<< HEAD
+=======
+                .ForMember(x => x.BookImage, x => x.MapFrom(e => e.Book.Image))
+>>>>>>> 11075048ff0f24e43d1fa0ac6a6b5af00c0ea429
                 .ForMember(x => x.BookPrice, x => x.MapFrom(e => e.Book.Price));
             CreateMap<OrderItemViewModel, OrderItem>();
             CreateMap<OrderItemCreateViewModel, OrderItem>();
@@ -87,6 +96,9 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<ReviewViewModel, Review>();
             CreateMap<ReviewCreateViewModel, Review>();
             CreateMap<ReviewUpdateViewModel, Review>();
+
+            CreateMap<ReportViewModel, Report>();
+            CreateMap<Report, ReportViewModel>();
 
             CreateMap(typeof(PaginationList<>), typeof(PaginationList<>))
                 .ConvertUsing(typeof(PaginatedListConverter<,>));

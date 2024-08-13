@@ -7,5 +7,6 @@ namespace BookStore.Datas.Interfaces
     {
         Task<int> CancelledOrder(int id);
         Task<int> UpdateOrderStatus(int id, OrderStatusEnum orderStatus);
+        Task<IEnumerable<Order>> GetOrderUser(string userId, string[] includes);
     }
 }

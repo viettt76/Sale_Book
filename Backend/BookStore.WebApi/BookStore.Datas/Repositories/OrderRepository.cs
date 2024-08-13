@@ -3,6 +3,7 @@ using BookStore.Datas.Interfaces;
 using BookStore.Models.Enums;
 using BookStore.Models.Models;
 using HealthcareAppointment.Data.Repositories;
+using Microsoft.EntityFrameworkCore;
 
 namespace BookStore.Datas.Repositories
 {
@@ -30,6 +31,26 @@ namespace BookStore.Datas.Repositories
             order.Status = OrderStatusEnum.DaThanhToan;
 
             return await _dbContext.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Order>> GetOrderUser(string userId, string[] includes)
+        {
+            var orders = _dbContext.Orders.Where(x => x.UserId == userId).AsEnumerable();
+
+            if (includes != null && includes.Count() > 0)
+            {
+                var query = _dbContext.Orders.Include(includes.First());
+                foreach (var include in includes.Skip(1))
+                {
+                    query = query.Include(include);
+                }
+
+                query = query.Where(x => x.UserId == userId);
+
+                return query.ToList();
+            }
+
+            return orders;
         }
 
         public async Task<int> UpdateOrderStatus(int id, OrderStatusEnum orderStatus)

@@ -113,5 +113,24 @@ namespace BookStore.Bussiness.Services
         {
             return await _orderRepository.UpdateOrderStatus(id, statusOrder);
         }
+
+        public async Task<IEnumerable<OrderViewModel>> GetOrderUser(string userId, OrderSpecification spec, string[] includes)
+        {
+            var entities =  await _orderRepository.GetOrderUser(userId, includes);
+
+            if (spec != null)
+            {
+                if (spec.Status != Models.Enums.OrderStatusEnum.All)
+                    entities = entities.Where(x => x.Status == spec.Status);
+
+                entities = spec.Sorted switch
+                {
+                    "date" => entities.OrderBy(x => x.Date),
+                    _ => entities.OrderBy(x => x.Date),
+                };
+            }
+
+            return entities.Select(x => ChangeToViewModel(x)).ToList();
+        }
     }
 }

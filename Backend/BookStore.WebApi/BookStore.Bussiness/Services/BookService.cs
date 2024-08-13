@@ -8,6 +8,10 @@ using BookStore.Bussiness.ViewModel.BookAuthor;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
 using HealthcareAppointment.Data.Repositories;
+<<<<<<< HEAD
+=======
+using Microsoft.AspNetCore.Http.HttpResults;
+>>>>>>> 11075048ff0f24e43d1fa0ac6a6b5af00c0ea429
 using System.Linq;
 
 namespace BookStore.Bussiness.Services
@@ -68,6 +72,37 @@ namespace BookStore.Bussiness.Services
             var pagingList_map = _mapper.Map<PaginationList<BookViewModel>>(pagingList);
 
             return new PaginationSet<BookViewModel>(pageParams.PageNumber, pageParams.PageSize, pagingList_map.TotalCount, pagingList_map.TotalPage, pagingList_map);
+        }
+
+        public override async Task<int> UpdateAsync(int id, BookUpdateViewModel update)
+        {
+            var res = await _bookRepository.UpdateAsync(id, ChangeToEntity(update));
+
+            if (res == 0)
+                return 0;
+
+            var bookAuthor = await _bookAuthorRepository.GetAllBookAuthorByBookId(id);
+
+            var deletedBook = await _bookAuthorRepository.DeleteAllBookAuthorByBookId(id);
+
+            if (deletedBook == 0) 
+                return 0;
+
+            if (update.AuthorId != null && update.AuthorId.Count() > 0)
+            {
+                foreach (var item in update.AuthorId)
+                {
+                    var ba = new BookAuthorCreateViewModel
+                    {
+                        AuthorId = item,
+                        BookId = id
+                    };
+
+                    await _bookAuthorRepository.CreateAsync(_mapper.Map<BookAuthor>(ba));
+                }
+            }
+
+            return 1;
         }
 
         public override async Task<int> CreateAsync(BookCreateViewModel create)

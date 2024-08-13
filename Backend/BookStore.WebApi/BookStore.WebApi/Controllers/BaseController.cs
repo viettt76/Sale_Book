@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookStore.WebApi.Controllers
 {
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
     [ApiController]
     [Authorize(Roles = "Admin, User")]
     public class BaseController<TViewModel, TCreate, TUpdate> : ControllerBase where TViewModel : class where TCreate : class where TUpdate : class
@@ -31,7 +31,6 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpGet]
-        [Route("get-all")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -73,7 +72,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpGet]
-        [Route("get-all-paging")]
+        [Route("paging")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -114,7 +113,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpGet]
-        [Route("get-by-id/{id}")]
+        [Route("{id}")]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -152,7 +151,6 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpPost]
-        [Route("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -199,7 +197,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpPut]
-        [Route("update/{id}")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -246,7 +244,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpDelete]
-        [Route("delete/{id}")]
+        [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]

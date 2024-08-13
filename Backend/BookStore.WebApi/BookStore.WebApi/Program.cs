@@ -248,6 +248,8 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IReviewService, ReviewService>();
                 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
+                builder.Services.AddScoped<IReportRepository, ReportRepository>();
+                builder.Services.AddScoped<IReportService, ReportService>();
                 #endregion
 
                 var app = builder.Build();

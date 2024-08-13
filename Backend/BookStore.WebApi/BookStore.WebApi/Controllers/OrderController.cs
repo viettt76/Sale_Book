@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BookStore.WebApi.Controllers
 {
     [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
     [ApiController]
     [Authorize]
     public class OrderController : ControllerBase
@@ -43,7 +43,7 @@ namespace BookStore.WebApi.Controllers
         /// Sorted: mặc định sắp xếp theo ngày
         /// </remarks>
         [HttpGet]
-        [Route("get-order")]
+        [Route("all-order")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -54,6 +54,32 @@ namespace BookStore.WebApi.Controllers
             try
             {
                 var res = await _orderService.GetOrder(spec);
+
+                if (res == null)
+                    return BadRequest();
+
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("order-of-user")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetUserOrder([FromQuery] OrderSpecification spec)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+
+                var res = await _orderService.GetOrderUser(userId, spec, new[] {"OrderItems", "OrderItems.Book", "User"});
 
                 if (res == null)
                     return BadRequest();
