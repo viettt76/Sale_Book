@@ -20,6 +20,9 @@ using BookStore.Datas.Interfaces;
 using BookStore.Datas.Repositories;
 using AutoMapper;
 using System.Reflection;
+using CloudinaryDotNet;
+using static Org.BouncyCastle.Math.EC.ECCurve;
+using BookStore.WebApi.Models;
 
 namespace BookStore.WebApi
 {
@@ -138,6 +141,12 @@ namespace BookStore.WebApi
                     .EnableSensitiveDataLogging();
                 });
 
+                #region Cloudinary
+                //var cloudinarySettings = builder.Configuration.GetSection("Cloudinary").Get<CloudinarySetings>();
+                //var cloudinary = new Cloudinary(new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret));
+                //builder.Services.AddSingleton(cloudinary);
+                #endregion
+
                 #region Config identity
                 builder.Services.AddIdentity<User, IdentityRole>(options =>
                 {
@@ -228,6 +237,8 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IBookAuthorService, BookAuthorService>();
                 builder.Services.AddScoped<IBookGroupRepository, BookGroupRepository>();
                 builder.Services.AddScoped<IBookGroupService, BookGroupService>();
+                builder.Services.AddScoped<ICartItemRepository, CartItemRepository>();
+                builder.Services.AddScoped<ICartItemService, CartItemService>();
                 builder.Services.AddScoped<ICartRepository, CartRepository>();
                 builder.Services.AddScoped<ICartService, CartService>();
                 builder.Services.AddScoped<IOrderRepository, OrderRepository>();

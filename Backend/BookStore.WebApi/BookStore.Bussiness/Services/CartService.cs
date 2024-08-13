@@ -18,6 +18,11 @@ namespace BookStore.Bussiness.Services
             _mapper = mapper;
         }
 
+        public async Task<CartViewModel> GetCartByUserId(string userId, string[] includes = null)
+        {
+            return ChangeToViewModel(await _cartRepository.GetCartByUserId(userId, includes));
+        }
+
         public async Task<int> UpdateQuantity(int id, int quantity)
         {
             return await _cartRepository.UpdateQuantity(id, quantity);

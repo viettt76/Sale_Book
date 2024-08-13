@@ -6,6 +6,7 @@ using BookStore.Bussiness.ViewModel.Book;
 using BookStore.Bussiness.ViewModel.BookAuthor;
 using BookStore.Bussiness.ViewModel.BookGroup;
 using BookStore.Bussiness.ViewModel.Cart;
+using BookStore.Bussiness.ViewModel.CartItem;
 using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Bussiness.ViewModel.OrderItem;
 using BookStore.Bussiness.ViewModel.Publisher;
@@ -29,7 +30,10 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<AuthorUpdateViewModel, Author>();
 
             CreateMap<Book, BookViewModel>()
-                .ForMember(x => x.BookGroupName, s => s.MapFrom(x => x.BookGroup.Name));
+                .ForMember(x => x.BookGroupName, s => s.MapFrom(x => x.BookGroup.Name))
+                .ForMember(x => x.Author, s => s.MapFrom(x => x.BookAuthors.Select(x => x.Author)))
+                .ForMember(x => x.TotalReviewNumber, s => s.MapFrom(x => x.Reviews.Count()));
+                // .ForMember(x => x.AuthorName, s => s.MapFrom(x => x.BookAuthors.Select(a => a.Author.FullName)));
                 //.ForMember(x => x.PublisherName, s => s.MapFrom(x => x.Publisher.Name));
             CreateMap<BookViewModel, Book>();
             CreateMap<BookCreateViewModel, Book>();
@@ -45,12 +49,20 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<BookAuthorCreateViewModel, BookAuthor>();
             CreateMap<BookAuthorUpdateViewModel, BookAuthor>();
 
-            CreateMap<Cart, CartViewModel>()
-                .ForMember(x => x.BookName, x => x.MapFrom(e => e.Book.Title))
-                .ForMember(x => x.BookPrice, x => x.MapFrom(e => e.Book.Price));
+            CreateMap<Cart, CartViewModel>();
+                //.ForMember(x => x.BookName, x => x.MapFrom(e => e.Book.Title))
+                //.ForMember(x => x.BookPrice, x => x.MapFrom(e => e.Book.Price));
             CreateMap<CartViewModel, Cart>();
             CreateMap<CartCreateViewModel, Cart>();
             CreateMap<CartUpdateViewModel, Cart>();
+
+            CreateMap<CartItem, CartItemViewModel>()
+                .ForMember(x => x.BookName, x => x.MapFrom(e => e.Book.Title))
+                .ForMember(x => x.BookPrice, x => x.MapFrom(e => e.Book.Price))
+                .ForMember(x => x.TotalPrice, x => x.MapFrom(e => e.Book.Price * e.Quantity));
+            CreateMap<CartItemViewModel, CartItem>();
+            CreateMap<CartItemCreateViewModel, CartItem>();
+            CreateMap<CartItemUpdateViewModel, CartItem>();
 
             CreateMap<User, UserViewModel>();
             CreateMap<UserCreateViewModel, User>();
@@ -63,12 +75,15 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<OrderCreateViewModel, Order>();
             CreateMap<OrderUpdateViewModel, Order>();
 
-            CreateMap<OrderItem, OrderItemViewModel>();
+            CreateMap<OrderItem, OrderItemViewModel>()
+                .ForMember(x => x.BookName, x => x.MapFrom(e => e.Book.Title))
+                .ForMember(x => x.BookPrice, x => x.MapFrom(e => e.Book.Price));
             CreateMap<OrderItemViewModel, OrderItem>();
             CreateMap<OrderItemCreateViewModel, OrderItem>();
             CreateMap<OrderItemUpdateViewModel, OrderItem>();
 
-            CreateMap<Review, ReviewViewModel>();
+            CreateMap<Review, ReviewViewModel>()
+                .ForMember(x => x.UserName, x=> x.MapFrom(s => s.User.UserName));
             CreateMap<ReviewViewModel, Review>();
             CreateMap<ReviewCreateViewModel, Review>();
             CreateMap<ReviewUpdateViewModel, Review>();

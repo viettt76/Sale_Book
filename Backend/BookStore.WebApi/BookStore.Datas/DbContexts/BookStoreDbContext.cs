@@ -18,10 +18,12 @@ namespace BookStore.Datas.DbContexts
         public DbSet<Author> Authors { get; set; }
         public DbSet<BookAuthor> BookAuthors { get; set; }
         public DbSet<Cart> Carts { get; set; }
+        public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Voucher> Vouchers { get; set; }
+        public DbSet<VoucherUser> VoucherUsers { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -42,6 +44,19 @@ namespace BookStore.Datas.DbContexts
                 .HasOne<Author>(x => x.Author)
                 .WithMany(x => x.BookAuthors)
                 .HasForeignKey(x => x.AuthorId);
+
+            modelBuilder.Entity<VoucherUser>()
+                .HasKey(x => new { x.VoucherId, x.UserId });
+
+            modelBuilder.Entity<VoucherUser>()
+                .HasOne<Voucher>(x => x.Voucher)
+                .WithMany(x => x.VoucherUsers)
+                .HasForeignKey(x => x.VoucherId);
+
+            modelBuilder.Entity<VoucherUser>()
+                .HasOne<User>(x => x.User)
+                .WithMany(x => x.VoucherUsers)
+                .HasForeignKey(x => x.UserId);
 
             base.OnModelCreating(modelBuilder);
 

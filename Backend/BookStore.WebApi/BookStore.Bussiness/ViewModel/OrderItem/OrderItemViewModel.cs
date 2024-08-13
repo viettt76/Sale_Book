@@ -14,7 +14,8 @@ namespace BookStore.Bussiness.ViewModel.OrderItem
         public int Id { get; set; }
         public int OrderId { get; set; }
         public int BookId { get; set; }
-        public decimal Price { get; set; }
+        public string BookName { get; set; }
+        public decimal BookPrice { get; set; }
         public int Quantity { get; set; }
     }
 }

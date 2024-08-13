@@ -19,7 +19,7 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                var res = await _bookService.GetAllPagingAsync(spec, pageParams, new[] { "BookGroup", "Reviews" } );
+                var res = await _bookService.GetAllPagingAsync(spec, pageParams, new[] { "BookGroup", "Reviews", "BookAuthors.Author", "Reviews.User" } );
 
                 if (res == null)
                 {
@@ -38,7 +38,7 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                var res = await _bookService.GetByIdAsync(id, new[] { "BookGroup", "Reviews" });
+                var res = await _bookService.GetByIdAsync(id, new[] { "BookGroup", "Reviews", "BookAuthors.Author", "Reviews.User" });
 
                 if (res == null)
                 {
@@ -54,7 +54,7 @@ namespace BookStore.WebApi.Controllers
         }
 
         /// <summary>
-        /// Tìm kiếm sách
+        /// Tìm kiếm sách ( Search = Get-All + Get-All-Paging )
         /// </summary>
         /// <param name="spec"></param>
         /// <param name="pageParams"></param>
@@ -74,7 +74,7 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {                
-                var res = await _bookService.Search(spec, pageParams);
+                var res = await _bookService.Search(spec, pageParams, new[] { "BookGroup", "Reviews", "BookAuthors.Author", "Reviews.User" });
 
                 if (res == null || res.Datas == null || res.Datas.Count() == 0)
                     return NotFound("Không tìm thấy!");

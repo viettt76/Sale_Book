@@ -6,6 +6,6 @@ namespace BookStore.Bussiness.Interfaces
 {
     public interface IBookService : IBaseService<BookViewModel, BookCreateViewModel, BookUpdateViewModel>
     {
-        Task<PaginationSet<BookViewModel>> Search(BookSpecification spec, PaginationParams pageParams);
+        Task<PaginationSet<BookViewModel>> Search(BookSpecification spec, PaginationParams pageParams, string[] includes = null);
     }
 }

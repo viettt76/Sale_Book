@@ -6,5 +6,8 @@ namespace BookStore.Models.Models
     {
         public string? Address { get; set; }
         public bool IsActive { get; set; } = true;
+
+        public ICollection<VoucherUser> VoucherUsers { get; set; }
+
     }
 }
