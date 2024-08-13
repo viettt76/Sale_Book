@@ -12,11 +12,8 @@ namespace BookStore.Bussiness.ViewModel.CartItem
 
         public string BookName { get; set; }
 
-<<<<<<< HEAD
-=======
         public string BookImage { get; set; }
 
->>>>>>> 11075048ff0f24e43d1fa0ac6a6b5af00c0ea429
         public decimal BookPrice { get; set; }
 
         public int Quantity { get; set; }

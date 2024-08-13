@@ -28,7 +28,7 @@ namespace BookStore.WebApi.Controllers
         }
 
         /// <summary>
-        /// Hiển thị các đơn hàng của user
+        /// Hiển thị các đơn hàng của tất cả user
         /// </summary>
         /// <param name="spec"></param>
         /// <returns></returns>

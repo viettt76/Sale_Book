@@ -31,7 +31,7 @@ namespace BookStore.WebApi.Controllers
         }
 
         [HttpGet]
-        [Route("get-cart")]
+        [Route("carts")]
         public async Task<IActionResult> GetCart ()
         {
             try

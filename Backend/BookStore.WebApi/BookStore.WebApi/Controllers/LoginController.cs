@@ -45,20 +45,13 @@ namespace BookStore.WebApi.Controllers
         /// </param>
         /// <returns></returns>
         /// <remarks>
-<<<<<<< HEAD
-=======
         /// Sample request:
         /// 
->>>>>>> 11075048ff0f24e43d1fa0ac6a6b5af00c0ea429
         ///     POST /api/v1.0/Login/login
         ///     
         ///     {
         ///         "userName": "admin@example.com",
-<<<<<<< HEAD
         ///         "password": "@Abc123456"
-=======
-        ///         "password": "@Abc123456",
->>>>>>> 11075048ff0f24e43d1fa0ac6a6b5af00c0ea429
         ///     }
         /// 
         /// </remarks>

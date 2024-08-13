@@ -42,9 +42,55 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                //var res = await _reportService.GetReport(day, month, year, _userManager.GetUserName(User));
+                if (type == "DAY")
+                {
+                    var rep = from o in _dbContext.Orders
+                              join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
+                              where o.Status == OrderStatusEnum.DaGiaoHang
+                              group new { oi, o } by o.Date.Day into g
+                              select new
+                              {
+                                  Key = g.Key,
+                                  NumberOfBookSold = g.Sum(x => x.oi.Quantity),
+                                  Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
+                              };
 
-                var rep = from o in _dbContext.Orders
+                    return Ok(rep.ToList());
+                }
+
+                if (type == "MONTH")
+                {
+                    var rep = from o in _dbContext.Orders
+                              join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
+                              where o.Status == OrderStatusEnum.DaGiaoHang
+                              group new { oi, o } by o.Date.Month into g
+                              select new
+                              {
+                                  Key = g.Key,
+                                  NumberOfBookSold = g.Sum(x => x.oi.Quantity),
+                                  Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
+                              };
+
+                    return Ok(rep.ToList());
+                }
+
+                if (type == "YEAR")
+                {
+                    var rep = from o in _dbContext.Orders
+                              join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
+                              where o.Status == OrderStatusEnum.DaGiaoHang
+                              group new { oi, o } by o.Date.Year into g
+                              select new
+                              {
+                                  Key = g.Key,
+                                  NumberOfBookSold = g.Sum(x => x.oi.Quantity),
+                                  Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
+                              };
+
+                    return Ok(rep.ToList());
+                }
+
+                var repDay = from o in _dbContext.Orders
                           join oi in _dbContext.OrderItems on o.Id equals oi.OrderId
                           where o.Status == OrderStatusEnum.DaGiaoHang
                           group new { oi, o } by o.Date.Day into g
@@ -55,7 +101,7 @@ namespace BookStore.WebApi.Controllers
                               Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
                           };
 
-                return Ok(rep.ToList());
+                return Ok(repDay.ToList());
             }
             catch (Exception ex)
             {

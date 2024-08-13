@@ -7,12 +7,6 @@ using BookStore.Bussiness.ViewModel.Book;
 using BookStore.Bussiness.ViewModel.BookAuthor;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Models;
-using HealthcareAppointment.Data.Repositories;
-<<<<<<< HEAD
-=======
-using Microsoft.AspNetCore.Http.HttpResults;
->>>>>>> 11075048ff0f24e43d1fa0ac6a6b5af00c0ea429
-using System.Linq;
 
 namespace BookStore.Bussiness.Services
 {
