@@ -65,7 +65,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpGet]
-        [Route("search")]
+        [Route("searching")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

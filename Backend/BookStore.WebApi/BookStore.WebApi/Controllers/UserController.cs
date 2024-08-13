@@ -40,7 +40,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpGet]
-        [Route("get-all-user")]
+        [Route("all-user")]
         [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -97,7 +97,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
         [HttpGet]
-        [Route("get-user-info")]
+        [Route("user-info")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -144,7 +144,6 @@ namespace BookStore.WebApi.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route("create")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -163,10 +162,10 @@ namespace BookStore.WebApi.Controllers
 
                 if (!userResult.Succeeded)
                 {
-                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, "Tạo mới tài khoản người dùng không thành công!"));
+                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, userResult.Errors.ToList()));
                 }
 
-                await _userManager.AddToRoleAsync(user, uservm.Role);
+                var roleResult = await _userManager.AddToRoleAsync(user, uservm.Role);
 
                 return Ok();
             }

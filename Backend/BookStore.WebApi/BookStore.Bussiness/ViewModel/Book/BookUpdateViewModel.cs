@@ -33,6 +33,6 @@ namespace BookStore.Bussiness.ViewModel.Book
 
         public DateTime PublishedAt { get; set; }
 
-        public int AuthorId { get; set; }
+        public List<int> AuthorId { get; set; }
     }
 }

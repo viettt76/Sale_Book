@@ -12,6 +12,8 @@ namespace BookStore.Bussiness.ViewModel.CartItem
 
         public string BookName { get; set; }
 
+        public string BookImage { get; set; }
+
         public decimal BookPrice { get; set; }
 
         public int Quantity { get; set; }
