@@ -5,6 +5,7 @@ import ManageUser from './ManageUser';
 import ManageBook from './ManageBook';
 import ManageAuthor from './ManageAuthor';
 import Statistic from './Statistic';
+import ManageGenre from './ManageGenre';
 
 const AdminPage = () => {
     return (
@@ -27,6 +28,11 @@ const AdminPage = () => {
                         </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
+                        <Nav.Link style={{ fontSize: '2rem' }} eventKey="manage-genre">
+                            Management Genre
+                        </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
                         <Nav.Link style={{ fontSize: '2rem' }} eventKey="statistic">
                             Statistic
                         </Nav.Link>
@@ -41,6 +47,9 @@ const AdminPage = () => {
                     </Tab.Pane>
                     <Tab.Pane eventKey="manage-author">
                         <ManageAuthor />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="manage-genre">
+                        <ManageGenre />
                     </Tab.Pane>
                     <Tab.Pane eventKey="statistic">
                         <Statistic />

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Container, Modal, Tab, Tabs } from 'react-bootstrap';
 import { faStarHalfStroke, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
@@ -8,6 +8,8 @@ import clsx from 'clsx';
 import avatarDefault from '~/assets/imgs/avatar-default.png';
 import styles from './BookDetails.module.scss';
 import { formatPrice } from '~/utils/commonUtils';
+import { getBookByIdService } from '~/services/bookService';
+import moment from 'moment';
 
 const BookDetails = () => {
     const { id } = useParams();
@@ -22,17 +24,46 @@ const BookDetails = () => {
     const handleCloseModalReview = () => setShowModalReview(false);
     const handleShowModalReview = () => setShowModalReview(true);
 
-    const bookInfo = {
-        id: '1',
-        img: avatarDefault,
-        name: 'Toán',
-        authorId: '1',
-        imgAuthor: avatarDefault,
-        nameAuthor: 'Việt',
-        price: '120000',
-        rated: 3.5,
-        numberOfReview: 182,
-    };
+    const [bookInfo, setBookInfo] = useState({
+        name: '',
+        description: '',
+        image: '',
+        price: 0,
+        totalPageNumber: '',
+        rated: '',
+        bookGroupId: '',
+        bookGroupName: '',
+        publishedAt: '',
+        authorName: [],
+        reviews: [],
+        numberOfReview: 0,
+    });
+
+    useEffect(() => {
+        const fetchGetBookById = async () => {
+            try {
+                const res = await getBookByIdService(id);
+                if (res?.data) {
+                    setBookInfo({
+                        name: res.data?.title,
+                        description: res.data?.description,
+                        image: res.data?.image,
+                        price: res.data?.price,
+                        totalPageNumber: res.data?.totalPageNumber,
+                        rated: res.data?.rate,
+                        bookGroupId: res.data?.bookGroupId,
+                        bookGroupName: res.data?.bookGroupName,
+                        publishedAt: res.data?.publishedAt,
+                        authorName: res.data?.authorName,
+                        reviews: res.data?.reviews,
+                    });
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchGetBookById();
+    }, [id]);
 
     const handleSetQuantity = (e) => {
         if (!isNaN(e.target.value)) {
@@ -45,7 +76,7 @@ const BookDetails = () => {
             <div>
                 <div className="row">
                     <div className="col-5">
-                        <img className={clsx(styles['book-img'])} src={avatarDefault} />
+                        <img className={clsx(styles['book-img'])} src={bookInfo?.image} />
                     </div>
                     <div className={clsx('col-7', styles['buy-book'])}>
                         <h3 className={clsx(styles['book-name'])}>{bookInfo?.name}</h3>
@@ -62,7 +93,9 @@ const BookDetails = () => {
                                     <FontAwesomeIcon key={`number-of-rates-reject-${i}`} icon={faStarRegular} />
                                 ))}
                             </div>
-                            <div className={clsx(styles['number-of-reviews'])}>{bookInfo?.numberOfReview} đánh giá</div>
+                            <div className={clsx(styles['number-of-reviews'])}>
+                                {bookInfo?.numberOfReview || 0} đánh giá
+                            </div>
                         </div>
                         <div className={clsx(styles['book-price'])}>
                             {formatPrice(bookInfo?.price * quantity, 'VND')}
@@ -148,19 +181,16 @@ const BookDetails = () => {
                     <h6 className={clsx(styles['book-introduction-title'])}>Giới thiệu sách</h6>
                     <Tabs defaultActiveKey="describe" id="uncontrolled-tab-example" className="mb-3">
                         <Tab eventKey="describe" title="Mô tả sách">
-                            <div className={clsx(styles['intro-tab-content'])}>Mô tả sách</div>
-                        </Tab>
-                        <Tab eventKey="table-of-contents" title="Mục lục">
-                            <div className={clsx(styles['intro-tab-content'])}>Mục lục</div>
-                        </Tab>
-                        <Tab eventKey="readership" title="Đối tượng độc giả">
-                            <div className={clsx(styles['intro-tab-content'])}>Đối tượng độc giả</div>
+                            <div className={clsx(styles['intro-tab-content'])}>{bookInfo?.description}</div>
                         </Tab>
                         <Tab eventKey="author" title="Tác giả">
-                            <div className={clsx(styles['intro-tab-content'])}>Tác giả</div>
+                            <div className={clsx(styles['intro-tab-content'])}>{bookInfo?.authorName?.join(', ')}</div>
                         </Tab>
                         <Tab eventKey="other-info" title="Thông tin khác">
-                            <div className={clsx(styles['intro-tab-content'])}>Thông tin khác</div>
+                            <div className={clsx(styles['intro-tab-content'])}>
+                                <div>Tổng số trang: {bookInfo?.totalPageNumber}</div>
+                                <div>Ngày xuất bản: {moment(bookInfo?.publishedAt).format('DD/MM/YYYY')}</div>
+                            </div>
                         </Tab>
                     </Tabs>
                 </div>

@@ -3,7 +3,7 @@ import { SAVE_USER_INFO } from '../actions/userActions';
 const initialState = {
     username: null,
     email: null,
-    isActive: null,
+    role: null,
     address: null,
     phoneNumber: null,
 };
@@ -15,7 +15,7 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 username: action.payload?.username,
                 email: action.payload?.email,
-                isActive: action.payload?.isActive,
+                role: action.payload?.role,
                 address: action.payload?.address,
                 phoneNumber: action.payload?.phoneNumber,
             };

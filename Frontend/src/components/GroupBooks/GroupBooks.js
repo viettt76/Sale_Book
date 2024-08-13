@@ -38,7 +38,7 @@ const GroupBooks = ({ title, groupBooks }) => {
         >
             <h3 className={clsx(styles['title'])}>{title}</h3>
             <Slider {...settings}>
-                {groupBooks.map((book, index) => {
+                {groupBooks?.map((book, index) => {
                     return (
                         <div key={`book-${index}`}>
                             <Book

@@ -1,18 +1,24 @@
-import { Modal, Button, Row, Col, Form } from 'react-bootstrap';
-import avatar from '~/assets/imgs/avatar-default.png';
+import { Modal, Button, Row, Col, Form, Pagination } from 'react-bootstrap';
 import { useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import DatePicker from 'react-datepicker';
-import { createBookService, getGenresService } from '~/services/bookService';
+import { createBookService, deleteBookService, getBookPagingService } from '~/services/bookService';
+import { getAllGenresService } from '~/services/genreService';
+import { getAllAuthorsService } from '~/services/authorService';
 import ReactQuill from 'react-quill';
+import clsx from 'clsx';
+import styles from './AdminPage.module.scss';
+import moment from 'moment';
+import customToastify from '~/utils/customToastify';
+import axios from 'axios';
 
 const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
     const [genres, setGenres] = useState([]);
     useEffect(() => {
         const fetchGetGenres = async () => {
             try {
-                const res = await getGenresService();
+                const res = await getAllGenresService();
                 if (res.data) {
                     setGenres(
                         res.data?.map((genre) => ({
@@ -29,22 +35,44 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
         fetchGetGenres();
     }, []);
 
+    const [authors, setAuthors] = useState([]);
+    useEffect(() => {
+        const fetchGetAuthors = async () => {
+            try {
+                const res = await getAllAuthorsService();
+                if (res.data) {
+                    setAuthors(
+                        res.data?.map((author) => ({
+                            value: author?.id,
+                            label: author?.fullName,
+                        })),
+                    );
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchGetAuthors();
+    }, []);
+
     const formRef = useRef(null);
     const animatedComponents = makeAnimated();
 
     const [validated, setValidated] = useState(false);
 
-    const [imagePreview, setImagePreview] = useState(null);
+    const [fileUpload, setFileUpload] = useState(null);
 
     const [bookInfo, setBookInfo] = useState({
         name: '',
-        genres: [],
+        genres: '',
         price: '',
+        author: [],
         description: '',
         publicationDate: new Date(),
         totalPageNumber: '',
         remaining: '',
-        image: null,
+        image: 'null',
     });
 
     useEffect(() => {
@@ -53,8 +81,9 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                 name: data?.name,
                 genres: data?.genres,
                 price: data?.price,
+                author: data?.authorName,
                 description: data?.description,
-                publicationDate: data?.publicationDate,
+                publicationDate: moment(data?.publicationDate).format('DD/MM/YYYY'),
                 totalPageNumber: data?.totalPageNumber,
                 remaining: data?.remaining,
                 image: data?.image,
@@ -74,13 +103,14 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
+            setFileUpload(file);
             const reader = new FileReader();
 
             reader.onloadend = () => {
-                setImagePreview(reader.result);
-                const formData = new FormData();
-                formData.append('file', reader.result);
-                console.log(formData);
+                setBookInfo({
+                    ...bookInfo,
+                    image: reader.result,
+                });
             };
 
             reader.readAsDataURL(file);
@@ -93,6 +123,27 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
             if (form.checkValidity() === false) {
                 setValidated(true);
             } else {
+                let formData = new FormData();
+
+                formData.append('api_key', import.meta.env.VITE_CLOUDINARY_KEY);
+                formData.append('file', fileUpload);
+                formData.append('public_id', `file_${Date.now()}`);
+                formData.append('timestamp', (Date.now() / 1000) | 0);
+                formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+
+                axios
+                    .post(import.meta.env.VITE_CLOUDINARY_URL, formData)
+                    .then((result) => {
+                        console.log(result);
+                        setBookInfo({
+                            ...bookInfo,
+                            image: result.data.secure_url,
+                        });
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+
                 await createBookService({
                     ...bookInfo,
                     image: null,
@@ -100,6 +151,8 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            handleCloseModal();
         }
     };
 
@@ -120,14 +173,14 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             <Form.Control name="name" value={bookInfo.name} onChange={handleChangeForm} required />
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
+                    {/* <Form.Group as={Row} className="mb-3 align-items-center">
                         <Form.Label column sm="2">
                             Tác giả
                         </Form.Label>
                         <Col sm="10" className="fz-16">
                             <Select
                                 components={animatedComponents}
-                                options={genres}
+                                options={authors}
                                 isMulti={true}
                                 closeMenuOnSelect={false}
                                 required
@@ -141,27 +194,21 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                                 }
                             />
                         </Col>
-                    </Form.Group>
+                    </Form.Group> */}
                     <Form.Group as={Row} className="mb-3 align-items-center">
                         <Form.Label column sm="2">
                             Thể loại
                         </Form.Label>
                         <Col sm="10" className="fz-16">
-                            <Select
-                                components={animatedComponents}
-                                options={genres}
-                                isMulti={true}
-                                closeMenuOnSelect={false}
-                                required
-                                onChange={(e) =>
-                                    handleChangeForm({
-                                        target: {
-                                            name: 'genres',
-                                            value: e.map((item) => item.value),
-                                        },
-                                    })
-                                }
-                            />
+                            <Form.Select name="genres" value={`${bookInfo?.genres}`} onChange={handleChangeForm}>
+                                {genres.map((genre) => {
+                                    return (
+                                        <option value={genre?.value} key={`genre-${genre?.value}`}>
+                                            {genre?.label}
+                                        </option>
+                                    );
+                                })}
+                            </Form.Select>
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3 align-items-center">
@@ -180,12 +227,10 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             <ReactQuill
                                 value={bookInfo.description}
                                 onChange={(content) =>
-                                    handleChangeForm({
-                                        target: {
-                                            name: 'description',
-                                            value: content,
-                                        },
-                                    })
+                                    setBookInfo((prev) => ({
+                                        ...prev,
+                                        description: content,
+                                    }))
                                 }
                             />
                         </Col>
@@ -242,11 +287,11 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             Ảnh bìa
                         </Form.Label>
                         <Col sm="10">
-                            <Form.Control type="file" required name="image" onChange={handleFileChange} />
-                            {imagePreview && (
+                            <Form.Control type="file" name="image" onChange={handleFileChange} />
+                            {bookInfo?.image && (
                                 <div>
                                     <img
-                                        src={imagePreview}
+                                        src={bookInfo?.image}
                                         alt="Uploaded Preview"
                                         style={{
                                             width: '39rem',
@@ -273,38 +318,48 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
 };
 
 const ManageBook = () => {
-    const bookList = [
-        {
-            id: 'abc',
-            name: 'The Great Gatsby',
-            genres: 'Fiction',
-            price: '$10.99',
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            image: avatar,
-        },
-        {
-            id: 'def',
-            name: 'The Gôd',
-            genres: 'Fiction',
-            price: '$10.99',
-            description: 'A classic novel of the Roaring Twenties.',
-            publicationDate: 'April 10, 1925',
-            totalPageNumber: '180',
-            rated: '4.5/5',
-            remaining: 20,
-            image: avatar,
-        },
-    ];
+    const [bookList, setBookList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPage, setTotalPage] = useState(0);
+    const pageSize = 5;
+
+    const fetchGetBookPaging = async () => {
+        try {
+            const res = await getBookPagingService({ pageNumber: currentPage, pageSize: pageSize });
+            setTotalPage(res.data?.totalPage);
+            setBookList(
+                res?.data?.datas?.map((book) => {
+                    return {
+                        id: book?.id,
+                        name: book?.title,
+                        genres: book?.bookGroupId,
+                        genresName: book?.bookGroupName,
+                        price: book?.price,
+                        description: book?.description,
+                        publicationDate: book?.publishedAt,
+                        totalPageNumber: book?.totalPageNumber,
+                        rated: book?.rate,
+                        remaining: book?.remaining,
+                        image: book?.image,
+                        authorName: book?.authorName,
+                    };
+                }),
+            );
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchGetBookPaging();
+    }, [currentPage]);
 
     const [genreList, setGenreList] = useState([]);
+
     useEffect(() => {
         const fetchGetGenres = async () => {
             try {
-                const res = await getGenresService();
+                const res = await getAllGenresService();
                 setGenreList(res.data);
             } catch (error) {
                 console.log(error);
@@ -313,6 +368,10 @@ const ManageBook = () => {
 
         fetchGetGenres();
     }, []);
+
+    const handleChangePage = (i) => {
+        setCurrentPage(i);
+    };
 
     // Create book
     const [showModalAddBook, setShowModalAddBook] = useState(false);
@@ -323,8 +382,8 @@ const ManageBook = () => {
     const [currentBookUpdate, setCurrentBookUpdate] = useState(null);
     const [showModalUpdateBook, setShowModalUpdateBook] = useState(false);
     const handleCloseModalUpdateBook = () => setShowModalUpdateBook(false);
-    const handleShowModalUpdateBook = (i) => {
-        setCurrentBookUpdate(bookList.find((x) => x?.id === i));
+    const handleShowModalUpdateBook = (bookId) => {
+        setCurrentBookUpdate(bookList.find((x) => x?.id === bookId));
         setShowModalUpdateBook(true);
     };
 
@@ -342,6 +401,17 @@ const ManageBook = () => {
         });
     };
     const handleCloseModalDeleteBook = () => setShowModalDeleteBook(false);
+    const handleDeleteBook = async (bookId) => {
+        try {
+            await deleteBookService(bookId);
+            fetchGetBookPaging();
+            customToastify.success('Xoá sách thành công');
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setShowModalDeleteBook(false);
+        }
+    };
 
     return (
         <>
@@ -370,10 +440,10 @@ const ManageBook = () => {
                         return (
                             <tr key={`book-${book?.id}`}>
                                 <td>{book?.name}</td>
-                                <td>{book?.genres}</td>
+                                <td>{book?.genresName}</td>
                                 <td>{book?.price}</td>
                                 <td>{book?.description}</td>
-                                <td>{book?.publicationDate}</td>
+                                <td>{moment(book?.publicationDate).format('DD/MM/YYYY')}</td>
                                 <td>{book?.totalPageNumber}</td>
                                 <td>{book?.rated}</td>
                                 <td>{book?.remaining}</td>
@@ -389,7 +459,7 @@ const ManageBook = () => {
                                         Sửa
                                     </Button>
                                     <Button
-                                        className="fz-16"
+                                        className="fz-16 mt-3"
                                         variant="danger"
                                         onClick={() => handleShowModalDeleteBook(book?.id, book?.name)}
                                     >
@@ -399,36 +469,22 @@ const ManageBook = () => {
                             </tr>
                         );
                     })}
-                    <Modal show={showModalDeleteBook} onHide={handleCloseModalDeleteBook}>
-                        <Modal.Header className="fz-16" closeButton>
-                            <Modal.Title style={{ fontSize: '2.6rem' }}>Xoá sác</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body className="fz-16">Bạn có chắc muốn xoá sách {bookInfoDelete?.name}</Modal.Body>
-                        <Modal.Footer>
-                            <Button className="fz-16" variant="warning" onClick={handleCloseModalDeleteBook}>
-                                Huỷ
-                            </Button>
-                            <Button className="fz-16" variant="danger">
-                                Có
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
                 </tbody>
             </table>
-            {/* <Pagination className="d-flex justify-content-center">
-                            {Array.from({ length: Math.ceil(bookList.length / 3) }, (_, i) => (i = i + 1))?.map((i) => {
-                                return (
-                                    <Pagination.Item
-                                        key={i}
-                                        className={clsx(styles['page-number'])}
-                                        active={i === currentPageUser}
-                                        onClick={() => handleChangePage(i)}
-                                    >
-                                        {i}
-                                    </Pagination.Item>
-                                );
-                            })}
-                        </Pagination> */}
+            <Pagination className="d-flex justify-content-center">
+                {Array.from({ length: totalPage }, (_, i) => (i = i + 1))?.map((i) => {
+                    return (
+                        <Pagination.Item
+                            key={i}
+                            className={clsx(styles['page-number'])}
+                            active={i === currentPage}
+                            onClick={() => handleChangePage(i)}
+                        >
+                            {i}
+                        </Pagination.Item>
+                    );
+                })}
+            </Pagination>
             {showModalAddBook && (
                 <CustomModal
                     action="create-book"
@@ -444,6 +500,20 @@ const ManageBook = () => {
                     data={currentBookUpdate}
                 />
             )}
+            <Modal show={showModalDeleteBook} onHide={handleCloseModalDeleteBook}>
+                <Modal.Header className="fz-16" closeButton>
+                    <Modal.Title style={{ fontSize: '2.6rem' }}>Xoá sác</Modal.Title>
+                </Modal.Header>
+                <Modal.Body className="fz-16">Bạn có chắc muốn xoá sách {bookInfoDelete?.name}</Modal.Body>
+                <Modal.Footer>
+                    <Button className="fz-16" variant="warning" onClick={handleCloseModalDeleteBook}>
+                        Huỷ
+                    </Button>
+                    <Button className="fz-16" variant="danger" onClick={() => handleDeleteBook(bookInfoDelete?.id)}>
+                        Có
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     );
 };

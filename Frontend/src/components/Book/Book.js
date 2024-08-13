@@ -2,26 +2,33 @@ import clsx from 'clsx';
 import { Link } from 'react-router-dom';
 import styles from './Book.module.scss';
 import { formatPrice } from '~/utils/commonUtils';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStarHalfStroke, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 
-const Book = ({ bookId, img, name, authorId, imgAuthor, nameAuthor, time, price }) => {
+const Book = ({ bookId, img, name, nameAuthor, price, rated = 0 }) => {
     return (
-        <div className={clsx(styles['wrapper'])}>
+        <Link to={`/book/${bookId}`} className={clsx(styles['wrapper'])}>
             <img className={clsx(styles['img'])} src={img} alt={name} />
             <p className={clsx(styles['name'])}>{name}</p>
             <div className={clsx(styles['author-time'])}>
-                <Link to={`/teacher/${authorId}`} className={clsx(styles['author-info'])}>
-                    <img className={clsx(styles['img-author'])} src={imgAuthor} alt={nameAuthor} />
+                <div className={clsx(styles['author-info'])}>
                     <span className={clsx(styles['name-author'])}>{nameAuthor}</span>
-                </Link>
-                <div className={clsx(styles['time'])}>{time}</div>
+                </div>
             </div>
             <div className={clsx(styles['price-actions'])}>
                 <span className={clsx(styles['price'])}>{formatPrice(price, 'VND')}</span>
-                <Link to={`/book/${bookId}`} className={clsx(styles['button'], styles['button-manage'])}>
-                    Xem chi tiết {'>'}
-                </Link>
+                <div className={clsx(styles['rated'])}>
+                    {[...Array(Math.floor(rated)).keys()]?.map((i) => (
+                        <FontAwesomeIcon key={`number-of-rates-${i}`} icon={faStarSolid} />
+                    ))}
+                    {rated > Math.floor(rated) && <FontAwesomeIcon icon={faStarHalfStroke} />}
+                    {[...Array(5 - Math.ceil(rated)).keys()]?.map((i) => (
+                        <FontAwesomeIcon key={`number-of-rates-reject-${i}`} icon={faStarRegular} />
+                    ))}
+                </div>
             </div>
-        </div>
+        </Link>
     );
 };
 

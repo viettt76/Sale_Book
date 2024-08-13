@@ -2,27 +2,27 @@ import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Button, Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
 import {
-    createAuthorService,
-    deleteAuthorService,
-    getAuthorPagingService,
-    updateAuthorService,
-} from '~/services/authorService';
+    createGenreService,
+    deleteGenreService,
+    getGenrePagingService,
+    updateGenreService,
+} from '~/services/genreService';
 import styles from './AdminPage.module.scss';
 
-const ManageAuthor = () => {
-    const [authors, setAuthors] = useState([]);
+const ManageGenre = () => {
+    const [genres, setGenres] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
     const pageSize = 3;
 
-    const fetchGetAuthors = async () => {
+    const fetchGetGenres = async () => {
         try {
-            const res = await getAuthorPagingService({ pageNumber: currentPage, pageSize: pageSize });
+            const res = await getGenrePagingService({ pageNumber: currentPage, pageSize: pageSize });
             setTotalPage(res?.data?.totalPage);
-            setAuthors(
-                res?.data?.datas?.map((author) => ({
-                    id: author?.id,
-                    name: author?.fullName,
+            setGenres(
+                res?.data?.datas?.map((genre) => ({
+                    id: genre?.id,
+                    name: genre?.name,
                 })),
             );
         } catch (error) {
@@ -31,90 +31,90 @@ const ManageAuthor = () => {
     };
 
     useEffect(() => {
-        fetchGetAuthors();
+        fetchGetGenres();
     }, [currentPage]);
 
     const handleChangePage = (i) => {
         setCurrentPage(i);
     };
 
-    // Add author
-    const [showModalAddAuthor, setShowModalAddAuthor] = useState(false);
-    const handleCloseModalAddAuthor = () => setShowModalAddAuthor(false);
-    const handleShowModalAddAuthor = () => setShowModalAddAuthor(true);
+    // Add genre
+    const [showModalAddGenre, setShowModalAddGenre] = useState(false);
+    const handleCloseModalAddGenre = () => setShowModalAddGenre(false);
+    const handleShowModalAddGenre = () => setShowModalAddGenre(true);
 
-    const [authorAddInfo, setAuthorAddInfo] = useState({
-        fullName: '',
+    const [genreAddInfo, setGenreAddInfo] = useState({
+        name: '',
     });
 
-    const handleSubmitAddAuthor = async () => {
+    const handleSubmitAddGenre = async () => {
         try {
-            await createAuthorService(authorAddInfo);
-            fetchGetAuthors();
+            await createGenreService(genreAddInfo);
+            fetchGetGenres();
         } catch (error) {
             console.log(error);
         } finally {
-            handleCloseModalAddAuthor();
+            handleCloseModalAddGenre();
         }
     };
 
-    // Update author
-    const [showModalUpdateAuthor, setShowModalUpdateAuthor] = useState(false);
-    const handleCloseModalUpdateAuthor = () => setShowModalUpdateAuthor(false);
-    const handleShowModalUpdateAuthor = (id, name) => {
-        setAuthorUpdateInfo({
+    // Update genre
+    const [showModalUpdateGenre, setShowModalUpdateGenre] = useState(false);
+    const handleCloseModalUpdateGenre = () => setShowModalUpdateGenre(false);
+    const handleShowModalUpdateGenre = (id, name) => {
+        setGenreUpdateInfo({
             id,
-            fullName: name,
+            name: name,
         });
-        setShowModalUpdateAuthor(true);
+        setShowModalUpdateGenre(true);
     };
 
-    const [authorUpdateInfo, setAuthorUpdateInfo] = useState({
-        id: '',
-        fullName: '',
-    });
-
-    const handleSubmitUpdateAuthor = async () => {
-        try {
-            await updateAuthorService(authorUpdateInfo);
-            fetchGetAuthors();
-        } catch (error) {
-            console.log(error);
-        } finally {
-            handleCloseModalUpdateAuthor();
-        }
-    };
-
-    // Delete author
-    const [showModalDeleteAuthor, setShowModalDeleteAuthor] = useState(false);
-    const [authorInfoDelete, setAuthorInfoDelete] = useState({
+    const [genreUpdateInfo, setGenreUpdateInfo] = useState({
         id: '',
         name: '',
     });
-    const handleShowModalDeleteAuthor = (authorId, authorName) => {
-        setShowModalDeleteAuthor(true);
-        setAuthorInfoDelete({
-            id: authorId,
-            name: authorName,
-        });
-    };
-    const handleCloseModalDeleteAuthor = () => setShowModalDeleteAuthor(false);
-    const handleDeleteAuthor = async () => {
+
+    const handleSubmitUpdateGenre = async () => {
         try {
-            await deleteAuthorService(authorInfoDelete?.id);
-            fetchGetAuthors();
+            await updateGenreService(genreUpdateInfo);
+            fetchGetGenres();
         } catch (error) {
             console.log(error);
         } finally {
-            setShowModalDeleteAuthor(false);
+            handleCloseModalUpdateGenre();
+        }
+    };
+
+    // Delete genre
+    const [showModalDeleteGenre, setShowModalDeleteGenre] = useState(false);
+    const [genreInfoDelete, setGenreInfoDelete] = useState({
+        id: '',
+        name: '',
+    });
+    const handleShowModalDeleteGenre = (genreId, genreName) => {
+        setShowModalDeleteGenre(true);
+        setGenreInfoDelete({
+            id: genreId,
+            name: genreName,
+        });
+    };
+    const handleCloseModalDeleteGenre = () => setShowModalDeleteGenre(false);
+    const handleDeleteGenre = async () => {
+        try {
+            await deleteGenreService(genreInfoDelete?.id);
+            fetchGetGenres();
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setShowModalDeleteGenre(false);
         }
     };
 
     return (
         <>
             <div>
-                <button className="btn btn-primary fz-16 mb-3 float-end" onClick={handleShowModalAddAuthor}>
-                    Thêm tác giả
+                <button className="btn btn-primary fz-16 mb-3 float-end" onClick={handleShowModalAddGenre}>
+                    Thêm thể loại
                 </button>
             </div>
             <div className="w-100 d-flex justify-content-center">
@@ -126,22 +126,22 @@ const ManageAuthor = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {authors?.map((author) => {
+                        {genres?.map((genre) => {
                             return (
-                                <tr key={`author-${author?.id}`}>
-                                    <td>{author?.name}</td>
+                                <tr key={`genre-${genre?.id}`}>
+                                    <td>{genre?.name}</td>
                                     <td>
                                         <Button
                                             className="fz-16 me-3"
                                             variant="warning"
-                                            onClick={() => handleShowModalUpdateAuthor(author?.id, author?.name)}
+                                            onClick={() => handleShowModalUpdateGenre(genre?.id, genre?.name)}
                                         >
                                             Sửa
                                         </Button>
                                         <Button
                                             className="fz-16"
                                             variant="danger"
-                                            onClick={() => handleShowModalDeleteAuthor(author?.id, author?.name)}
+                                            onClick={() => handleShowModalDeleteGenre(genre?.id, genre?.name)}
                                         >
                                             Xoá
                                         </Button>
@@ -166,9 +166,9 @@ const ManageAuthor = () => {
                     );
                 })}
             </Pagination>
-            <Modal show={showModalAddAuthor} onHide={handleCloseModalAddAuthor}>
+            <Modal show={showModalAddGenre} onHide={handleCloseModalAddGenre}>
                 <Modal.Header>
-                    <Modal.Title>Thêm tác giả</Modal.Title>
+                    <Modal.Title>Thêm thể loại</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -178,11 +178,11 @@ const ManageAuthor = () => {
                             </Form.Label>
                             <Col sm="11">
                                 <Form.Control
-                                    value={authorAddInfo?.fullName}
+                                    value={genreAddInfo?.name}
                                     onChange={(e) =>
-                                        setAuthorAddInfo({
-                                            ...authorAddInfo,
-                                            fullName: e.target.value,
+                                        setGenreAddInfo({
+                                            ...genreAddInfo,
+                                            name: e.target.value,
                                         })
                                     }
                                 />
@@ -191,17 +191,17 @@ const ManageAuthor = () => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalAddAuthor}>
+                    <Button className="fz-16" variant="warning" onClick={handleCloseModalAddGenre}>
                         Huỷ
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitAddAuthor}>
+                    <Button className="fz-16" variant="danger" onClick={handleSubmitAddGenre}>
                         Thêm
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showModalUpdateAuthor} onHide={handleCloseModalUpdateAuthor}>
+            <Modal show={showModalUpdateGenre} onHide={handleCloseModalUpdateGenre}>
                 <Modal.Header>
-                    <Modal.Title>Sửa tác giả</Modal.Title>
+                    <Modal.Title>Sửa thể loại</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -211,11 +211,11 @@ const ManageAuthor = () => {
                             </Form.Label>
                             <Col sm="11">
                                 <Form.Control
-                                    value={authorUpdateInfo?.fullName}
+                                    value={genreUpdateInfo?.name}
                                     onChange={(e) =>
-                                        setAuthorUpdateInfo({
-                                            ...authorUpdateInfo,
-                                            fullName: e.target.value,
+                                        setGenreUpdateInfo({
+                                            ...genreUpdateInfo,
+                                            name: e.target.value,
                                         })
                                     }
                                 />
@@ -224,24 +224,24 @@ const ManageAuthor = () => {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalUpdateAuthor}>
+                    <Button className="fz-16" variant="warning" onClick={handleCloseModalUpdateGenre}>
                         Huỷ
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitUpdateAuthor}>
+                    <Button className="fz-16" variant="danger" onClick={handleSubmitUpdateGenre}>
                         Cập nhật
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showModalDeleteAuthor} onHide={handleCloseModalDeleteAuthor}>
+            <Modal show={showModalDeleteGenre} onHide={handleCloseModalDeleteGenre}>
                 <Modal.Header>
-                    <Modal.Title>Xoá tác giả</Modal.Title>
+                    <Modal.Title>Xoá thể loại</Modal.Title>
                 </Modal.Header>
-                <Modal.Body className="fz-16">Bạn có chắc muốn xoá tác giả {authorInfoDelete?.name}</Modal.Body>
+                <Modal.Body className="fz-16">Bạn có chắc muốn xoá thể loại {genreInfoDelete?.name}</Modal.Body>
                 <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalDeleteAuthor}>
+                    <Button className="fz-16" variant="warning" onClick={handleCloseModalDeleteGenre}>
                         Huỷ
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleDeleteAuthor}>
+                    <Button className="fz-16" variant="danger" onClick={handleDeleteGenre}>
                         Xoá
                     </Button>
                 </Modal.Footer>
@@ -250,4 +250,4 @@ const ManageAuthor = () => {
     );
 };
 
-export default ManageAuthor;
+export default ManageGenre;

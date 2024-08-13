@@ -206,7 +206,7 @@ const NoticeOfBookList = ({
                     >
                         <h5 className={clsx(styles['title'])}>{title}</h5>
                         <div className={clsx(styles['books'])}>
-                            {bookListState.map((item, index) => {
+                            {bookListState?.map((item, index) => {
                                 return (
                                     <ListGroup.Item key={`book-${index}`}>
                                         <Link

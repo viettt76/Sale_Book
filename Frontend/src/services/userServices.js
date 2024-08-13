@@ -14,3 +14,16 @@ export const signUpService = ({ username, email, password, address, phoneNumber 
 export const getPersonalInfoService = () => {
     return axios.get('/User/get-user-info');
 };
+
+export const getAllUsersService = ({ pageNumber = 1, pageSize = 10 }) => {
+    return axios.get('/User/get-all-user', {
+        params: {
+            pageNumber,
+            pageSize,
+        },
+    });
+};
+
+export const userCreateByAdminService = (data) => {
+    return axios.post('/User/create', data);
+};

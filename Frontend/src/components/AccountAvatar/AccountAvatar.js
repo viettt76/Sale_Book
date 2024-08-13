@@ -10,7 +10,9 @@ import { userInfoSelector } from '~/redux/selectors';
 const AccountAvatar = () => {
     const userInfo = useSelector(userInfoSelector);
 
-    const menu = [[{ title: 'Admin Page', link: '/admin' }], [{ title: 'Đăng xuất', component: Logout }]];
+    const generalMenu = [[{ title: 'Đăng xuất', component: Logout }]];
+
+    const menu = userInfo?.role === 'Admin' ? [[{ title: 'Admin Page', link: '/admin' }], ...generalMenu] : generalMenu;
     const [showMenu, setShowMenu] = useState(false);
 
     const ref = useRef(null);

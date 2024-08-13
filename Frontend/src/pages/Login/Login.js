@@ -67,16 +67,26 @@ function Login() {
                 const res = await loginService(loginInfo);
                 if (res?.data?.token) {
                     localStorage.setItem('token', res?.data.token);
-                    navigate('/');
 
                     const fetchGetPersonalInfo = async () => {
                         try {
-                            await getPersonalInfoService();
+                            const res = await getPersonalInfoService();
+                            dispatch(
+                                actions.saveUserInfo({
+                                    username: res?.data?.userName,
+                                    email: res?.data?.email,
+                                    role: res?.data?.role,
+                                    phoneNumber: res?.data?.phoneNumber,
+                                    address: res?.data?.address,
+                                }),
+                            );
                         } catch (error) {
                             console.log(error);
                         }
                     };
                     fetchGetPersonalInfo();
+
+                    navigate('/');
                 }
             }
         } catch (error) {
@@ -113,17 +123,6 @@ function Login() {
                     address: signUpInfo.address,
                     phoneNumber: signUpInfo.phoneNumber,
                 });
-
-                const res = await getPersonalInfoService();
-                dispatch(
-                    actions.saveUserInfo({
-                        username: res?.data?.userName,
-                        email: res?.data?.email,
-                        isActive: res?.data?.isActive,
-                        phoneNumber: res?.data?.phoneNumber,
-                        address: res?.data?.address,
-                    }),
-                );
 
                 customToastify.success('Đăng ký tài khoản thành công!');
 
