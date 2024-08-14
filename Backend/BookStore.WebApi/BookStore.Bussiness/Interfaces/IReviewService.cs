@@ -7,5 +7,6 @@ namespace BookStore.Bussiness.Interfaces
 {
     public interface IReviewService : IBaseService<ReviewViewModel, ReviewCreateViewModel, ReviewUpdateViewModel>
     {
+        Task<int> DeleteReview(int reviewId, string userId);
     }
 }

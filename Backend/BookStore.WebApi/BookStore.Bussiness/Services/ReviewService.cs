@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.Bussiness.Services
 {
-    public class ReviewService : BaseService<ReviewViewModel, Review, ReviewCreateViewModel, ReviewUpdateViewModel>, IReviewService
+    public class ReviewService 
+        : BaseService<ReviewViewModel, Review, ReviewCreateViewModel, ReviewUpdateViewModel>, IReviewService
     {
         private readonly IReviewRepository _reviewRepository;
         private readonly UserManager<User> _userManager;
@@ -70,6 +71,11 @@ namespace BookStore.Bussiness.Services
         public override async Task<int> UpdateAsync(int id, ReviewUpdateViewModel update)
         {
             return await _reviewRepository.UpdateReview(ChangeToEntity(update));
+        }
+
+        public async Task<int> DeleteReview(int reviewId, string userId)
+        {
+            return await _reviewRepository.DeleteReview(reviewId, userId);
         }
     }
 }

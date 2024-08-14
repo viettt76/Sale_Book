@@ -7,5 +7,6 @@ namespace BookStore.Datas.Interfaces
         Task<Review> GetReviewByUserId(string userId, int bookId);
         Task<int> UpdateReview(Review review);
         Task<List<int>> GetRateOfBook(int bookId);
+        Task<int> DeleteReview(int reviewId, string userId);
     }
 }

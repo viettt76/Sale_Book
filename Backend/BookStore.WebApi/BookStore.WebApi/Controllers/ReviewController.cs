@@ -2,23 +2,33 @@
 using BookStore.Bussiness.ViewModel.Auth;
 using BookStore.Bussiness.ViewModel.Review;
 using BookStore.Models.Models;
+using BookStore.WebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
 {
-    public class ReviewController : BaseController<ReviewViewModel, ReviewCreateViewModel, ReviewUpdateViewModel>
+    [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
+    [Authorize]
+    public class ReviewController : ControllerBase
     {
         private readonly IReviewService _reviewService;
         private readonly UserManager<User> _userManager;
 
-        public ReviewController(IReviewService reviewService, UserManager<User> userManager) : base(reviewService)
+        public ReviewController(IReviewService reviewService, UserManager<User> userManager)
         {
             _reviewService = reviewService;
             _userManager = userManager;
         }
 
-        public override async Task<IActionResult> Create([FromBody] ReviewCreateViewModel viewModel)
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)] 
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Create([FromBody] ReviewCreateViewModel viewModel)
         {
             try
             {
@@ -34,11 +44,16 @@ namespace BookStore.WebApi.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
             }
         }
 
-        public override async Task<IActionResult> Update(int id, [FromBody] ReviewUpdateViewModel createUpdate)
+        [HttpPut]
+        [Route("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Update(int id, [FromBody] ReviewUpdateViewModel createUpdate)
         {
             try
             {
@@ -55,14 +70,36 @@ namespace BookStore.WebApi.Controllers
 
                 if (res == 0)
                 {
-                    return BadRequest();
+                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, "Không thể cập nhật đánh giá"));
                 }
 
                 return Ok(res);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
+            }
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        [Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+
+                var res = await _reviewService.DeleteReview(id, userId);
+
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
             }
         }
     }
