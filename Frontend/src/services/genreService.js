@@ -1,23 +1,23 @@
 import axios from '~/utils/axios';
 
 export const getAllGenresService = () => {
-    return axios.get('/BookGroup/get-all');
+    return axios.get('/BookGroups');
 };
 
 export const getGenrePagingService = ({ pageNumber = 1, pageSize = 10 }) => {
-    return axios.get('/BookGroup/get-all-paging', {
+    return axios.get('/BookGroups/paging', {
         params: { pageNumber, pageSize },
     });
 };
 
 export const createGenreService = (data) => {
-    return axios.post('/BookGroup/create', data);
+    return axios.post('/BookGroups', data);
 };
 
 export const updateGenreService = (data) => {
-    return axios.put(`/BookGroup/update/${data?.id}`, data);
+    return axios.put(`/BookGroups/${data?.id}`, data);
 };
 
 export const deleteGenreService = (id) => {
-    return axios.delete(`/BookGroup/delete/${id}`);
+    return axios.delete(`/BookGroups/${id}`);
 };

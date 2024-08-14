@@ -12,11 +12,11 @@ export const signUpService = ({ username, email, password, address, phoneNumber 
 };
 
 export const getPersonalInfoService = () => {
-    return axios.get('/User/get-user-info');
+    return axios.get('/User/user-info');
 };
 
 export const getAllUsersService = ({ pageNumber = 1, pageSize = 10 }) => {
-    return axios.get('/User/get-all-user', {
+    return axios.get('/User/all-user', {
         params: {
             pageNumber,
             pageSize,
@@ -25,5 +25,5 @@ export const getAllUsersService = ({ pageNumber = 1, pageSize = 10 }) => {
 };
 
 export const userCreateByAdminService = (data) => {
-    return axios.post('/User/create', data);
+    return axios.post('/User', data);
 };

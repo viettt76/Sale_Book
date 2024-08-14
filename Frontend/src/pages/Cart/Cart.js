@@ -1,25 +1,24 @@
 import clsx from 'clsx';
 import styles from './Cart.module.scss';
-import avatar from '~/assets/imgs/avatar-default.png';
 import { formatPrice, totalPayment } from '~/utils/commonUtils';
 import { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
-import { cartSelector } from '~/redux/selectors';
+import { getCartService, updateBookQuantityInCartService } from '~/services/cartService';
 
 const Cart = () => {
-    // {
-    //     id: 'd',
-    //     name: 'D',
-    //     genres: [2, 3, 4],
-    //     price: 200000,
-    //     rated: '4.5/5',
-    //     remaining: 20,
-    //     quantity: 2,
-    //     image: avatar,
-    // }
-    const cart = useSelector(cartSelector);
-    console.log(cart);
+    const [cart, setCart] = useState([]);
+
+    const fetchGetCart = async () => {
+        try {
+            const res = await getCartService();
+            setCart(res?.data?.cartItems);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    useEffect(() => {
+        fetchGetCart();
+    }, []);
 
     const [checkedBook, setCheckedBook] = useState([]);
     const [totalPay, setTotalPay] = useState(0);
@@ -28,20 +27,13 @@ const Cart = () => {
         setCheckedBook((prev) => (prev.includes(bookId) ? prev.filter((id) => id !== bookId) : [...prev, bookId]));
     };
 
-    const changeQuantity = (bookId, operator) => {
-        const update = cart.map((x) => {
-            if (x.id === bookId) {
-                if (operator === '+') {
-                    x.quantity++;
-                } else if (operator === '-') {
-                    x.quantity--;
-                } else {
-                    x.quantity = operator;
-                }
-            }
-            return x;
-        });
-        setCart(update);
+    const changeQuantity = async (cartId, bookId, quantity) => {
+        try {
+            await updateBookQuantityInCartService({ cartId, bookId, quantity });
+            fetchGetCart();
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const [showVoucher, setShowVoucher] = useState(false);
@@ -85,37 +77,43 @@ const Cart = () => {
                 <div className={clsx(styles['books-wrapper'])}>
                     {cart?.map((book) => {
                         return (
-                            <div className={clsx(styles['book-wrapper'])} key={`book-${book?.id}`}>
+                            <div className={clsx(styles['book-wrapper'])} key={`book-${book?.bookId}`}>
                                 <div className={clsx(styles['action'])}>
                                     <input
                                         className={clsx(styles['check'])}
                                         type="checkbox"
-                                        checked={checkedBook?.includes(book?.id)}
-                                        onChange={() => handleCheck(book?.id)}
+                                        checked={checkedBook?.includes(book?.bookId)}
+                                        onChange={() => handleCheck(book?.bookId)}
                                     />
                                     <button className={clsx(styles['delete'])}>Xoá</button>
                                 </div>
                                 <div className={clsx(styles['book-info'])}>
-                                    <img className={clsx(styles['book-image'])} src={book?.image} />
+                                    <img className={clsx(styles['book-image'])} src={book?.bookImage} />
                                     <div>
-                                        <h6 className={clsx(styles['book-name'])}>{book?.name}</h6>
-                                        <div className={clsx(styles['book-price'])}>{book?.price}</div>
+                                        <h6 className={clsx(styles['book-name'])}>{book?.bookName}</h6>
+                                        <div className={clsx(styles['book-price'])}>{book?.bookPrice}</div>
                                         <div className={clsx(styles['book-quantity'])}>
                                             <button
                                                 className={clsx(styles['book-quantity-btn'])}
                                                 disabled={book?.quantity <= 1}
-                                                onClick={() => changeQuantity(book?.id, '-')}
+                                                onClick={() =>
+                                                    changeQuantity(book?.cartId, book?.bookId, book?.quantity - 1)
+                                                }
                                             >
                                                 -
                                             </button>
                                             <input
                                                 value={book?.quantity}
-                                                onChange={(e) => changeQuantity(book?.id, e.target.value)}
+                                                onChange={(e) =>
+                                                    changeQuantity(book?.cartId, book?.bookId, e.target.value)
+                                                }
                                                 className={clsx(styles['book-quantity-input'])}
                                             />
                                             <button
                                                 className={clsx(styles['book-quantity-btn'])}
-                                                onClick={() => changeQuantity(book?.id, '+')}
+                                                onClick={() =>
+                                                    changeQuantity(book?.cartId, book?.bookId, book?.quantity + 1)
+                                                }
                                             >
                                                 +
                                             </button>

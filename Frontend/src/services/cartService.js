@@ -1,7 +1,7 @@
 import axios from '~/utils/axios';
 
 export const getCartService = () => {
-    return axios.get('/Cart/get-cart');
+    return axios.get('/Cart/carts');
 };
 
 export const addToCartService = ({ cartId, bookId, quantity }) => {
@@ -9,5 +9,15 @@ export const addToCartService = ({ cartId, bookId, quantity }) => {
         cartId,
         bookId,
         quantity,
+    });
+};
+
+export const updateBookQuantityInCartService = ({ cartId, bookId, quantity }) => {
+    return axios.put('/Cart/update-quantity', null, {
+        params: {
+            cartId,
+            bookId,
+            quantity,
+        },
     });
 };
