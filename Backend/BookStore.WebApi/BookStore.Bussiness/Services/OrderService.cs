@@ -70,8 +70,10 @@ namespace BookStore.Bussiness.Services
             }
 
             var vouchers = await _voucherService.GetVoucherUserById(create.VoucherId, create.UserId);
-
-            totalAmount = totalAmount - (totalAmount * vouchers.Percent / 100);
+            if (vouchers != null)
+            {
+                totalAmount = totalAmount - (totalAmount * vouchers.Percent / 100);
+            }
 
             var entity = ChangeToEntity(create);
             entity.TotalAmount = totalAmount;
