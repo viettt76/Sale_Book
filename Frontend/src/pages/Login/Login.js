@@ -1,19 +1,18 @@
 import clsx from 'clsx';
 import { useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Button, Col, Form, Modal, Row } from 'react-bootstrap';
+import { Button, Col, Form, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import styles from './Login.module.scss';
 import customToastify from '~/utils/customToastify';
-import { getPersonalInfoService, loginService, signUpService } from '~/services/userServices';
-import { useDispatch } from 'react-redux';
-import * as actions from '~/redux/actions';
-import { getCartService } from '~/services/cartService';
+import { loginService, signUpService } from '~/services/userServices';
+import useFetchUserData from '~/hooks/useFetchUserData';
 
 function Login() {
     const navigate = useNavigate(null);
-    const dispatch = useDispatch();
+
+    const fetchUserData = useFetchUserData();
 
     const [loginInfo, setLoginInfo] = useState({ username: '', password: '' });
     const [showPasswordLogin, setShowPasswordLogin] = useState(false);
@@ -68,28 +67,7 @@ function Login() {
                 const res = await loginService(loginInfo);
                 if (res?.data?.token) {
                     localStorage.setItem('token', res?.data.token);
-
-                    const fetchGetPersonalInfo = async () => {
-                        try {
-                            const res = await getPersonalInfoService();
-                            dispatch(
-                                actions.saveUserInfo({
-                                    id: res?.data?.id,
-                                    username: res?.data?.userName,
-                                    email: res?.data?.email,
-                                    role: res?.data?.role,
-                                    phoneNumber: res?.data?.phoneNumber,
-                                    address: res?.data?.address,
-                                }),
-                            );
-                            const resCart = await getCartService();
-                            dispatch(actions.addBooksToCart(resCart?.data?.cartItems));
-                        } catch (error) {
-                            console.log(error);
-                        }
-                    };
-                    fetchGetPersonalInfo();
-
+                    fetchUserData();
                     navigate('/');
                 }
             }

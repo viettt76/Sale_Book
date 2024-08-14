@@ -38,6 +38,24 @@
             max-height: 30.4rem;
             overflow-y: auto;
 
+            &::-webkit-scrollbar {
+                width: 8px;
+                height: 8px;
+            }
+
+            &::-webkit-scrollbar-track {
+                background-color: #f1f1f1;
+            }
+
+            &::-webkit-scrollbar-thumb {
+                background-color: #888;
+                border-radius: 10px;
+            }
+
+            &::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+
             .book {
                 display: flex;
                 color: $main-color;
@@ -61,7 +79,13 @@
                 }
 
                 .book-price {
+                    font-size: 1.2rem;
+                    color: #ee4d2d;
+                }
+
+                .book-quantity {
                     font-size: 1.1rem;
+                    margin-left: 0.4rem;
                 }
             }
         }

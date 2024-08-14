@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react';
 import useDebounce from '~/hooks/useDebounce';
 import { searchBookByNameOrAuthor } from '~/services/bookService';
 import { formatPrice } from '~/utils/commonUtils';
+import { getMyVoucherService } from '~/services/voucherService';
 
 const Header = () => {
     const location = useLocation();
@@ -46,14 +47,34 @@ const Header = () => {
         fetchSearchBookByNameOrAuthor();
     }, [searchKey]);
 
+    const [vouchers, setVouchers] = useState([]);
+
     useEffect(() => {
-        const handleClickOutsideSearchResult = (e) => {
+        const fetchVoucher = async () => {
+            try {
+                const res = await getMyVoucherService();
+                setVouchers(res?.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchVoucher();
+    }, []);
+
+    const [showVouchers, setShowVouchers] = useState(false);
+    const voucherWrapperRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
             if (searchResultRef.current && !searchResultRef.current.contains(e.target)) {
                 handleCloseSearchResult();
             }
+            if (voucherWrapperRef.current && !voucherWrapperRef.current.contains(e.target)) {
+                setShowVouchers(false);
+            }
         };
-        document.addEventListener('mousedown', handleClickOutsideSearchResult);
-        return () => document.removeEventListener('mousedown', handleClickOutsideSearchResult);
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
     const handleSearch = (e) => {
@@ -62,6 +83,16 @@ const Header = () => {
             navigate(`/search?keyword=${keyword}`);
         }
     };
+
+    // useEffect(() => {
+    //     const handleClickOutsideVoucher = (e) => {
+    //         if (voucherWrapperRef.current && !voucherWrapperRef.current.contains(e.target)) {
+    //             setShowVouchers(false);
+    //         }
+    //     };
+    //     document.addEventListener('mousedown', handleClickOutsideVoucher);
+    //     return () => document.removeEventListener('mousedown', handleClickOutsideVoucher);
+    // }, []);
 
     return (
         <div className={clsx(styles['header'])}>
@@ -119,6 +150,27 @@ const Header = () => {
                 )}
             </div>
             <div className={clsx(styles['user-actions'])}>
+                <div className={clsx(styles['voucher-wrapper'])} ref={voucherWrapperRef}>
+                    <FontAwesomeIcon
+                        onClick={() => setShowVouchers(!showVouchers)}
+                        className={clsx(styles['icon'])}
+                        icon={faTicket}
+                    />
+                    {showVouchers && (
+                        <div className={clsx(styles['voucher-list'])}>
+                            {vouchers?.map((voucher) => {
+                                if (voucher?.used) {
+                                    return <></>;
+                                }
+                                return (
+                                    <div key={`voucher-${voucher?.voucherId}`} className={clsx(styles['voucher-item'])}>
+                                        Giảm giá {voucher?.percent}%
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
                 <NoticeOfBookList
                     title="Giỏ hàng"
                     type="cart"
@@ -129,18 +181,20 @@ const Header = () => {
                     textLinkWhenEmpty="Tiếp tục mua sắm"
                     linkWhenEmpty="/"
                 />
-                <NoticeOfBookList
+                {/* <NoticeOfBookList
                     title="Voucher"
                     type="voucher"
                     icon={faTicket}
                     textWhenEmpty="Bạn không có voucher nào"
                     textLinkWhenEmpty=""
                     linkWhenEmpty="/"
-                />
+                /> */}
                 <NoticeOfBookList
                     title="Sách đã mua"
-                    type="bought"
+                    type="order"
                     icon={faReceipt}
+                    textLinkWhenNotEmpty="Tới đơn mua"
+                    linkWhenNotEmpty="/order"
                     textWhenEmpty="Bạn chưa mua quyển sách nào."
                     textLinkWhenEmpty="Khám phá thêm"
                     linkWhenEmpty="/"

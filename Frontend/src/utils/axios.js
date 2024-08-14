@@ -1,4 +1,7 @@
 import axios from 'axios';
+import customToastify from './customToastify';
+import { clearUserInfo } from '~/redux/actions';
+import store from '~/redux/store';
 
 const instance = axios.create({
     baseURL: 'https://localhost:7193/api/v1',
@@ -29,6 +32,12 @@ instance.interceptors.response.use(
         return customResponse;
     },
     function (error) {
+        if (error.response?.status === 401) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+            store.dispatch(clearUserInfo());
+            customToastify.info('Bạn đã hết phiên đăng nhập');
+        }
         if (error?.response?.data)
             return Promise.reject({
                 status: error?.response?.status,

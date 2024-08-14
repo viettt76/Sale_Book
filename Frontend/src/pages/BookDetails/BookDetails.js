@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Container, Modal, Tab, Tabs } from 'react-bootstrap';
+import { Container, Tab, Tabs } from 'react-bootstrap';
 import { faStarHalfStroke, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,9 +10,10 @@ import styles from './BookDetails.module.scss';
 import { formatPrice } from '~/utils/commonUtils';
 import { getBookByIdService } from '~/services/bookService';
 import moment from 'moment';
-import { submitReviewService } from '~/services/reviewService';
 import { useSelector } from 'react-redux';
 import { userInfoSelector } from '~/redux/selectors';
+import { addToCartService } from '~/services/cartService';
+import customToastify from '~/utils/customToastify';
 
 const BookDetails = () => {
     const { id } = useParams();
@@ -21,13 +22,6 @@ const BookDetails = () => {
     const userInfo = useSelector(userInfoSelector);
 
     const [quantity, setQuantity] = useState(1);
-
-    const [showModalReview, setShowModalReview] = useState(false);
-    const [reviewRate, setReviewRate] = useState(0);
-    const [reviewContent, setReviewContent] = useState('');
-
-    const handleCloseModalReview = () => setShowModalReview(false);
-    const handleShowModalReview = () => setShowModalReview(true);
 
     const [bookInfo, setBookInfo] = useState({
         name: '',
@@ -77,17 +71,10 @@ const BookDetails = () => {
         }
     };
 
-    const handleReview = async () => {
+    const handleAddToCart = async () => {
         try {
-            await submitReviewService({
-                date: new Date().toISOString(),
-                content: reviewContent,
-                userId: userInfo?.id,
-                rate: reviewRate,
-                bookId: id,
-            });
-            handleCloseModalReview();
-            fetchGetBookById();
+            await addToCartService({ cartId: userInfo?.cartId, bookId: id, quantity });
+            customToastify.success('Thêm vào giỏ hàng thành công');
         } catch (error) {
             console.log(error);
         }
@@ -143,7 +130,9 @@ const BookDetails = () => {
                             </button>
                         </div>
                         <div>
-                            <button className={clsx(styles['btn'], styles['btn-cart'])}>Thêm vào giỏ hàng</button>
+                            <button className={clsx(styles['btn'], styles['btn-cart'])} onClick={handleAddToCart}>
+                                Thêm vào giỏ hàng
+                            </button>
                             <button
                                 className={clsx(styles['btn'], styles['btn-buy-now'])}
                                 onClick={() => {
@@ -153,54 +142,6 @@ const BookDetails = () => {
                                 Mua ngay
                             </button>
                         </div>
-                        <button className={clsx(styles['btn'], styles['btn-reviews'])} onClick={handleShowModalReview}>
-                            Đánh giá
-                        </button>
-                        <Modal
-                            className={clsx(styles['modal-review'])}
-                            show={showModalReview}
-                            onHide={handleCloseModalReview}
-                        >
-                            <Modal.Header className={clsx(styles['review-header'])} closeButton>
-                                <Modal.Title className={clsx(styles['review-title'])}>Đánh giá</Modal.Title>
-                            </Modal.Header>
-                            <Modal.Body className={clsx(styles['review-body'])}>
-                                <div className={clsx(styles['review-rated'])}>
-                                    {[...Array(reviewRate).keys()].map((i) => (
-                                        <FontAwesomeIcon
-                                            className={clsx(styles['active'])}
-                                            key={`review-rated-${i}`}
-                                            icon={faStarSolid}
-                                            onClick={() => setReviewRate(i + 1)}
-                                        />
-                                    ))}
-                                    {[...Array(5 - reviewRate).keys()].map((i) => (
-                                        <FontAwesomeIcon
-                                            key={`review-rated-reject-${i}`}
-                                            icon={faStarRegular}
-                                            onClick={() => setReviewRate((prev) => prev + i + 1)}
-                                        />
-                                    ))}
-                                </div>
-                                <div className={clsx(styles['review-content'])}>
-                                    <input
-                                        value={reviewContent}
-                                        className="form-control"
-                                        placeholder="Viết đánh giá"
-                                        onChange={(e) => setReviewContent(e.target.value)}
-                                    />
-                                </div>
-                            </Modal.Body>
-                            <Modal.Footer>
-                                <button
-                                    disabled={reviewRate <= 0}
-                                    className="btn btn-primary fz-16"
-                                    onClick={handleReview}
-                                >
-                                    Gửi đánh giá
-                                </button>
-                            </Modal.Footer>
-                        </Modal>
                     </div>
                 </div>
                 <div className={clsx(styles['book-introduction'])}>

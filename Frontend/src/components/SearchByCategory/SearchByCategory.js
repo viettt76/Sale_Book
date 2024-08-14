@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import Book from '../Book';
 import styles from './SearchByCategory.module.scss';
@@ -7,6 +7,7 @@ import { getAllGenresService } from '~/services/genreService';
 import { Pagination } from 'react-bootstrap';
 
 const SearchByCategory = () => {
+    const componentRef = useRef(null);
     const [genres, setGenres] = useState([]);
     useEffect(() => {
         const fetchGetGenres = async () => {
@@ -31,6 +32,14 @@ const SearchByCategory = () => {
                 const res = await getBookPagingService({ pageNumber: currentPage, pageSize: 8 });
                 if (res?.data?.datas) {
                     setTotalPages(res.data?.totalPage);
+                    console.log(res?.data?.datas?.length <= 4);
+                    if (componentRef.current) {
+                        const componentTop = componentRef.current.getBoundingClientRect().top + window.scrollY;
+                        window.scrollTo({
+                            top: componentTop - 90,
+                            behavior: 'smooth',
+                        });
+                    }
                     const data = res.data.datas;
                     const clone = data?.map((book) => {
                         return {
@@ -79,7 +88,7 @@ const SearchByCategory = () => {
     };
 
     return (
-        <div className={clsx(styles['search-container'])}>
+        <div ref={componentRef} className={clsx(styles['search-container'])}>
             <div className={clsx(styles['category-selector'])}>
                 <h3>Chọn thể loại:</h3>
                 {genres?.map((genre) => (

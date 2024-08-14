@@ -11,6 +11,7 @@ import AdminLayout from './layouts/AdminLayout';
 import AdminPage from '~/pages/AdminPage';
 import Pay from '~/pages/Pay';
 import Cart from '~/pages/Cart';
+import Order from '~/pages/Order';
 
 const routes = [
     { path: '/', element: Home },
@@ -19,6 +20,7 @@ const routes = [
     { path: '/search', element: SearchResult },
     { path: '/book/:id/pay', element: Pay, layout: OnlyHeaderLayout },
     { path: '/cart', element: Cart, layout: OnlyHeaderLayout },
+    { path: '/order', element: Order, layout: OnlyHeaderLayout },
 ];
 
 export const adminRoutes = [{ path: '/admin', element: AdminPage, layout: AdminLayout }];

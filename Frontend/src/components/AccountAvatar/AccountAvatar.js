@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './AccountAvatar.module.scss';
 import Logout from '~/components/Logout';
@@ -12,7 +12,20 @@ const AccountAvatar = () => {
 
     const generalMenu = [[{ title: 'Đăng xuất', component: Logout }]];
 
-    const menu = userInfo?.role === 'Admin' ? [[{ title: 'Admin Page', link: '/admin' }], ...generalMenu] : generalMenu;
+    const location = useLocation();
+
+    const menu =
+        userInfo?.role === 'Admin'
+            ? [
+                  [
+                      {
+                          title: location.pathname === '/admin' ? 'Client Page' : 'Admin Page',
+                          link: location.pathname === '/admin' ? '/' : '/admin',
+                      },
+                  ],
+                  ...generalMenu,
+              ]
+            : generalMenu;
     const [showMenu, setShowMenu] = useState(false);
 
     const ref = useRef(null);
