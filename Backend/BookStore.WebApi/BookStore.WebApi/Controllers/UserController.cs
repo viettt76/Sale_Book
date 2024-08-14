@@ -11,9 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
 {
+    [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]")]
-    [ApiController]
     [Authorize]
     public class UserController : ControllerBase
     {

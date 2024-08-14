@@ -15,6 +15,8 @@ namespace BookStore.Models.Models
         [ForeignKey("UserId")]
         public User User { get; set; }
 
+        public int VoucherId { get; set; }
+
         [Required]
         public decimal TotalAmount { get; set; }
 

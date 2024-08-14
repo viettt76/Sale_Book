@@ -13,6 +13,8 @@ namespace BookStore.Bussiness.ViewModel.Order
         public string UserPhoneNumber { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderStatusEnum Status { get; set; }
+        public int VoucherId { get; set; }
+        public int VoucherPercent { get; set; }
         public DateTime Date { get; set; }
         public IEnumerable<OrderItemViewModel> OrderItems { get; set; }
     }

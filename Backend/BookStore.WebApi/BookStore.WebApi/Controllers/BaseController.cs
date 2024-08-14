@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
 {
+    [ApiController]
     [ApiVersion("1.0")]
     [Route("api/v{version:apiVersion}/[controller]s")]
-    [ApiController]
     [Authorize(Roles = "Admin, User")]
     public class BaseController<TViewModel, TCreate, TUpdate> : ControllerBase where TViewModel : class where TCreate : class where TUpdate : class
     {
@@ -30,6 +30,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="404">If not found any item</response>
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
+        [MapToApiVersion("1.0")]
         [HttpGet]
         [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -71,6 +72,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="404">If not found any item</response>
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
+        [MapToApiVersion("1.0")]
         [HttpGet]
         [Route("paging")]
         [AllowAnonymous]
@@ -112,6 +114,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="404">If not found any item</response>
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
+        [MapToApiVersion("1.0")]
         [HttpGet]
         [Route("{id}")]
         [AllowAnonymous]
@@ -150,6 +153,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="404">If not found any item</response>
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
+        [MapToApiVersion("1.0")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -196,6 +200,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="404">If not found any item</response>
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
+        [MapToApiVersion("1.0")]
         [HttpPut]
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -243,6 +248,7 @@ namespace BookStore.WebApi.Controllers
         /// <response code="404">If not found any item</response>
         /// <response code="403">Access denined</response>
         /// <response code="400">If the item is null</response>
+        [MapToApiVersion("1.0")]
         [HttpDelete]
         [Route("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -23,6 +23,7 @@ using System.Reflection;
 using CloudinaryDotNet;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using BookStore.WebApi.Models;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 
 namespace BookStore.WebApi
 {
@@ -62,21 +63,36 @@ namespace BookStore.WebApi
                 builder.Services.AddEndpointsApiExplorer();
 
                 #region Swagger
+                builder.Services.AddApiVersioning(options =>
+                {
+                    options.DefaultApiVersion = new ApiVersion(1, 0);
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+                    options.ReportApiVersions = true;
+                    options.ApiVersionReader = new UrlSegmentApiVersionReader();
+                    //options.ApiVersionReader = new HeaderApiVersionReader("x-api-version");
+                });
+
+                builder.Services.AddVersionedApiExplorer(setup =>
+                {
+                    setup.GroupNameFormat = "'v'VVV";
+                    setup.SubstituteApiVersionInUrl = true;
+                });
+
                 builder.Services.AddSwaggerGen(options =>
                 {
                     options.EnableAnnotations();
 
-                    options.SwaggerDoc("v1", new OpenApiInfo
+                    options.SwaggerDoc("v1.0", new OpenApiInfo
                     {
-                        Version = "v1",
+                        Version = "v1.0",
                         Title = "BookStore API",
                         Description = "An ASP.NET Core Web API for managing books items",
                         TermsOfService = new Uri("https://example.com/terms"),
                         Contact = new OpenApiContact
                         {
                             Name = "Contact",
-                            //Email = "anh038953@gmail.com",
-                            Url = new Uri("https://example.com/contact")
+                            Email = "anh038953@gmail.com",
+                            //Url = new Uri("https://example.com/contact")
                         },
                         License = new OpenApiLicense
                         {
@@ -117,13 +133,9 @@ namespace BookStore.WebApi
                     });
                 });
 
-                builder.Services.AddApiVersioning(options =>
-                {
-                    options.ReportApiVersions = true;
-                    options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.DefaultApiVersion = new ApiVersion(1, 0);
-                    options.ApiVersionReader = new UrlSegmentApiVersionReader();
-                });
+                builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
+
+                
                 #endregion 
 
                 builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
@@ -250,21 +262,28 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IUserRepository, UserRepository>();
                 builder.Services.AddScoped<IReportRepository, ReportRepository>();
                 builder.Services.AddScoped<IReportService, ReportService>();
+                builder.Services.AddScoped<IVoucherRepository, VoucherRepository>();
+                builder.Services.AddScoped<IVoucherService, VoucherService>();
                 #endregion
 
                 var app = builder.Build();
 
                 Log.Information("Start app!");
 
-                // Configure the HTTP request pipeline.
-                if (app.Environment.IsDevelopment())
+                #region Swagger
+                IServiceProvider servicesSW = app.Services;
+                var provider = servicesSW.GetRequiredService<IApiVersionDescriptionProvider>();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
                 {
-                    app.UseSwagger();
-                    app.UseSwaggerUI(c =>
+                    foreach (var description in provider.ApiVersionDescriptions)
                     {
-                        c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
-                    });
-                }
+                        c.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    }
+
+                    // c.SwaggerEndpoint("/swagger/v1.0/swagger.json", "v1");
+                });
+                #endregion
 
                 app.UseSerilogRequestLogging();
 

@@ -155,7 +155,8 @@ namespace BookStore.Datas.DbContexts
                         Image = "https://bit.ly/46G92Jk",
                         Rate = 4.0,
                         Title = "Doraemon Movie Story Màu - Tân Nobita và lịch sử khai phá vũ trụ",
-                        TotalPageNumber = 144
+                        TotalPageNumber = 144,
+                        PublishedAt = DateTime.Parse("2024-05-10")
                     },
                     new Book
                     {
@@ -164,7 +165,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 60,
                         BookGroupId =  genges[0].Id,
                         Image = "https://product.hstatic.net/200000343865/product/2_c8a974f56e58406eb867b6acfae04172_master.jpg",
-
+                        PublishedAt = DateTime.Parse("2024-02-11"),
                         Rate = 3.4,
                         Title = "Nàng Juliet ở trường nội trú - Tập 2",
                         TotalPageNumber = 192
@@ -176,7 +177,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 40,
                         BookGroupId =  genges[0].Id,
                         Image = "https://product.hstatic.net/200000343865/product/58_24516e32dba947dbb98beee5b64c7793_master.jpg",
-
+                        PublishedAt = DateTime.Parse("2024-01-12"),
                         Rate = 4.2,
                         Title = "Pokémon đặc biệt - Tập 58",
                         TotalPageNumber = 220
@@ -188,7 +189,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 50,
                         BookGroupId =  genges[0].Id,
                         Image = "https://product.hstatic.net/200000343865/product/34_2012f863fb284ecebba578bb6ac64e01_master.jpg",
-
+                        PublishedAt = DateTime.Parse("2023-05-13"),
                         Rate = 4.3,
                         Title = "Ninja Rantaro - Tập 34",
                         TotalPageNumber = 150
@@ -196,11 +197,11 @@ namespace BookStore.Datas.DbContexts
                     new Book
                     {
                         Description = "THỢ SĂN HẠNG E SUNG JIN WOO đã tiêu diệt được trùm và bước ra từ Cổng Đỏ. Với vật phẩm là chiếc chìa khóa trong tay, cậu tiếp tục mở ra tòa thành do bọn quỷ tà ác thống trị.",
-                        Price = 14007250000,
+                        Price = 50000,
                         Remaining = 30,
                         BookGroupId =  genges[0].Id,
                         Image = "https://product.hstatic.net/200000343865/product/8_54da49676c87420a82c7bc035bff2b7f_master.jpg",
-
+                        PublishedAt = DateTime.Parse("2024-01-14"),
                         Rate = 4,
                         Title = "Solo Leveling - Tôi thăng cấp một mình - Tập 8",
                         TotalPageNumber = 200
@@ -212,7 +213,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 20,
                         BookGroupId =  genges[0].Id,
                         Image = "https://product.hstatic.net/200000343865/product/1_d295818bf0c54c01a64027f9c986b891_master.jpg",
-
+                        PublishedAt = DateTime.Parse("2024-05-04"),
                         Rate = 4.5,
                         Title = "Solo Leveling - Tôi thăng cấp một mình - Tập 1",
                         TotalPageNumber = 168
@@ -224,7 +225,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 14,
                         BookGroupId =  genges[1].Id,
                         Image = "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/tamthe01.jpg?v=1705552096503",
-
+                        PublishedAt = DateTime.Parse("2023-05-16"),
                         Rate = 3.6,
                         Title = "TAM THỂ",
                         TotalPageNumber = 365
@@ -236,7 +237,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 60,
                         BookGroupId =  genges[1].Id,
                         Image = "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/z48398975736586899037cbeab4b8e.jpg?v=1705552513867",
-
+                        PublishedAt = DateTime.Parse("2023-07-17"),
                         Rate = 4.7,
                         Title = "THẾ GIỚI ATLANTIS",
                         TotalPageNumber = 270
@@ -248,7 +249,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 70,
                         BookGroupId =  genges[1].Id,
                         Image = "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/quancanhbohamcuakecapquakhuout.jpg?v=1710306261860",
-
+                        PublishedAt = DateTime.Parse("2023-02-18"),
                         Rate = 4.8,
                         Title = "QUÁN CANH BÒ HẦM CỦA KẺ CẮP QUÁ KHỨ",
                         TotalPageNumber = 572
@@ -260,7 +261,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 20,
                         BookGroupId =  genges[1].Id,
                         Image = "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/hoa-cho-algernon-phieu-bia.jpg?v=1712212030150",
-
+                        PublishedAt = DateTime.Parse("2022-05-19"),
                         Rate = 4.1,
                         Title = "Hoa trên mộ ALGERNON",
                         TotalPageNumber = 439
@@ -272,7 +273,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining = 10,
                         BookGroupId =  genges[1].Id,
                         Image = "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/haunhuvohai01.jpg?v=1705552102770",
-
+                        PublishedAt = DateTime.Parse("2023-04-20"),
                         Rate = 4.0,
                         Title = "HẦU NHƯ VÔ HẠI",
                         TotalPageNumber = 300
@@ -281,6 +282,7 @@ namespace BookStore.Datas.DbContexts
                     {
                         Description =  "Trong cơn phiền não vì phải viết đánh giá cho một cuốn tiểu thuyết mới ra mắt, một nhà phê bình đã được giới thiệu cho chiếc máy kỳ lạ mang tên “SoHox”. Với khả năng tạo ra những bài bình luận về bất kỳ tác phẩm nào chỉ trong tích tắc, chiếc máy này có thể sẽ làm nên một cuộc cách mạng đảo lộn hoàn toàn giới tiểu thuyết trinh thám…",
                         Price =  210000,
+                        PublishedAt = DateTime.Parse("2024-02-21"),
                         Remaining =  29,
                         BookGroupId =  genges[2].Id,
                         Image =  "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/sieuanmangnoiuuphiencuacacnhat.jpg?v=1713497760903",
@@ -291,6 +293,7 @@ namespace BookStore.Datas.DbContexts
                     new Book
                     {
                         Description =  "Chiếc đèn hình thỏ mang sức mạnh nguyền rủa, cái đầu nhớp nhúa trồi lên từ bồn cầu, vụ tai nạn xe hơi ly kỳ giữa đầm lầy, con cáo chảy máu vàng ròng, những kẻ sống và người chết bị trói buộc trong dòng chảy thời gian...Con thỏ nguyền rủa là tập truyện ngắn đầy ám ảnh, hài hước, gớm ghiếc và ghê rợn về những cơn ác mộng của cuộc sống hiện đại, trong một thế giới \"nhìn chung là khốc liệt và xa lạ, đôi khi cũng đẹp và mê hoặc, nhưng ngay cả trong những giây phút đó, về cơ bản nó vẫn là một chốn man rợ.\"",
+                        PublishedAt = DateTime.Parse("2024-05-22"),
                         Price =  117000,
                         Remaining =  38,
                         BookGroupId =  genges[2].Id,
@@ -307,6 +310,7 @@ namespace BookStore.Datas.DbContexts
                         BookGroupId =  genges[2].Id,
                         Image =  "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/ten-cua-doa-hong-560px-1.jpg?v=1712637799820",
                             Rate =  4.3,
+                        PublishedAt = DateTime.Parse("2024-05-23"),
                         Title =  "TÊN CỦA ĐÓA HỒNG",
                         TotalPageNumber =  332
                     },
@@ -318,6 +322,7 @@ namespace BookStore.Datas.DbContexts
                         BookGroupId =  genges[2].Id,
                         Image =  "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/bongtoigiuachungta01e171349685.jpg?v=1713497758383",
                         Rate =  4.4,
+                        PublishedAt = DateTime.Parse("2024-05-24"),
                         Title =  "BÓNG TỐI GIỮA CHÚNG TA",
                         TotalPageNumber =  376
                     },
@@ -329,6 +334,7 @@ namespace BookStore.Datas.DbContexts
                         BookGroupId =  genges[3].Id,
                         Image =  "https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/dacnhantam03.jpg?v=1705552096050",
                         Rate =  4.8,
+                        PublishedAt = DateTime.Parse("2011-05-24"),
                         Title =  "Đắc Nhân Tâm",
                         TotalPageNumber =  320
                     },
@@ -340,7 +346,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining =  15,
                         BookGroupId =  genges[3].Id,
                         Image =  "https://www.ozsach.com/728-large_default/tu-duy-nhanh-va-cham.jpg",
-
+                        PublishedAt = DateTime.Parse("2012-05-24"),
                         Rate =  4.7,
                         Title =  "Tư Duy Nhanh và Chậm",
                         TotalPageNumber =  499
@@ -353,7 +359,7 @@ namespace BookStore.Datas.DbContexts
                         Remaining =  12,
                         BookGroupId =  genges[3].Id,
                         Image =  "https://bizweb.dktcdn.net/thumb/1024x1024/100/197/269/products/z4105964911654-5e5a35259898ca70607286170319aa65.jpg?v=1676275362800",
-
+                        PublishedAt = DateTime.Parse("2005-05-24"),
                         Rate =  4.6,
                         Title =  "Sức Mạnh Của Thói Quen",
                         TotalPageNumber =  408
@@ -361,12 +367,11 @@ namespace BookStore.Datas.DbContexts
                     new Book
                     {
                         Description =  "Cuốn sách của Hiromi Shinya, một bác sĩ nổi tiếng tại Nhật Bản, không chỉ là sách về sức khỏe mà còn là một nghiên cứu sâu sắc về mối liên hệ giữa tâm lý và thể chất. Sách giải thích cách các enzyme trong cơ thể giúp duy trì sức khỏe và sự sống.",
-
                         Price =  140000,
                         Remaining =  8,
                         BookGroupId =  genges[3].Id,
                         Image =  "https://nhasachbaoanh.com/wp-content/uploads/2022/08/nhan-to-enzyme-tron-bo-4-cuon.jpg",
-
+                        PublishedAt = DateTime.Parse("2011-05-24"),
                         Rate =  4.5,
                         Title =  "Nhân Tố Enzyme",
                         TotalPageNumber =  256
@@ -374,12 +379,11 @@ namespace BookStore.Datas.DbContexts
                     new Book
                     {
                         Description =  "Cuốn sách này của Martin Seligman, nhà tâm lý học nổi tiếng, giới thiệu về một lĩnh vực mới trong tâm lý học: tâm lý học tích cực. Sách cung cấp các nghiên cứu và kỹ thuật giúp tăng cường hạnh phúc và thành công trong cuộc sống.",
-
+                        PublishedAt = DateTime.Parse("2016-05-24"),
                         Price =  180000,
                         Remaining =  5,
                         BookGroupId =  genges[3].Id,
                         Image =  "https://cdn0.fahasa.com/media/catalog/product/t/_/t_m-l_-h_c-t_ch-c_c-b_a-1.jpg",
-
                         Rate =  4.8,
                         Title =  "Tâm Lý Học Tích Cực",
                         TotalPageNumber =  368
@@ -387,12 +391,11 @@ namespace BookStore.Datas.DbContexts
                     new Book
                     {
                         Description =  "Cuốn sách của Mark Manson đưa ra một cái nhìn thẳng thắn và thực tế về cách đối diện với các vấn đề trong cuộc sống. Thay vì theo đuổi hạnh phúc, sách khuyến khích bạn học cách đối mặt và chấp nhận thực tế.",
-
+                        PublishedAt = DateTime.Parse("2019-05-24"),
                         Price =  150000,
                         Remaining =  8,
                         BookGroupId =  genges[4].Id,
                         Image =  "https://cdn0.fahasa.com/media/catalog/product/i/m/Image_244718_1_5283.jpg",
-
                         Rate =  4.7,
                         Title =  "Nghệ Thuật Tinh Tế Của Việc Đếch Quan Tâm",
                         TotalPageNumber =  240
@@ -400,12 +403,11 @@ namespace BookStore.Datas.DbContexts
                     new Book
                     {
                         Description =  "Ryan Holiday, tác giả của cuốn sách này, tập trung vào nghệ thuật sống chậm, tìm sự bình yên nội tâm và tránh xa những điều nhiễu loạn của cuộc sống hiện đại.",
-
+                        PublishedAt = DateTime.Parse("2020-05-26"),
                         Price =  170000,
                         Remaining =  10,
                         BookGroupId =  genges[4].Id,
                         Image =  "https://cdn0.fahasa.com/media/catalog/product/i/m/Image_195509_1_37845.jpg",
-
                         Rate =  4.6,
                         Title =  "Sức Mạnh Của Sự Tĩnh Lặng",
                         TotalPageNumber =  288
@@ -413,7 +415,7 @@ namespace BookStore.Datas.DbContexts
                     new Book
                     {
                         Description =  "Cuốn sách của Donald Robertson dạy bạn cách thấu hiểu và trau dồi sự tinh tế trong giao tiếp, tư duy, và phong cách sống. Nó là một cẩm nang để trở thành một người thanh lịch và có phong cách.",
-
+                        PublishedAt = DateTime.Parse("2013-08-12"),
                         Price =  160000,
                         Remaining =  7,
                         BookGroupId =  genges[4].Id,
@@ -427,6 +429,7 @@ namespace BookStore.Datas.DbContexts
                     {
                         Description =  "Rolf Dobelli viết về những lỗi tư duy phổ biến mà chúng ta thường gặp phải và cách để tránh chúng. Cuốn sách này hướng dẫn cách suy nghĩ một cách rõ ràng và có hệ thống hơn.",
                         Price =  190000,
+                        PublishedAt = DateTime.Parse("2012-08-12"),
                         Remaining =  6,
                         BookGroupId =  genges[4].Id,
                         Image =  "https://cdn0.fahasa.com/media/catalog/product/n/g/nghe_thuat_tu_duy_ranh_mach_u2487_d20161129_t103616_398639_550x550.jpg",
@@ -439,6 +442,7 @@ namespace BookStore.Datas.DbContexts
                         Description =  "Cuốn sách này của Epictetus là một bản dịch và diễn giải từ tác phẩm cổ điển của nhà triết học Hy Lạp. Nó cung cấp những bài học quý giá về cách sống tốt, dựa trên nguyên tắc của chủ nghĩa Khắc Kỷ.",
                         Price =  130000,
                         Remaining =  9,
+                        PublishedAt = DateTime.Parse("2024-08-30"),
                         BookGroupId =  genges[4].Id,
                         Image =  "https://nhatrangbooks.com/wp-content/uploads/2019/10/11345614940da2e20a3915579f0cc4b2.jpg",
                         Rate =  4.8,
@@ -694,7 +698,7 @@ namespace BookStore.Datas.DbContexts
 
                 var carts = new List<Cart>
                 {
-                    new Cart 
+                    new Cart
                     {
                         UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
                         CartItems = new List<CartItem>
@@ -752,7 +756,7 @@ namespace BookStore.Datas.DbContexts
                                 Quantity =  5
                             }
                         }
-    
+
                       },
                     new Cart
                       {
@@ -788,7 +792,7 @@ namespace BookStore.Datas.DbContexts
                                 Quantity =  18
                             }
                         }
-    
+
                       }
                 };
 
@@ -809,7 +813,7 @@ namespace BookStore.Datas.DbContexts
 
                 var orders = new List<Order>
                 {
-                    new Order 
+                    new Order
                     {
                         UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
                         Status =  OrderStatusEnum.DaGiaoHang,
@@ -1044,11 +1048,326 @@ namespace BookStore.Datas.DbContexts
                         await context.SaveChangesAsync();
                     }
                 }
-#endregion
+                #endregion
 
-                // Vouchers
-                var voucherDatas = File.ReadAllText("../BookStore.Datas/DbContexts/Vouchers.json");
-                var vouchers = JsonSerializer.Deserialize<List<Voucher>>(voucherDatas);
+                #region Dữ liệu Seeding Vouchers
+                //var voucherDatas = File.ReadAllText("../BookStore.Datas/DbContexts/Vouchers.json");
+                //var vouchers = JsonSerializer.Deserialize<List<Voucher>>(voucherDatas);
+
+                var vouchers = new List<Voucher>
+                {
+                    new Voucher 
+                    {
+                        Percent =  10,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {   
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  11,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  12,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  13,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  14,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  15,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  16,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  17,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  18,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                    new Voucher {
+                        Percent =  20,
+                        VoucherUsers = new List<VoucherUser>
+                        {
+                            new VoucherUser
+                            {
+                                UserId =  "5c90980f-12d8-4d0b-a161-30a64c988b98",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "94df3fe8-2374-4272-b238-7937cac1ffad",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "00de843c-0fcb-4fd8-9285-930aa0cbf31b",
+                                Used =  false
+                            },
+                            new VoucherUser
+                            {
+                                UserId =  "b5c9e5de-dcea-416b-8f70-e0cb145d69e0",
+                                Used =  false
+                            },
+                        }
+                    },
+                };
 
                 if (!context.Vouchers.Any())
                 {
@@ -1067,6 +1386,8 @@ namespace BookStore.Datas.DbContexts
                     }
                 }
 
+                #endregion
+
                 if (context.ChangeTracker.HasChanges())
                 {
                     await context.SaveChangesAsync();
@@ -1074,24 +1395,4 @@ namespace BookStore.Datas.DbContexts
             }
         }
     }
-
-    //public class CustomDateTimeConverter : JsonConverter<DateTime>
-    //{
-    //    private readonly string _format = "yyyy/MM/dd";
-
-    //    public override DateTime Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-    //    {
-    //        if (DateTime.TryParseExact(reader.GetString(), _format, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
-    //        {
-    //            return date;
-    //        }
-
-    //        throw new JsonException($"Unable to parse {reader.GetString()} to DateTime");
-    //    }
-
-    //    public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-    //    {
-    //        writer.WriteStringValue(value.ToString(_format));
-    //    }
-    //}
 }

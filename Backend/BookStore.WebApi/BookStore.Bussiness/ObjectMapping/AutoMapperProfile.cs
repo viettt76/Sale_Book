@@ -12,6 +12,7 @@ using BookStore.Bussiness.ViewModel.OrderItem;
 using BookStore.Bussiness.ViewModel.Publisher;
 using BookStore.Bussiness.ViewModel.Report;
 using BookStore.Bussiness.ViewModel.Review;
+using BookStore.Bussiness.ViewModel.Voucher;
 using BookStore.Models.Models;
 
 namespace BookStore.Bussiness.ObjectMapping
@@ -93,6 +94,13 @@ namespace BookStore.Bussiness.ObjectMapping
 
             CreateMap<ReportViewModel, Report>();
             CreateMap<Report, ReportViewModel>();
+
+            CreateMap<VoucherViewModel, Voucher>();
+            CreateMap<Voucher, VoucherViewModel>();
+            CreateMap<VoucherCreateViewModel, Voucher>();
+            CreateMap<VoucherUpdateViewModel, Voucher>();
+            CreateMap<VoucherUser, VoucherUserViewModel>()
+                .ForMember(x => x.Percent, x => x.MapFrom(e => e.Voucher.Percent));
 
             CreateMap(typeof(PaginationList<>), typeof(PaginationList<>))
                 .ConvertUsing(typeof(PaginatedListConverter<,>));

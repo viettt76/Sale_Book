@@ -9,6 +9,7 @@ namespace BookStore.Bussiness.ViewModel.Order
         // public decimal TotalAmount { get; set; }
         public OrderStatusEnum Status { get; set; } = OrderStatusEnum.DangXuLy;
         public DateTime Date { get; set; }
+        public int VoucherId { get; set; }
         public IEnumerable<OrderItemCreateViewModel> OrderItems { get; set; }
     }
 }

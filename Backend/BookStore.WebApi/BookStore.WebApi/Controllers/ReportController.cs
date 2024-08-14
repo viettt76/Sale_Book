@@ -10,9 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BookStore.WebApi.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]s")]
+    [Authorize(Roles = "Admin")]
     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;

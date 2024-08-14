@@ -43,7 +43,7 @@ namespace BookStore.WebApi.Controllers
         /// Sorted: mặc định sắp xếp theo ngày
         /// </remarks>
         [HttpGet]
-        [Route("all-order")]
+        [Route("all-orders")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -66,8 +66,13 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Get tất cả order của user đang đăng nhập
+        /// </summary>
+        /// <param name="spec"></param>
+        /// <returns></returns>
         [HttpGet]
-        [Route("order-of-user")]
+        [Route("orders-of-user")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -172,7 +177,7 @@ namespace BookStore.WebApi.Controllers
         /// POST /api/v1.0/Order/update-status-order/6?orderStatus=1
         /// </remarks>
         [HttpPut]
-        [Route("update-status-order/{id}")]
+        [Route("status-order-update/{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
