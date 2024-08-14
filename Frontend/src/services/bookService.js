@@ -1,7 +1,7 @@
 import axios from '~/utils/axios';
 
 export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy }) => {
-    return axios.get('/Book/search', {
+    return axios.get('/Books/searching', {
         params: {
             pageNumber,
             pageSize,
@@ -11,11 +11,11 @@ export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy }) 
 };
 
 export const getBookByIdService = (id) => {
-    return axios.get(`/Book/get-by-id/${id}`);
+    return axios.get(`/Books/${id}`);
 };
 
 export const searchBookByNameOrAuthor = (keyword) => {
-    return axios.get('/Book/search', {
+    return axios.get('/Books/searching', {
         params: {
             filter: keyword,
         },
@@ -23,13 +23,13 @@ export const searchBookByNameOrAuthor = (keyword) => {
 };
 
 export const createBookService = (data) => {
-    return axios.post('/Book/create', data);
+    return axios.post('/Books', data);
 };
 
 export const updateBookService = (data) => {
-    return axios.put(`/Book/update/${data?.id}`, data);
+    return axios.put(`/Books/${data?.id}`, data);
 };
 
 export const deleteBookService = (id) => {
-    return axios.delete(`/Book/delete/${id}`);
+    return axios.delete(`/Books/${id}`);
 };

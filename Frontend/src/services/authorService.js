@@ -1,23 +1,23 @@
 import axios from '~/utils/axios';
 
 export const getAllAuthorsService = () => {
-    return axios.get('/Author/get-all');
+    return axios.get('/Authors');
 };
 
 export const getAuthorPagingService = ({ pageNumber = 1, pageSize = 10 }) => {
-    return axios.get('/Author/get-all-paging', {
+    return axios.get('/Authors/paging', {
         params: { pageNumber, pageSize },
     });
 };
 
 export const createAuthorService = (data) => {
-    return axios.post('/Author/create', data);
+    return axios.post('/Authors', data);
 };
 
 export const updateAuthorService = (data) => {
-    return axios.put(`/Author/update/${data?.id}`, data);
+    return axios.put(`/Authors/${data?.id}`, data);
 };
 
 export const deleteAuthorService = (id) => {
-    return axios.delete(`/Author/delete/${id}`);
+    return axios.delete(`/Authors/${id}`);
 };
