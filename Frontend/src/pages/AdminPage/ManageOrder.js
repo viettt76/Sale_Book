@@ -1,15 +1,11 @@
 import clsx from 'clsx';
 import { useEffect, useState } from 'react';
 import { Button, Modal, Pagination, Form, Col, Row } from 'react-bootstrap';
-import {
-    createGenreService,
-    deleteGenreService,
-    getGenrePagingService,
-    updateGenreService,
-} from '~/services/genreService';
 import styles from './AdminPage.module.scss';
 import Loading from '~/components/Loading';
-import { adminGetAllOrdersService } from '~/services/orderService';
+import { adminChangeStatusOfOrderService, adminGetAllOrdersService } from '~/services/orderService';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
+import moment from 'moment';
 
 const ManageOrder = () => {
     const [loading, setLoading] = useState(false);
@@ -22,43 +18,38 @@ const ManageOrder = () => {
     const fetchGetOrders = async () => {
         try {
             setLoading(true);
-            const res = await adminGetAllOrdersService();
-            console.log(res);
-            // setTotalPage(res?.data?.totalPage);
-            // setOrders(
-            //     res?.data?.datas?.map((genre) => ({
-            //         id: genre?.id,
-            //         name: genre?.name,
-            //     })),
-            // );
-            // setLoading(false);
+            const res = await adminGetAllOrdersService({ pageNumber: currentPage, pageSize: pageSize });
 
-            // {
-            //     "id": 1,
-            //     "userId": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
-            //     "userName": "hoangquocviet@gmail.com",
-            //     "userEmail": "hoangquocviet@gmail.com",
-            //     "userPhoneNumber": "0909123457",
-            //     "totalAmount": 200000,
-            //     "status": 3,
-            //     "voucherId": 0,
-            //     "voucherPercent": 0,
-            //     "date": "2022-12-06T00:00:00",
-            //     "orderItems": [
-            //         {
-            //             "id": 1,
-            //             "orderId": 1,
-            //             "bookId": 1,
-            //             "bookName": "Doraemon Movie Story Màu - Tân Nobita và lịch sử khai phá vũ trụ",
-            //             "bookImage": "https://bit.ly/46G92Jk",
-            //             "bookPrice": 31500,
-            //             "isReviewed": false,
-            //             "quantity": 13
-            //         }
-            //     ]
-            // }
+            setTotalPage(res?.data?.totalPage);
+
+            setOrders(
+                res?.data?.datas?.map((order) => {
+                    return {
+                        id: order?.id,
+                        userId: order?.userId,
+                        userName: order?.userName,
+                        userEmail: order?.userEmail,
+                        userPhoneNumber: order?.userPhoneNumber,
+                        userAddress: order?.userAddress,
+                        totalAmount: order?.totalAmount,
+                        status: order?.status,
+                        voucherId: order?.voucherId,
+                        voucherPercent: order?.voucherPercent,
+                        date: order?.date,
+                        orderItems: order?.orderItems?.map((book) => ({
+                            bookId: book?.bookId,
+                            bookName: book?.bookName,
+                            bookImage: book?.bookImage,
+                            bookPrice: book?.bookPrice,
+                            quantity: book?.quantity,
+                        })),
+                    };
+                }),
+            );
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -70,30 +61,30 @@ const ManageOrder = () => {
         setCurrentPage(i);
     };
 
-    // Update genre
-    const [showModalUpdateGenre, setShowModalUpdateGenre] = useState(false);
-    const handleCloseModalUpdateGenre = () => setShowModalUpdateGenre(false);
-    const handleShowModalUpdateGenre = (id, name) => {
-        setGenreUpdateInfo({
-            id,
-            name: name,
+    // Update order
+    const [showModalUpdateOrder, setShowModalUpdateOrder] = useState(false);
+    const handleCloseModalUpdateOrder = () => setShowModalUpdateOrder(false);
+    const handleShowModalUpdateOrder = (id, status) => {
+        setOrderUpdateInfo({
+            id: Number(id),
+            status: status,
         });
-        setShowModalUpdateGenre(true);
+        setShowModalUpdateOrder(true);
     };
 
-    const [genreUpdateInfo, setGenreUpdateInfo] = useState({
-        id: '',
-        name: '',
+    const [orderUpdateInfo, setOrderUpdateInfo] = useState({
+        id: null,
+        status: '',
     });
 
-    const handleSubmitUpdateGenre = async () => {
+    const handleSubmitUpdateOrder = async () => {
         try {
-            await updateGenreService(genreUpdateInfo);
+            await adminChangeStatusOfOrderService({ orderId: orderUpdateInfo?.id, status: orderUpdateInfo?.status });
             fetchGetOrders();
         } catch (error) {
             console.log(error);
         } finally {
-            handleCloseModalUpdateGenre();
+            handleCloseModalUpdateOrder();
         }
     };
 
@@ -103,30 +94,71 @@ const ManageOrder = () => {
                 <table className="w-100">
                     <thead>
                         <tr>
-                            <th>User</th>
+                            <th>Email</th>
+                            <th>Address</th>
+                            <th>Total Amount</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Books</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {loading ? (
                             <tr>
-                                <td colSpan={2}>
+                                <td colSpan={7}>
                                     <Loading className="mt-3 mb-3" />
                                 </td>
                             </tr>
                         ) : (
-                            orders?.map((genre) => {
+                            orders?.map((order) => {
+                                const obj = {
+                                    0: 'Đã huỷ',
+                                    1: 'Đã thanh toán',
+                                    2: 'Chưa thanh toán',
+                                    3: 'Đã giao hàng',
+                                    4: 'Đang xử lý',
+                                };
                                 return (
-                                    <tr key={`genre-${genre?.id}`}>
-                                        <td>{genre?.name}</td>
+                                    <tr key={`order-${order?.id}`}>
+                                        <td>{order?.userEmail}</td>
+                                        <td>{order?.userAddress}</td>
+                                        <td>{order?.totalAmount}</td>
+                                        <td>{moment(order?.date).format('DD/MM/YYYY')}</td>
+                                        <td>{obj[order?.status]}</td>
+                                        <td>
+                                            <div className="d-flex flex-column align-items-center flex-wrap">
+                                                {order?.orderItems?.map((book) => {
+                                                    return (
+                                                        <img
+                                                            className={clsx(styles['book-image'])}
+                                                            key={`book-${book?.bookId}`}
+                                                            src={book?.bookImage}
+                                                            alt={book?.bookName}
+                                                            onError={(e) => {
+                                                                e.target.onerror = null;
+                                                                e.target.src = bookImageDefault;
+                                                            }}
+                                                        />
+                                                    );
+                                                })}
+                                            </div>
+                                        </td>
                                         <td>
                                             <Button
                                                 className="fz-16 me-3"
                                                 variant="warning"
-                                                onClick={() => handleShowModalUpdateGenre(genre?.id, genre?.name)}
+                                                onClick={() => handleShowModalUpdateOrder(order?.id, order?.status)}
                                             >
-                                                Sửa
+                                                Sửa trạng thái
                                             </Button>
+                                            {/* <Button
+                                                className="fz-16"
+                                                variant="danger"
+                                                onClick={() => handleShowModalDeleteOrder(order?.id, order?.name)}
+                                            >
+                                                Huỷ đơn
+                                            </Button> */}
                                         </td>
                                     </tr>
                                 );
@@ -150,35 +182,33 @@ const ManageOrder = () => {
                 })}
             </Pagination>
 
-            <Modal show={showModalUpdateGenre} onHide={handleCloseModalUpdateGenre}>
+            <Modal show={showModalUpdateOrder} onHide={handleCloseModalUpdateOrder}>
                 <Modal.Header>
-                    <Modal.Title>Sửa thể loại</Modal.Title>
+                    <Modal.Title>Sửa trạng thái</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
                         <Form.Group as={Row}>
-                            <Form.Label column sm="1">
-                                Tên
+                            <Form.Label column sm="2">
+                                Trạng thái
                             </Form.Label>
-                            <Col sm="11">
-                                <Form.Control
-                                    value={genreUpdateInfo?.name}
-                                    onChange={(e) =>
-                                        setGenreUpdateInfo({
-                                            ...genreUpdateInfo,
-                                            name: e.target.value,
-                                        })
-                                    }
-                                />
+                            <Col sm="10">
+                                <Form.Select value={orderUpdateInfo?.status}>
+                                    <option value={0}>Đã huỷ</option>
+                                    <option value={1}>Đã thanh toán</option>
+                                    <option value={2}>Chưa thanh toán</option>
+                                    <option value={3}>Đã giao hàng</option>
+                                    <option value={4}>Đang xử lý</option>
+                                </Form.Select>
                             </Col>
                         </Form.Group>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button className="fz-16" variant="warning" onClick={handleCloseModalUpdateGenre}>
+                    <Button className="fz-16" variant="warning" onClick={handleCloseModalUpdateOrder}>
                         Huỷ
                     </Button>
-                    <Button className="fz-16" variant="danger" onClick={handleSubmitUpdateGenre}>
+                    <Button className="fz-16" variant="danger" onClick={handleSubmitUpdateOrder}>
                         Cập nhật
                     </Button>
                 </Modal.Footer>

@@ -41,9 +41,10 @@ const ManageUser = () => {
                         };
                     }),
                 );
-                setLoading(false);
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchGetAllUsers();

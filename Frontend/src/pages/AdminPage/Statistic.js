@@ -22,7 +22,6 @@ const Statistic = () => {
 
                 setLoading(true);
                 const res = await getStatistic(filterType);
-                setLoading(false);
                 if (filterType === 'DAY') {
                     const cloneRes = res?.data?.map((statistic) => ({
                         date: new Date(statistic?.dateTime).getTime(),
@@ -62,6 +61,7 @@ const Statistic = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch statistics:', error);
+            } finally {
                 setLoading(false);
             }
         };

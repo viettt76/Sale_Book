@@ -62,10 +62,11 @@ const BookDetails = () => {
                     numberOfReview: res?.data?.totalReviewNumber,
                 });
             }
-            setLoading(false);
         } catch (error) {
             console.log(error);
             navigate('/404');
+        } finally {
+            setLoading(false);
         }
     };
 

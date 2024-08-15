@@ -44,10 +44,114 @@ const Order = () => {
                 });
             });
 
-            setOrders(x);
-            setLoading(false);
+            const y = [
+                {
+                    orderId: 8,
+                    date: '2022-12-06T00:00:00',
+                    status: 3,
+                    totalAmount: 550000,
+                    voucherPercent: 0,
+                    bookId: 8,
+                    bookImage:
+                        'https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/z48398975736586899037cbeab4b8e.jpg?v=1705552513867',
+                    bookName: 'THẾ GIỚI ATLANTIS',
+                    bookPrice: 170000,
+                    quantity: 2,
+                    isReviewed: true,
+                },
+                {
+                    orderId: 5,
+                    date: '2022-12-11T00:00:00',
+                    status: 2,
+                    totalAmount: 400000,
+                    voucherPercent: 0,
+                    bookId: 5,
+                    bookImage:
+                        'https://product.hstatic.net/200000343865/product/8_54da49676c87420a82c7bc035bff2b7f_master.jpg',
+                    bookName: 'Solo Leveling - Tôi thăng cấp một mình - Tập 8',
+                    bookPrice: 50000,
+                    quantity: 17,
+                    isReviewed: false,
+                },
+                {
+                    orderId: 6,
+                    date: '2024-08-06T00:00:00',
+                    status: 4,
+                    totalAmount: 450000,
+                    voucherPercent: 0,
+                    bookId: 6,
+                    bookImage:
+                        'https://product.hstatic.net/200000343865/product/1_d295818bf0c54c01a64027f9c986b891_master.jpg',
+                    bookName: 'Solo Leveling - Tôi thăng cấp một mình - Tập 1',
+                    bookPrice: 79200,
+                    quantity: 2,
+                    isReviewed: false,
+                },
+                {
+                    orderId: 9,
+                    date: '2024-08-15T08:20:26.213628',
+                    status: 1,
+                    totalAmount: 600000,
+                    voucherPercent: 0,
+                    bookId: 9,
+                    bookImage:
+                        'https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/quancanhbohamcuakecapquakhuout.jpg?v=1710306261860',
+                    bookName: 'QUÁN CANH BÒ HẦM CỦA KẺ CẮP QUÁ KHỨ',
+                    bookPrice: 320000,
+                    quantity: 3,
+                    isReviewed: true,
+                },
+                {
+                    orderId: 10,
+                    date: '2024-08-15T08:20:26.2136284',
+                    status: 0,
+                    totalAmount: 650000,
+                    voucherPercent: 0,
+                    bookId: 10,
+                    bookImage:
+                        'https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/hoa-cho-algernon-phieu-bia.jpg?v=1712212030150',
+                    bookName: 'Hoa trên mộ ALGERNON',
+                    bookPrice: 175000,
+                    quantity: 1,
+                    isReviewed: true,
+                },
+                {
+                    orderId: 11,
+                    date: '2024-08-15T08:20:26.2136285',
+                    status: 3,
+                    totalAmount: 700000,
+                    voucherPercent: 0,
+                    bookId: 11,
+                    bookImage:
+                        'https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/haunhuvohai01.jpg?v=1705552102770',
+                    bookName: 'HẦU NHƯ VÔ HẠI',
+                    bookPrice: 200000,
+                    quantity: 2,
+                    isReviewed: false,
+                },
+                {
+                    orderId: 12,
+                    date: '2024-08-15T08:20:26.2136289',
+                    status: 2,
+                    totalAmount: 750000,
+                    voucherPercent: 0,
+                    bookId: 12,
+                    bookImage:
+                        'https://bizweb.dktcdn.net/thumb/1024x1024/100/363/455/products/sieuanmangnoiuuphiencuacacnhat.jpg?v=1713497760903',
+                    bookName: 'SIÊU ÁN MẠNG: NỖI ƯU PHIỀN CỦA CÁC NHÀ VĂN TRINH THÁM',
+                    bookPrice: 210000,
+                    quantity: 3,
+                    isReviewed: true,
+                },
+            ];
+
+            setOrders(y);
+
+            // setOrders(x);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -186,14 +290,19 @@ const Order = () => {
                                                     </Link>
                                                 </div>
                                             )}
-                                            {order?.status === 2 && (
-                                                <div className={clsx(styles['order-action'])}>
-                                                    <Link
-                                                        to={`/book/${order?.bookId}/pay?quantity=${order?.quantity}`}
-                                                        className={clsx('d-block', styles['order-buy-back'])}
-                                                    >
-                                                        Thanh toán
-                                                    </Link>
+                                            {(order?.status === 4 || order?.status === 2) && (
+                                                <div className={clsx('d-flex', styles['order-action'])}>
+                                                    <button className={clsx('d-block', styles['cancel-order'])}>
+                                                        Huỷ đơn
+                                                    </button>
+                                                    {order?.status === 2 && (
+                                                        <Link
+                                                            to={`/book/${order?.bookId}/pay?quantity=${order?.quantity}`}
+                                                            className={clsx('d-block ms-3', styles['order-buy-back'])}
+                                                        >
+                                                            Thanh toán
+                                                        </Link>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>

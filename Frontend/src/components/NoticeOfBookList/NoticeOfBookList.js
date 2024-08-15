@@ -50,9 +50,10 @@ const NoticeOfBookList = ({
                             })
                             .reverse(),
                     );
-                    setLoading(false);
                 } catch (error) {
                     console.log(error);
+                } finally {
+                    setLoading(false);
                 }
             } else if (type === 'order') {
                 try {
@@ -77,9 +78,10 @@ const NoticeOfBookList = ({
                             })
                             .reverse(),
                     );
-                    setLoading(false);
                 } catch (error) {
                     console.log(error);
+                } finally {
+                    setLoading(false);
                 }
             }
         };

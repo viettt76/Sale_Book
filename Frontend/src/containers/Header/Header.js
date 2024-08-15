@@ -59,11 +59,11 @@ const Header = () => {
             try {
                 setLoading(true);
                 const res = await getMyVoucherService();
-                console.log(res);
-                setLoading(false);
                 setVouchers(res?.data);
             } catch (error) {
                 console.log(error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchVoucher();
