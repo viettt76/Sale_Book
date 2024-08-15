@@ -3,6 +3,7 @@ using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Models.Enums;
 using BookStore.Models.Models;
+using BookStore.WebApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -53,7 +54,7 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                var res = await _orderService.GetOrder(spec);
+                var res = await _orderService.GetOrders(spec);
 
                 if (res == null)
                     return BadRequest();
@@ -63,6 +64,32 @@ namespace BookStore.WebApi.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet]
+        [Route("order-detail")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> OrderDetails(int orderId)
+        {
+            try
+            {
+                var userId = _userManager.GetUserId(User);
+
+                var res = await _orderService.GetOrder(orderId, userId, new[] { "OrderItems", "OrderItems.Book", "User" });
+
+                if (res == null)
+                    return NotFound(new ErrorDetails(StatusCodes.Status404NotFound, "Không tìm thấy đơn hàng này"));
+
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex));
             }
         }
 
@@ -84,7 +111,7 @@ namespace BookStore.WebApi.Controllers
             {
                 var userId = _userManager.GetUserId(User);
 
-                var res = await _orderService.GetOrderUser(userId, spec, new[] {"OrderItems", "OrderItems.Book", "User"});
+                var res = await _orderService.GetOrdersUser(userId, spec, new[] { "OrderItems", "OrderItems.Book", "User" });
 
                 if (res == null)
                     return BadRequest();
@@ -114,7 +141,7 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateOrder (OrderCreateViewModel create)
+        public async Task<IActionResult> CreateOrder(OrderCreateViewModel create)
         {
             try
             {
@@ -183,7 +210,7 @@ namespace BookStore.WebApi.Controllers
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateStatusOrder (int id, OrderStatusEnum orderStatus)
+        public async Task<IActionResult> UpdateStatusOrder(int id, OrderStatusEnum orderStatus)
         {
             try
             {
@@ -198,7 +225,7 @@ namespace BookStore.WebApi.Controllers
                     if (donHangUser == null)
                         return NotFound("Không thể tìm thấy đơn hàng");
 
-                    if (donHangUser.Status == OrderStatusEnum.DangXuLy &&  orderStatus == OrderStatusEnum.DaHuy)
+                    if (donHangUser.Status == OrderStatusEnum.DangXuLy && orderStatus == OrderStatusEnum.DaHuy)
                     {
                         var resUser = await _orderService.UpdateOrderStatus(id, orderStatus);
 
@@ -225,7 +252,7 @@ namespace BookStore.WebApi.Controllers
                     if (resAdmin == 1)
                         return Ok(resAdmin);
 
-                    return BadRequest();    
+                    return BadRequest();
                 }
 
                 return BadRequest();

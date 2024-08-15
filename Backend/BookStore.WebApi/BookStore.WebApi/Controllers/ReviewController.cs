@@ -1,5 +1,5 @@
 ﻿using BookStore.Bussiness.Interfaces;
-using BookStore.Bussiness.ViewModel.Auth;
+using BookStore.Bussiness.Services;
 using BookStore.Bussiness.ViewModel.Review;
 using BookStore.Models.Models;
 using BookStore.WebApi.Models;
@@ -16,11 +16,13 @@ namespace BookStore.WebApi.Controllers
     public class ReviewController : ControllerBase
     {
         private readonly IReviewService _reviewService;
+        private readonly IOrserItemService _orderItemService;
         private readonly UserManager<User> _userManager;
 
-        public ReviewController(IReviewService reviewService, UserManager<User> userManager)
+        public ReviewController(IReviewService reviewService, IOrserItemService orderItemService, UserManager<User> userManager)
         {
             _reviewService = reviewService;
+            _orderItemService = orderItemService;
             _userManager = userManager;
         }
 
@@ -32,13 +34,17 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                viewModel.UserId = _userManager.GetUserId(User);
+                var userId = _userManager.GetUserId(User);
+
+                viewModel.UserId = userId;
                 var res = await _reviewService.CreateAsync(viewModel);
 
                 if (res == 0)
                 {
                     return BadRequest();
                 }
+
+                var reviewResult = await _orderItemService.IsReviewed(viewModel.OrderId, userId, viewModel.BookId);
 
                 return Ok(res);
             }

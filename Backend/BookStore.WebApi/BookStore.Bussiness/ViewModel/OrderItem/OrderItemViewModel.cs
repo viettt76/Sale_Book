@@ -17,6 +17,7 @@ namespace BookStore.Bussiness.ViewModel.OrderItem
         public string BookName { get; set; }
         public string BookImage { get; set; }
         public decimal BookPrice { get; set; }
+        public bool IsReviewed { get; set; } = false;        
         public int Quantity { get; set; }
     }
 }

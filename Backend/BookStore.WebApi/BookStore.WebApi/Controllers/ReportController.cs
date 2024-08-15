@@ -40,7 +40,7 @@ namespace BookStore.WebApi.Controllers
         /// GET: /api/v1.0/
         /// </remarks>
         [HttpGet]
-        public async Task<IActionResult> GetReport(string? type)
+        public async Task<IActionResult> GetReport(string? type, string sort_type)
         {
             try
             {

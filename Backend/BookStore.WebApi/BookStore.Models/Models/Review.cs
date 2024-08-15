@@ -19,6 +19,9 @@ namespace BookStore.Models.Models
         [Range(0, 5)]
         public int Rate { get; set; }
 
+        [Required]
+        public int OrderId { get; set; }
+
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }

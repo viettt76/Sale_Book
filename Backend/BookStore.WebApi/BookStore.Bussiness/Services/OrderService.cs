@@ -10,7 +10,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.Bussiness.Services
 {
-    public class OrderService : BaseService<OrderViewModel, Order, OrderCreateViewModel, OrderUpdateViewModel>, IOrderService
+    public class OrderService 
+        : BaseService<OrderViewModel, Order, OrderCreateViewModel, OrderUpdateViewModel>, IOrderService
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderItemRepository _orderItemRepository;
@@ -88,7 +89,7 @@ namespace BookStore.Bussiness.Services
             return 1;
         }
 
-        public async Task<IEnumerable<OrderViewModel>> GetOrder(OrderSpecification spec)
+        public async Task<IEnumerable<OrderViewModel>> GetOrders(OrderSpecification spec)
         {
             var entities = await _orderRepository.GetAllAsync(new[] { "OrderItems", "OrderItems.Book", "User" });
 
@@ -131,7 +132,7 @@ namespace BookStore.Bussiness.Services
             return await _orderRepository.UpdateOrderStatus(id, statusOrder);
         }
 
-        public async Task<IEnumerable<OrderViewModel>> GetOrderUser(string userId, OrderSpecification spec, string[] includes)
+        public async Task<IEnumerable<OrderViewModel>> GetOrdersUser(string userId, OrderSpecification spec, string[] includes)
         {
             var entities =  await _orderRepository.GetOrderUser(userId, includes);
 
@@ -158,6 +159,13 @@ namespace BookStore.Bussiness.Services
             }
 
             return vm;
+        }
+
+        public async Task<OrderViewModel> GetOrder(int orderId, string userId, string[] includes = null)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId, userId, includes);
+
+            return ChangeToViewModel(order);
         }
     }
 }

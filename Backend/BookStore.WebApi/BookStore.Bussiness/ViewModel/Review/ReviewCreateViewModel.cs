@@ -16,5 +16,7 @@ namespace BookStore.Bussiness.ViewModel.Review
 
         [Required]
         public int BookId { get; set; }
+
+        public int OrderId { get; set; }
     }
 }

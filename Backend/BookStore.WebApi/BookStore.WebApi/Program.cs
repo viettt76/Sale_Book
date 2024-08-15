@@ -135,8 +135,10 @@ namespace BookStore.WebApi
 
                 builder.Services.ConfigureOptions<ConfigureSwaggerOptions>();
 
-                
-                #endregion 
+
+                #endregion
+
+                builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
 
                 builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
                 build =>
@@ -149,6 +151,8 @@ namespace BookStore.WebApi
 
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
+                    // Server=localhost,1433;Database=BookStore_Group2;User ID=sa;Password=your_password;MultipleActiveResultSets=true;Encrypt=False
+                    //Server=localhost,1433;Database=BookStore_Group2;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCOnnection"))
                     .EnableSensitiveDataLogging();
                 });
@@ -256,7 +260,7 @@ namespace BookStore.WebApi
                 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
                 builder.Services.AddScoped<IOrderService, OrderService>();
                 builder.Services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-                //builder.Services.AddScoped<IOrderItemService, OrderItemService>();
+                builder.Services.AddScoped<IOrserItemService, OrderItemService>();
                 builder.Services.AddScoped<IReviewService, ReviewService>();
                 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
                 builder.Services.AddScoped<IUserRepository, UserRepository>();

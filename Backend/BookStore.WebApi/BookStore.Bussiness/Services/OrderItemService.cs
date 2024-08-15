@@ -12,10 +12,23 @@ using System.Threading.Tasks;
 
 namespace BookStore.Bussiness.Services
 {
-    public class OrderItemService : BaseService<OrderItemViewModel, OrderItem, OrderItemCreateViewModel, OrderItemUpdateViewModel>, IOrserItemService
+    public class OrderItemService 
+        : BaseService<OrderItemViewModel, OrderItem, OrderItemCreateViewModel, OrderItemUpdateViewModel>, IOrserItemService
     {
+        private readonly IOrderItemRepository _orderItemRepository;
+        private readonly IMapper _mapper;
+
         public OrderItemService(IOrderItemRepository orderItemRepository, IMapper mapper) : base(orderItemRepository, mapper)
         {
+            _orderItemRepository = orderItemRepository;
+            _mapper = mapper;
+        }
+
+        public async Task<int> IsReviewed(int orderId, string userId, int bookId)
+        {
+            var res = await _orderItemRepository.IsReviewed(orderId, userId, bookId);
+
+            return res;
         }
     }
 }

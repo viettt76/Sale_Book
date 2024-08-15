@@ -15,7 +15,7 @@ namespace HealthcareAppointment.Data.Repositories
             _dbSet = _dbContext.Set<TEntity>();
         }
 
-        public async Task<TEntity> CreateAsync(TEntity entity)
+        public virtual async Task<TEntity> CreateAsync(TEntity entity)
         {
             var res = await _dbSet.AddAsync(entity);
             await _dbContext.SaveChangesAsync();

@@ -33,6 +33,36 @@ namespace BookStore.Datas.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
+        //public async Task<bool> CheckReviewedForOrderProduct(int orderId, int bookId, string userId)
+        //{
+        //    var reviewOfOrder = await _dbContext.Reviews.SingleOrDefaultAsync(x => x.OrderId == orderId && x.BookId == bookId && x.UserId == userId);
+
+        //    if (reviewOfOrder == null)
+        //    {
+        //        return false;
+        //    }
+
+        //    return true;
+        //}
+
+        public async Task<Order> GetByIdAsync(int orderId, string userId, string[] includes = null)
+        {
+            if (includes != null && includes.Count() > 0)
+            {
+                var query = _dbContext.Orders.Include(includes.First());
+                foreach (var include in includes.Skip(1))
+                {
+                    query = query.Include(include);
+                }
+
+                var res = await query.SingleOrDefaultAsync(x => x.Id == orderId && x.UserId == userId);
+
+                return res;
+            }
+
+            return await _dbContext.Orders.SingleOrDefaultAsync(x => x.Id == orderId && x.UserId == userId);
+        }
+
         public async Task<IEnumerable<Order>> GetOrderUser(string userId, string[] includes)
         {
             var orders = _dbContext.Orders.Where(x => x.UserId == userId).AsEnumerable();

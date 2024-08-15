@@ -78,6 +78,8 @@ namespace BookStore.WebApi.Controllers
                     };
 
                     var cart = await _cartService.CreateAsync(cartCreatevm);
+
+                    isExist = await _cartService.GetCartByUserId(userId);
                 }
 
                 var cartItemIsExist = await _cartItemService.GetCartItemIsExist(create.BookId, isExist.Id, userId);

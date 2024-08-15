@@ -17,6 +17,11 @@ namespace BookStore.Datas.Repositories
             _dbContext = dbContext;
         }
 
+        public override Task<Review> CreateAsync(Review entity)
+        {
+            return base.CreateAsync(entity);
+        }
+
         public async Task<int> DeleteReview(int reviewId, string userId)
         {
             var review = await _dbContext.Reviews.FirstOrDefaultAsync(x => x.Id ==  reviewId && x.UserId == userId);
@@ -29,6 +34,7 @@ namespace BookStore.Datas.Repositories
             _dbContext.Reviews.Remove(review);
             return await _dbContext.SaveChangesAsync();
         }
+
 
         public async Task<List<int>> GetRateOfBook(int bookId)
         {

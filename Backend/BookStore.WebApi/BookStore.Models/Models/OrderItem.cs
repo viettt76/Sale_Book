@@ -19,5 +19,6 @@ namespace BookStore.Models.Models
         [ForeignKey("BookId")]
         public Book Book { get; set; }
         public int Quantity { get; set; }
+        public bool IsReviewed { get; set; } = false;
     }
 }
