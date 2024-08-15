@@ -45,7 +45,7 @@ namespace BookStore.Datas.Repositories
                 query = query.Where(x => x.BookAuthors.Any(e => authorId.Contains(e.AuthorId)));
             }
 
-            if (groupId != null)
+            if (groupId != 0)
             {
                 query = query.Where(x => x.BookGroupId == groupId);
             }

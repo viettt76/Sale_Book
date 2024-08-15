@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace BookStore.WebApi.Controllers
 {
@@ -59,7 +60,7 @@ namespace BookStore.WebApi.Controllers
                     //              Revenue = g.Sum(x => x.o.TotalAmount) // assuming UnitPrice is in OrderItems
                     //          };
 
-                    var result = from o in _dbContext.Orders
+                    var query = from o in _dbContext.Orders
                                  join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
                                  from subOrder in orderGroup.DefaultIfEmpty()
                                  group subOrder by o.Date into g
@@ -70,14 +71,19 @@ namespace BookStore.WebApi.Controllers
                                      Revenue = g.Sum(x => x.Order.TotalAmount),
                                      NumberOfBookSold = g.Sum(x => x.Quantity)
                                  };
-                   
+                   var result = sort_type switch 
+                    {
+                        "ASC" => query.OrderBy(x => x.Key),
+                        "DESC" => query.OrderByDescending(x => x.Key),
+                        _ => query.OrderByDescending(x => x.Key)
+                    };
 
                     return Ok(result.ToList());
                 }
 
                 if (type == "MONTH")
                 {
-                    var result = from o in _dbContext.Orders
+                    var query = from o in _dbContext.Orders
                                  join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
                                  from subOrder in orderGroup.DefaultIfEmpty()
                                  group subOrder by new { Year = o.Date.Year, Month = o.Date.Month } into g
@@ -89,12 +95,19 @@ namespace BookStore.WebApi.Controllers
                                      NumberOfBookSold = g.Sum(x => x.Quantity)
                                  };
 
+                    var result = sort_type switch
+                    {
+                        "ASC" => query.OrderBy(x => x.Key),
+                        "DESC" => query.OrderByDescending(x => x.Key),
+                        _ => query.OrderByDescending(x => x.Key)
+                    };
+
                     return Ok(result.ToList());
                 }
 
                 if (type == "YEAR")
                 {
-                    var result = from o in _dbContext.Orders
+                    var query = from o in _dbContext.Orders
                                  join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
                                  from subOrder in orderGroup.DefaultIfEmpty()
                                  group subOrder by o.Date.Year into g
@@ -106,11 +119,18 @@ namespace BookStore.WebApi.Controllers
                                      NumberOfBookSold = g.Sum(x => x.Quantity)
                                  };
 
+                    var result = sort_type switch
+                    {
+                        "ASC" => query.OrderBy(x => x.Key),
+                        "DESC" => query.OrderByDescending(x => x.Key),
+                        _ => query.OrderByDescending(x => x.Key)
+                    };
+
                     return Ok(result.ToList());
                 }
 
                 // Nếu không thuộc các trường hợp trên thì sắp xếp theo ngày
-                var resultDefault = from o in _dbContext.Orders
+                var queryDefault = from o in _dbContext.Orders
                              join oi in _dbContext.OrderItems on o.Id equals oi.OrderId into orderGroup
                              from subOrder in orderGroup.DefaultIfEmpty()
                              group subOrder by o.Date into g
@@ -121,6 +141,13 @@ namespace BookStore.WebApi.Controllers
                                  Revenue = g.Sum(x => x.Order.TotalAmount),
                                  NumberOfBookSold = g.Sum(x => x.Quantity)
                              };
+
+                var resultDefault = sort_type switch
+                {
+                    "ASC" => queryDefault.OrderBy(x => x.Key),
+                    "DESC" => queryDefault.OrderByDescending(x => x.Key),
+                    _ => queryDefault.OrderByDescending(x => x.Key)
+                };
 
                 return Ok(resultDefault.ToList());
             }
