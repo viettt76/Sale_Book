@@ -4,8 +4,11 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 import { getStatistic } from '~/services/statisticService';
+import Loading from '~/components/Loading';
 
 const Statistic = () => {
+    const [loading, setLoading] = useState(false);
+
     const [filterType, setFilterType] = useState('DAY');
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
@@ -17,7 +20,9 @@ const Statistic = () => {
                 const start = new Date(startDate).getTime();
                 const end = new Date(endDate).getTime();
 
+                setLoading(true);
                 const res = await getStatistic(filterType);
+                setLoading(false);
                 if (filterType === 'DAY') {
                     const cloneRes = res?.data?.map((statistic) => ({
                         date: new Date(statistic?.dateTime).getTime(),
@@ -57,6 +62,7 @@ const Statistic = () => {
                 }
             } catch (error) {
                 console.error('Failed to fetch statistics:', error);
+                setLoading(false);
             }
         };
 
@@ -153,7 +159,15 @@ const Statistic = () => {
                         <th>Doanh thu (VND)</th>
                     </tr>
                 </thead>
-                {statistics?.length > 0 ? (
+                {loading ? (
+                    <tbody>
+                        <tr>
+                            <td colSpan="3">
+                                <Loading className="mt-3 mb-3" />
+                            </td>
+                        </tr>
+                    </tbody>
+                ) : statistics?.length > 0 ? (
                     <tbody>
                         {statistics.map((stat, index) => (
                             <tr key={index}>

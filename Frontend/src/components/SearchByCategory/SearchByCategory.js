@@ -41,6 +41,7 @@ const SearchByCategory = () => {
                         });
                     }
                     const data = res.data.datas;
+                    console.log(data);
                     const clone = data?.map((book) => {
                         return {
                             id: book?.id,
@@ -53,9 +54,7 @@ const SearchByCategory = () => {
                             rated: book?.rate,
                             remaining: book?.remaining,
                             image: book?.image,
-                            //     "bookGroupName": null,
-                            //     "authorName": null,
-                            //     "reviews": []
+                            authors: book?.author?.map((a) => a?.fullName).join(', '),
                         };
                     });
                     setBookList(clone);
@@ -118,7 +117,7 @@ const SearchByCategory = () => {
                                 bookId={book.id}
                                 img={book.image}
                                 name={book.name}
-                                nameAuthor={book.nameAuthor}
+                                nameAuthor={book.authors}
                                 price={book.price}
                                 rated={book?.rated}
                             />

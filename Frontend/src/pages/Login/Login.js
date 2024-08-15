@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Col, Form, Modal } from 'react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +8,17 @@ import styles from './Login.module.scss';
 import customToastify from '~/utils/customToastify';
 import { loginService, signUpService } from '~/services/userServices';
 import useFetchUserData from '~/hooks/useFetchUserData';
+import Loading from '~/components/Loading';
 
 function Login() {
     const navigate = useNavigate(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (localStorage.getItem('token')) {
+            navigate('/');
+        }
+    }, []);
 
     const fetchUserData = useFetchUserData();
 
@@ -64,10 +72,12 @@ function Login() {
                 e.stopPropagation();
                 setValidatedFormLogin(true);
             } else {
+                setLoading(true);
                 const res = await loginService(loginInfo);
                 if (res?.data?.token) {
                     localStorage.setItem('token', res?.data.token);
                     fetchUserData();
+                    setLoading(false);
                     navigate('/');
                 }
             }
@@ -181,6 +191,7 @@ function Login() {
                         </div>
                     )}
                 </Form>
+                {loading && <Loading className="mb-3" />}
                 <Button className="w-100 fz-16" onClick={handleSubmitFormLogin}>
                     Đăng nhập
                 </Button>

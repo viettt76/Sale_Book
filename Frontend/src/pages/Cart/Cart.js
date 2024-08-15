@@ -8,16 +8,20 @@ import { useSelector } from 'react-redux';
 import { getMyVoucherService } from '~/services/voucherService';
 import { orderService } from '~/services/orderService';
 import { userInfoSelector } from '~/redux/selectors';
+import Loading from '~/components/Loading';
 
 const Cart = () => {
     const userInfo = useSelector(userInfoSelector);
+    const [loading, setLoading] = useState(false);
 
     const [cart, setCart] = useState([]);
 
     const fetchGetCart = async () => {
         try {
+            setLoading(true);
             const res = await getCartService();
             setCart(res?.data?.cartItems);
+            setLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -100,7 +104,9 @@ const Cart = () => {
 
     return (
         <div className={clsx(styles['overlay'])}>
-            {cart?.length > 0 ? (
+            {loading ? (
+                <Loading className="mt-3" />
+            ) : cart?.length > 0 ? (
                 <div className={clsx(styles['pay-wrapper'])}>
                     <div className={clsx(styles['books-wrapper'])}>
                         {cart?.map((book) => {

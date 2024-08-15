@@ -12,6 +12,7 @@ import AdminPage from '~/pages/AdminPage';
 import Pay from '~/pages/Pay';
 import Cart from '~/pages/Cart';
 import Order from '~/pages/Order';
+import NotFound from '~/pages/NotFound';
 
 const routes = [
     { path: '/', element: Home },
@@ -21,6 +22,7 @@ const routes = [
     { path: '/book/:id/pay', element: Pay, layout: OnlyHeaderLayout },
     { path: '/cart', element: Cart, layout: OnlyHeaderLayout },
     { path: '/order', element: Order, layout: OnlyHeaderLayout },
+    { path: '/404', element: NotFound, layout: null },
 ];
 
 export const adminRoutes = [{ path: '/admin', element: AdminPage, layout: AdminLayout }];

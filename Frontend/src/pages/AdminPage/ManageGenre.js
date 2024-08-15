@@ -8,8 +8,11 @@ import {
     updateGenreService,
 } from '~/services/genreService';
 import styles from './AdminPage.module.scss';
+import Loading from '~/components/Loading';
 
 const ManageGenre = () => {
+    const [loading, setLoading] = useState(false);
+
     const [genres, setGenres] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -17,6 +20,7 @@ const ManageGenre = () => {
 
     const fetchGetGenres = async () => {
         try {
+            setLoading(true);
             const res = await getGenrePagingService({ pageNumber: currentPage, pageSize: pageSize });
             setTotalPage(res?.data?.totalPage);
             setGenres(
@@ -25,6 +29,7 @@ const ManageGenre = () => {
                     name: genre?.name,
                 })),
             );
+            setLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -126,29 +131,37 @@ const ManageGenre = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {genres?.map((genre) => {
-                            return (
-                                <tr key={`genre-${genre?.id}`}>
-                                    <td>{genre?.name}</td>
-                                    <td>
-                                        <Button
-                                            className="fz-16 me-3"
-                                            variant="warning"
-                                            onClick={() => handleShowModalUpdateGenre(genre?.id, genre?.name)}
-                                        >
-                                            Sửa
-                                        </Button>
-                                        <Button
-                                            className="fz-16"
-                                            variant="danger"
-                                            onClick={() => handleShowModalDeleteGenre(genre?.id, genre?.name)}
-                                        >
-                                            Xoá
-                                        </Button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                        {loading ? (
+                            <tr>
+                                <td colSpan={2}>
+                                    <Loading className="mt-3 mb-3" />
+                                </td>
+                            </tr>
+                        ) : (
+                            genres?.map((genre) => {
+                                return (
+                                    <tr key={`genre-${genre?.id}`}>
+                                        <td>{genre?.name}</td>
+                                        <td>
+                                            <Button
+                                                className="fz-16 me-3"
+                                                variant="warning"
+                                                onClick={() => handleShowModalUpdateGenre(genre?.id, genre?.name)}
+                                            >
+                                                Sửa
+                                            </Button>
+                                            <Button
+                                                className="fz-16"
+                                                variant="danger"
+                                                onClick={() => handleShowModalDeleteGenre(genre?.id, genre?.name)}
+                                            >
+                                                Xoá
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>

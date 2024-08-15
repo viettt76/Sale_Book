@@ -10,7 +10,7 @@ import ManageGenre from './ManageGenre';
 const AdminPage = () => {
     return (
         <div className={clsx(styles['header-wrapper'])}>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="manage-book">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="manage-user">
                 <Nav variant="pills" className="mb-3 d-flex justify-content-center ">
                     <Nav.Item>
                         <Nav.Link style={{ fontSize: '2rem' }} eventKey="manage-user">

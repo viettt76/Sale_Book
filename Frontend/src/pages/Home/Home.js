@@ -4,13 +4,16 @@ import styles from './Home.module.scss';
 import SearchByCategory from '~/components/SearchByCategory';
 import { useEffect, useState } from 'react';
 import { getBookPagingService } from '~/services/bookService';
+import Loading from '~/components/Loading';
 
 const Home = () => {
     const [groupBooks, setGroupBooks] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchGetBookMostReviews = async () => {
             try {
+                setLoading(true);
                 const getTotalCount = await getBookPagingService({ pageNumber: 1, pageSize: 1, sortBy: 'rate' });
                 const totalCount = getTotalCount?.data?.totalCount;
                 const res = await getBookPagingService({ pageNumber: 1, pageSize: totalCount, sortBy: 'rate' });
@@ -29,6 +32,7 @@ const Home = () => {
                             };
                         }),
                 );
+                setLoading(false);
             } catch (error) {
                 console.log(error);
             }
@@ -37,8 +41,14 @@ const Home = () => {
     }, []);
     return (
         <div className={clsx('container', styles['home-wrapper'])}>
-            <GroupBooks className={clsx(styles['group-books'])} title="Sách nổi bật" groupBooks={groupBooks} />
-            <SearchByCategory />
+            {loading ? (
+                <Loading className="mt-3" />
+            ) : (
+                <>
+                    <GroupBooks className={clsx(styles['group-books'])} title="Sách nổi bật" groupBooks={groupBooks} />
+                    <SearchByCategory />
+                </>
+            )}
         </div>
     );
 };

@@ -1,1 +1,13 @@
 @import 'override';
+
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner-border {
+    width: 40px;
+    height: 40px;
+    color: #127af8;
+}

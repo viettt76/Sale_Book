@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import clsx from 'clsx';
 import styles from './Payment.module.scss';
 import avatar from '~/assets/imgs/avatar-default.png';
@@ -10,13 +10,16 @@ import { getMyVoucherService } from '~/services/voucherService';
 import { useSelector } from 'react-redux';
 import { userInfoSelector } from '~/redux/selectors';
 import { orderService } from '~/services/orderService';
+import Loading from '~/components/Loading';
 
 const Pay = () => {
     const { id } = useParams();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
     const quantityParam = queryParams.get('quantity');
+    const [loading, setLoading] = useState(false);
 
+    const navigate = useNavigate();
     const userInfo = useSelector(userInfoSelector);
 
     const [quantity, setQuantity] = useState(Number(quantityParam));
@@ -26,6 +29,7 @@ const Pay = () => {
     useEffect(() => {
         const fetchGetBookInfo = async () => {
             try {
+                setLoading(true);
                 const res = await getBookByIdService(id);
                 console.log(res?.data);
                 setBookInfo({
@@ -33,8 +37,10 @@ const Pay = () => {
                     price: res?.data?.price,
                     image: res?.data?.image,
                 });
+                setLoading(false);
             } catch (error) {
                 console.log(error);
+                navigate('/404');
             }
         };
         fetchGetBookInfo();
@@ -93,63 +99,67 @@ const Pay = () => {
 
     return (
         <div className={clsx(styles['overlay'])}>
-            <div className={clsx(styles['pay-wrapper'])}>
-                <div className={clsx(styles['book-info'])}>
-                    <img className={clsx(styles['book-image'])} src={bookInfo?.image} />
-                    <div>
-                        <h6 className={clsx(styles['book-name'])}>{bookInfo?.name}</h6>
-                        <div className={clsx(styles['book-price'])}>{bookInfo?.price}</div>
-                        <div className={clsx(styles['book-quantity'])}>
-                            <button
-                                className={clsx(styles['book-quantity-btn'])}
-                                disabled={quantity <= 1}
-                                onClick={() => setQuantity((prev) => prev - 1)}
-                            >
-                                -
-                            </button>
-                            <input
-                                value={quantity}
-                                onChange={handleSetQuantity}
-                                className={clsx(styles['book-quantity-input'])}
-                            />
-                            <button
-                                className={clsx(styles['book-quantity-btn'])}
-                                onClick={() => setQuantity((prev) => prev + 1)}
-                            >
-                                +
-                            </button>
+            {loading ? (
+                <Loading className="mt-3" />
+            ) : (
+                <div className={clsx(styles['pay-wrapper'])}>
+                    <div className={clsx(styles['book-info'])}>
+                        <img className={clsx(styles['book-image'])} src={bookInfo?.image} />
+                        <div>
+                            <h6 className={clsx(styles['book-name'])}>{bookInfo?.name}</h6>
+                            <div className={clsx(styles['book-price'])}>{bookInfo?.price}</div>
+                            <div className={clsx(styles['book-quantity'])}>
+                                <button
+                                    className={clsx(styles['book-quantity-btn'])}
+                                    disabled={quantity <= 1}
+                                    onClick={() => setQuantity((prev) => prev - 1)}
+                                >
+                                    -
+                                </button>
+                                <input
+                                    value={quantity}
+                                    onChange={handleSetQuantity}
+                                    className={clsx(styles['book-quantity-input'])}
+                                />
+                                <button
+                                    className={clsx(styles['book-quantity-btn'])}
+                                    onClick={() => setQuantity((prev) => prev + 1)}
+                                >
+                                    +
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className={clsx(styles['voucher-wrapper'])}>
-                    <div>Mã giảm giá:</div>
-                    <div className={clsx(styles['voucher-value'])} onClick={handleShowVoucher}>
-                        {voucherSelected ? `Mã giảm giá ${voucherSelected?.percent}%` : 'Chọn mã giảm giá'}
+                    <div className={clsx(styles['voucher-wrapper'])}>
+                        <div>Mã giảm giá:</div>
+                        <div className={clsx(styles['voucher-value'])} onClick={handleShowVoucher}>
+                            {voucherSelected ? `Mã giảm giá ${voucherSelected?.percent}%` : 'Chọn mã giảm giá'}
+                        </div>
+                        <Modal show={showVoucher} onHide={handleCloseVoucher}>
+                            <Modal.Header className="fz-16" closeButton>
+                                <Modal.Title className={clsx(styles['fz-24'])}>Chọn voucher</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {vouchers?.map((voucher) => {
+                                    return (
+                                        <div
+                                            key={`voucher-${voucher?.id}`}
+                                            className={clsx(styles['voucher-item'])}
+                                            onClick={() => handleAddVoucher(voucher)}
+                                        >
+                                            Giảm giá {voucher?.percent}%
+                                        </div>
+                                    );
+                                })}
+                            </Modal.Body>
+                        </Modal>
                     </div>
-                    <Modal show={showVoucher} onHide={handleCloseVoucher}>
-                        <Modal.Header className="fz-16" closeButton>
-                            <Modal.Title className={clsx(styles['fz-24'])}>Chọn voucher</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>
-                            {vouchers?.map((voucher) => {
-                                return (
-                                    <div
-                                        key={`voucher-${voucher?.id}`}
-                                        className={clsx(styles['voucher-item'])}
-                                        onClick={() => handleAddVoucher(voucher)}
-                                    >
-                                        Giảm giá {voucher?.percent}%
-                                    </div>
-                                );
-                            })}
-                        </Modal.Body>
-                    </Modal>
+                    <div className={clsx(styles['total-payment'])}>Tổng tiền: {formatPrice(totalPay, 'VND')}</div>
+                    <button className={clsx(styles['btn-pay'])} onClick={handlePay}>
+                        Thanh toán
+                    </button>
                 </div>
-                <div className={clsx(styles['total-payment'])}>Tổng tiền: {formatPrice(totalPay, 'VND')}</div>
-                <button className={clsx(styles['btn-pay'])} onClick={handlePay}>
-                    Thanh toán
-                </button>
-            </div>
+            )}
         </div>
     );
 };

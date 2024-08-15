@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { formatPrice } from '~/utils/commonUtils';
 import { getCartService } from '~/services/cartService';
 import { getOrderService } from '~/services/orderService';
+import Loading from '~/components/Loading';
 
 const NoticeOfBookList = ({
     title,
@@ -20,6 +21,7 @@ const NoticeOfBookList = ({
 }) => {
     const [bookList, setBookList] = useState([]);
     const [showBookList, setShowBookList] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const ref = useRef(null);
 
@@ -30,9 +32,10 @@ const NoticeOfBookList = ({
     };
 
     useEffect(() => {
-        if (type === 'cart') {
-            const fetchCart = async () => {
+        const fetchBookList = async () => {
+            if (type === 'cart') {
                 try {
+                    setLoading(true);
                     const res = await getCartService();
                     setBookList(
                         res?.data?.cartItems
@@ -47,14 +50,13 @@ const NoticeOfBookList = ({
                             })
                             .reverse(),
                     );
+                    setLoading(false);
                 } catch (error) {
                     console.log(error);
                 }
-            };
-            fetchCart();
-        } else if (type === 'order') {
-            const fetchOrder = async () => {
+            } else if (type === 'order') {
                 try {
+                    setLoading(true);
                     const res = await getOrderService();
                     const x = [];
                     res?.data?.forEach((order) => {
@@ -75,12 +77,14 @@ const NoticeOfBookList = ({
                             })
                             .reverse(),
                     );
+                    setLoading(false);
                 } catch (error) {
                     console.log(error);
                 }
-            };
-            fetchOrder();
-        }
+            }
+        };
+
+        fetchBookList();
     }, [type, showBookList]);
 
     useEffect(() => {
@@ -106,34 +110,38 @@ const NoticeOfBookList = ({
                     >
                         <h5 className={clsx(styles['title'])}>{title}</h5>
                         <div className={clsx(styles['books'])}>
-                            {bookList?.map((item, index) => {
-                                return (
-                                    <ListGroup.Item key={`book-${index}`}>
-                                        <Link
-                                            onClick={type === 'cart' ? () => setShowBookList(false) : undefined}
-                                            className={clsx(styles['book'])}
-                                            to={type === 'cart' && `/book/${item?.id}`}
-                                        >
-                                            <img
-                                                className={clsx(styles['book-img'])}
-                                                src={item?.img}
-                                                alt={item?.name}
-                                            />
-                                            <div>
-                                                <h5 className={clsx(styles['book-name'])}>{item?.name}</h5>
-                                                <div className="d-flex align-items-center">
-                                                    <span className={clsx(styles['book-price'])}>
-                                                        {formatPrice(item?.price, 'VND')}
-                                                    </span>
-                                                    <span className={clsx(styles['book-quantity'])}>
-                                                        x {item?.quantity}
-                                                    </span>
+                            {loading ? (
+                                <Loading />
+                            ) : (
+                                bookList?.map((item, index) => {
+                                    return (
+                                        <ListGroup.Item key={`book-${index}`}>
+                                            <Link
+                                                onClick={type === 'cart' ? () => setShowBookList(false) : undefined}
+                                                className={clsx(styles['book'])}
+                                                to={type === 'cart' && `/book/${item?.id}`}
+                                            >
+                                                <img
+                                                    className={clsx(styles['book-img'])}
+                                                    src={item?.img}
+                                                    alt={item?.name}
+                                                />
+                                                <div>
+                                                    <h5 className={clsx(styles['book-name'])}>{item?.name}</h5>
+                                                    <div className="d-flex align-items-center">
+                                                        <span className={clsx(styles['book-price'])}>
+                                                            {formatPrice(item?.price, 'VND')}
+                                                        </span>
+                                                        <span className={clsx(styles['book-quantity'])}>
+                                                            x {item?.quantity}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </Link>
-                                    </ListGroup.Item>
-                                );
-                            })}
+                                            </Link>
+                                        </ListGroup.Item>
+                                    );
+                                })
+                            )}
                         </div>
                         <Link
                             onClick={() => setShowBookList(false)}

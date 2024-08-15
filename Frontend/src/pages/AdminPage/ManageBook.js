@@ -11,6 +11,7 @@ import styles from './AdminPage.module.scss';
 import moment from 'moment';
 import customToastify from '~/utils/customToastify';
 import axios from 'axios';
+import Loading from '~/components/Loading';
 
 const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
     const [genres, setGenres] = useState([]);
@@ -175,8 +176,6 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
             console.log(error);
         }
     };
-
-    console.log(bookInfo?.authors);
 
     return (
         <Modal show={showModal} onHide={handleCloseModal}>
@@ -343,6 +342,8 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
 };
 
 const ManageBook = () => {
+    const [loading, setLoading] = useState(false);
+
     const [bookList, setBookList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -350,6 +351,7 @@ const ManageBook = () => {
 
     const fetchGetBookPaging = async () => {
         try {
+            setLoading(true);
             const res = await getBookPagingService({ pageNumber: currentPage, pageSize: pageSize });
             setTotalPage(res.data?.totalPage);
             setBookList(
@@ -370,6 +372,7 @@ const ManageBook = () => {
                     };
                 }),
             );
+            setLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -467,39 +470,47 @@ const ManageBook = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {bookList?.map((book) => {
-                        return (
-                            <tr key={`book-${book?.id}`}>
-                                <td>{book?.name}</td>
-                                <td>{book?.genresName}</td>
-                                <td>{book?.price}</td>
-                                <td>{book?.description}</td>
-                                <td>{moment(book?.publicationDate).format('DD/MM/YYYY')}</td>
-                                <td>{book?.totalPageNumber}</td>
-                                <td>{book?.rated}</td>
-                                <td>{book?.authors?.map((author) => author?.fullName).join(', ')}</td>
-                                <td>
-                                    <img src={book?.image} alt="The Great Gatsby" />
-                                </td>
-                                <td>
-                                    <Button
-                                        className="fz-16 me-3"
-                                        variant="warning"
-                                        onClick={() => handleShowModalUpdateBook(book?.id)}
-                                    >
-                                        Sửa
-                                    </Button>
-                                    <Button
-                                        className="fz-16 mt-3"
-                                        variant="danger"
-                                        onClick={() => handleShowModalDeleteBook(book?.id, book?.name)}
-                                    >
-                                        Xoá
-                                    </Button>
-                                </td>
-                            </tr>
-                        );
-                    })}
+                    {loading ? (
+                        <tr>
+                            <td colSpan={10}>
+                                <Loading className="mt-3 mb-3" />
+                            </td>
+                        </tr>
+                    ) : (
+                        bookList?.map((book) => {
+                            return (
+                                <tr key={`book-${book?.id}`}>
+                                    <td>{book?.name}</td>
+                                    <td>{book?.genresName}</td>
+                                    <td>{book?.price}</td>
+                                    <td>{book?.description}</td>
+                                    <td>{moment(book?.publicationDate).format('DD/MM/YYYY')}</td>
+                                    <td>{book?.totalPageNumber}</td>
+                                    <td>{book?.rated}</td>
+                                    <td>{book?.authors?.map((author) => author?.fullName).join(', ')}</td>
+                                    <td>
+                                        <img src={book?.image} alt="The Great Gatsby" />
+                                    </td>
+                                    <td>
+                                        <Button
+                                            className="fz-16 me-3"
+                                            variant="warning"
+                                            onClick={() => handleShowModalUpdateBook(book?.id)}
+                                        >
+                                            Sửa
+                                        </Button>
+                                        <Button
+                                            className="fz-16 mt-3"
+                                            variant="danger"
+                                            onClick={() => handleShowModalDeleteBook(book?.id, book?.name)}
+                                        >
+                                            Xoá
+                                        </Button>
+                                    </td>
+                                </tr>
+                            );
+                        })
+                    )}
                 </tbody>
             </table>
             <Pagination className="d-flex justify-content-center">

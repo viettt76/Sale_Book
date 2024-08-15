@@ -8,8 +8,11 @@ import {
     updateAuthorService,
 } from '~/services/authorService';
 import styles from './AdminPage.module.scss';
+import Loading from '~/components/Loading';
 
 const ManageAuthor = () => {
+    const [loading, setLoading] = useState(false);
+
     const [authors, setAuthors] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
@@ -17,6 +20,7 @@ const ManageAuthor = () => {
 
     const fetchGetAuthors = async () => {
         try {
+            setLoading(true);
             const res = await getAuthorPagingService({ pageNumber: currentPage, pageSize: pageSize });
             setTotalPage(res?.data?.totalPage);
             setAuthors(
@@ -25,6 +29,7 @@ const ManageAuthor = () => {
                     name: author?.fullName,
                 })),
             );
+            setLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -126,29 +131,37 @@ const ManageAuthor = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {authors?.map((author) => {
-                            return (
-                                <tr key={`author-${author?.id}`}>
-                                    <td>{author?.name}</td>
-                                    <td>
-                                        <Button
-                                            className="fz-16 me-3"
-                                            variant="warning"
-                                            onClick={() => handleShowModalUpdateAuthor(author?.id, author?.name)}
-                                        >
-                                            Sửa
-                                        </Button>
-                                        <Button
-                                            className="fz-16"
-                                            variant="danger"
-                                            onClick={() => handleShowModalDeleteAuthor(author?.id, author?.name)}
-                                        >
-                                            Xoá
-                                        </Button>
-                                    </td>
-                                </tr>
-                            );
-                        })}
+                        {loading ? (
+                            <tr>
+                                <td colSpan={2}>
+                                    <Loading className="mt-3 mb-3" />
+                                </td>
+                            </tr>
+                        ) : (
+                            authors?.map((author) => {
+                                return (
+                                    <tr key={`author-${author?.id}`}>
+                                        <td>{author?.name}</td>
+                                        <td>
+                                            <Button
+                                                className="fz-16 me-3"
+                                                variant="warning"
+                                                onClick={() => handleShowModalUpdateAuthor(author?.id, author?.name)}
+                                            >
+                                                Sửa
+                                            </Button>
+                                            <Button
+                                                className="fz-16"
+                                                variant="danger"
+                                                onClick={() => handleShowModalDeleteAuthor(author?.id, author?.name)}
+                                            >
+                                                Xoá
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
                     </tbody>
                 </table>
             </div>

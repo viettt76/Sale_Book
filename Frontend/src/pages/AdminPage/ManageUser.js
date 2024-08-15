@@ -6,8 +6,11 @@ import { CSVLink } from 'react-csv';
 import { getAllUsersService, userCreateByAdminService } from '~/services/userServices';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import Loading from '~/components/Loading';
 
 const ManageUser = () => {
+    const [loading, setLoading] = useState(false);
+
     const headersExportUser = [
         { label: 'Username', key: 'username' },
         { label: 'Email', key: 'email' },
@@ -24,6 +27,7 @@ const ManageUser = () => {
     useEffect(() => {
         const fetchGetAllUsers = async () => {
             try {
+                setLoading(true);
                 const res = await getAllUsersService({ pageNumber: currentPageUser, pageSize: pageSize });
                 setTotalPage(res?.data?.totalPage || 0);
                 setUserList(
@@ -37,6 +41,7 @@ const ManageUser = () => {
                         };
                     }),
                 );
+                setLoading(false);
             } catch (error) {
                 console.log(error);
             }
@@ -78,8 +83,6 @@ const ManageUser = () => {
             [name]: value,
         });
     };
-
-    const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmitFormCreateUser = async (e) => {
         try {
@@ -147,23 +150,33 @@ const ManageUser = () => {
                         <th>Email</th>
                         <th>Address</th>
                         <th>Phone Number</th>
-                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {userList?.map((user) => {
-                        return (
-                            <tr key={`user-${user?.id}`}>
-                                <td>{user?.username}</td>
-                                <td>{user?.email}</td>
-                                <td>{user?.address}</td>
-                                <td>{user?.phoneNumber}</td>
-                                <td>
-                                    <button className="btn btn-warning fz-16">Cấm</button>
-                                </td>
-                            </tr>
-                        );
-                    })}
+                    {loading ? (
+                        <tr>
+                            <td colSpan={4}>
+                                <Loading className="mt-3 mb-3" />
+                            </td>
+                        </tr>
+                    ) : userList?.length > 0 ? (
+                        userList?.map((user) => {
+                            return (
+                                <tr key={`user-${user?.id}`}>
+                                    <td>{user?.username}</td>
+                                    <td>{user?.email}</td>
+                                    <td>{user?.address}</td>
+                                    <td>{user?.phoneNumber}</td>
+                                </tr>
+                            );
+                        })
+                    ) : (
+                        <tr>
+                            <td colSpan={5}>
+                                <div className="fz-16 text-center">Không có user nào</div>
+                            </td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
             <Pagination className="d-flex justify-content-center">

@@ -11,12 +11,15 @@ import useDebounce from '~/hooks/useDebounce';
 import { searchBookByNameOrAuthor } from '~/services/bookService';
 import { formatPrice } from '~/utils/commonUtils';
 import { getMyVoucherService } from '~/services/voucherService';
+import Loading from '~/components/Loading';
 
 const Header = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const [keyword, setKeyword] = useState('');
     const searchKey = useDebounce(keyword, 300);
+
+    const [loading, setLoading] = useState(false);
 
     const searchResultRef = useRef(null);
 
@@ -52,7 +55,9 @@ const Header = () => {
     useEffect(() => {
         const fetchVoucher = async () => {
             try {
+                setLoading(true);
                 const res = await getMyVoucherService();
+                setLoading(false);
                 setVouchers(res?.data);
             } catch (error) {
                 console.log(error);
@@ -147,8 +152,14 @@ const Header = () => {
                         icon={faTicket}
                     />
                     {showVouchers &&
-                        (vouchers?.length > 0 ? (
+                        (loading ? (
+                            <div className={clsx(styles['voucher-empty'])}>
+                                <h2 className="text-center">Voucher</h2>
+                                <Loading className="mt-3" />
+                            </div>
+                        ) : vouchers?.length > 0 ? (
                             <div className={clsx(styles['voucher-list'])}>
+                                <h2 className="text-center mb-4">Voucher</h2>
                                 {vouchers?.map((voucher) => {
                                     if (voucher?.used) {
                                         return <></>;
