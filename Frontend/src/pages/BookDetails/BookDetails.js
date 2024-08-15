@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Container, Tab, Tabs } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { faStarHalfStroke, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -73,7 +73,7 @@ const BookDetails = () => {
     }, [id]);
 
     const handleSetQuantity = (e) => {
-        if (!isNaN(e.target.value)) {
+        if (!isNaN(e.target.value) && e.target.value > 0 && e.target.value <= 50) {
             setQuantity(e.target.value);
         }
     };
@@ -117,6 +117,7 @@ const BookDetails = () => {
                                         {bookInfo?.numberOfReview || 0} đánh giá
                                     </div>
                                 </div>
+                                <div className={clsx(styles['book-genres'])}>Thể loại: {bookInfo?.bookGroupName}</div>
                                 <div className={clsx(styles['book-authors'])}>Tác giả: {bookInfo?.authors}</div>
                                 <div className={clsx(styles['book-other-info'])}>
                                     <div>Tổng số trang: {bookInfo?.totalPageNumber}</div>
@@ -129,7 +130,7 @@ const BookDetails = () => {
                                     <button
                                         className={clsx(styles['book-quantity-btn'])}
                                         disabled={quantity <= 1}
-                                        onClick={() => setQuantity((prev) => prev - 1)}
+                                        onClick={() => setQuantity((prev) => Number(prev) - 1)}
                                     >
                                         -
                                     </button>
@@ -137,10 +138,14 @@ const BookDetails = () => {
                                         value={quantity}
                                         onChange={handleSetQuantity}
                                         className={clsx(styles['book-quantity-input'])}
+                                        type="number"
+                                        min={1}
+                                        max={50}
                                     />
                                     <button
+                                        disabled={quantity >= 50}
                                         className={clsx(styles['book-quantity-btn'])}
-                                        onClick={() => setQuantity((prev) => prev + 1)}
+                                        onClick={() => setQuantity((prev) => Number(prev) + 1)}
                                     >
                                         +
                                     </button>
@@ -169,7 +174,7 @@ const BookDetails = () => {
                         </div>
                     </div>
                     <div className={clsx(styles['comment-list'])}>
-                        <div className={clsx(styles['comment-list-title'])}>Đánh giá</div>
+                        <div className={clsx(styles['comment-list-title'])}>Đánh giá ({bookInfo?.numberOfReview})</div>
                         {bookInfo?.reviews?.map((review) => {
                             const s = review?.userName?.split('@')[0]
                                 ? review?.userName?.split('@')[0]

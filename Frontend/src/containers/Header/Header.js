@@ -84,11 +84,12 @@ const Header = () => {
     }, []);
 
     const handleSearch = (e) => {
-        console.log(searchKey);
         if (e.key === 'Enter') {
             navigate(`/search?keyword=${keyword}`);
         }
     };
+
+    console.log(showSearchResult);
 
     return (
         <div className={clsx(styles['header'])}>
@@ -108,40 +109,52 @@ const Header = () => {
                         <FontAwesomeIcon icon={faMagnifyingGlass} />
                     </button>
                 </div>
-                {searchResult?.length > 0 && showSearchResult && (
-                    <div ref={searchResultRef} className={clsx(styles['search-result-wrapper'])}>
-                        <div className={clsx(styles['search-result'])}>
-                            {searchResult.map((book) => {
-                                return (
-                                    <Link
-                                        to={`/book/${book?.id}`}
-                                        key={`book-${book?.id}`}
-                                        className={clsx(styles['result-item'])}
-                                    >
-                                        <img src={book?.image} />
-                                        <div className={clsx(styles['result-item-info'])}>
-                                            <h6 className={clsx(styles['result-item-header'])}>{book?.title}</h6>
-                                            <div className={clsx(styles['result-item-name'])}>{book?.title}</div>
-                                            <div className={clsx(styles['result-item-expand'])}>
-                                                <div className={clsx(styles['search-result-item-authors'])}>
-                                                    {book?.author
-                                                        ?.map((a) => {
-                                                            return a?.fullName;
-                                                        })
-                                                        .join(', ')}
+                {showSearchResult && (
+                    <div ref={searchResultRef}>
+                        {searchResult?.length > 0 ? (
+                            <div className={clsx(styles['search-result-wrapper'])}>
+                                <div className={clsx(styles['search-result'])}>
+                                    {searchResult.map((book) => {
+                                        return (
+                                            <Link
+                                                to={`/book/${book?.id}`}
+                                                key={`book-${book?.id}`}
+                                                className={clsx(styles['result-item'])}
+                                            >
+                                                <img src={book?.image} />
+                                                <div className={clsx(styles['result-item-info'])}>
+                                                    <h6 className={clsx(styles['result-item-header'])}>
+                                                        {book?.title}
+                                                    </h6>
+                                                    <div className={clsx(styles['result-item-name'])}>
+                                                        {book?.title}
+                                                    </div>
+                                                    <div className={clsx(styles['result-item-expand'])}>
+                                                        <div className={clsx(styles['search-result-item-authors'])}>
+                                                            {book?.author
+                                                                ?.map((a) => {
+                                                                    return a?.fullName;
+                                                                })
+                                                                .join(', ')}
+                                                        </div>
+                                                        <div className={clsx(styles['search-result-item-price'])}>
+                                                            {formatPrice(book?.price, 'VND')}
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                                <div className={clsx(styles['search-result-item-price'])}>
-                                                    {formatPrice(book?.price, 'VND')}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                        <Link to={`/search?keyword=${keyword}`} className={clsx(styles['see-all-result'])}>
-                            Xem tất cả
-                        </Link>
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                                <Link to={`/search?keyword=${keyword}`} className={clsx(styles['see-all-result'])}>
+                                    Xem tất cả
+                                </Link>
+                            </div>
+                        ) : (
+                            searchKey !== '' && (
+                                <div className={clsx(styles['search-result-empty'])}>Không có kết quả</div>
+                            )
+                        )}
                     </div>
                 )}
             </div>

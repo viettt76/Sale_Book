@@ -31,7 +31,6 @@ const Pay = () => {
             try {
                 setLoading(true);
                 const res = await getBookByIdService(id);
-                console.log(res?.data);
                 setBookInfo({
                     name: res?.data?.title,
                     price: res?.data?.price,
@@ -47,7 +46,7 @@ const Pay = () => {
     }, [id]);
 
     const handleSetQuantity = (e) => {
-        if (!isNaN(e.target.value)) {
+        if (!isNaN(e.target.value) && e.target.value > 0 && e.target.value <= 50) {
             setQuantity(e.target.value);
         }
     };
@@ -112,18 +111,22 @@ const Pay = () => {
                                 <button
                                     className={clsx(styles['book-quantity-btn'])}
                                     disabled={quantity <= 1}
-                                    onClick={() => setQuantity((prev) => prev - 1)}
+                                    onClick={() => setQuantity((prev) => Number(prev) - 1)}
                                 >
                                     -
                                 </button>
                                 <input
                                     value={quantity}
+                                    type="number"
                                     onChange={handleSetQuantity}
                                     className={clsx(styles['book-quantity-input'])}
+                                    min={1}
+                                    max={50}
                                 />
                                 <button
+                                    disabled={quantity >= 50}
                                     className={clsx(styles['book-quantity-btn'])}
-                                    onClick={() => setQuantity((prev) => prev + 1)}
+                                    onClick={() => setQuantity((prev) => Number(prev) + 1)}
                                 >
                                     +
                                 </button>

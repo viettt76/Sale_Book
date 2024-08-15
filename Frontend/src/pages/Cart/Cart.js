@@ -18,10 +18,10 @@ const Cart = () => {
 
     const fetchGetCart = async () => {
         try {
-            setLoading(true);
+            // setLoading(true);
             const res = await getCartService();
             setCart(res?.data?.cartItems);
-            setLoading(false);
+            // setLoading(false);
         } catch (error) {
             console.log(error);
         }
@@ -143,12 +143,22 @@ const Cart = () => {
                                                 </button>
                                                 <input
                                                     value={book?.quantity}
-                                                    onChange={(e) =>
-                                                        changeQuantity(book?.cartId, book?.bookId, e.target.value)
-                                                    }
+                                                    onChange={(e) => {
+                                                        if (
+                                                            !isNaN(e.target.value) &&
+                                                            e.target.value > 0 &&
+                                                            e.target.value <= 50
+                                                        ) {
+                                                            changeQuantity(book?.cartId, book?.bookId, e.target.value);
+                                                        }
+                                                    }}
+                                                    type="number"
                                                     className={clsx(styles['book-quantity-input'])}
+                                                    min={1}
+                                                    max={50}
                                                 />
                                                 <button
+                                                    disabled={book?.quantity >= 50}
                                                     className={clsx(styles['book-quantity-btn'])}
                                                     onClick={() =>
                                                         changeQuantity(book?.cartId, book?.bookId, book?.quantity + 1)

@@ -5,6 +5,7 @@ import store from '~/redux/store';
 
 const instance = axios.create({
     baseURL: 'https://localhost:7193/api/v1',
+    // baseURL: 'https://dfr33pu4ekpqr2hn5z5wm2k7cq0mzfri.lambda-url.us-east-1.on.aws/api/v1',
 });
 
 instance.defaults.withCredentials = true;

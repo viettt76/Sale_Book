@@ -1,7 +1,10 @@
 import axios from '~/utils/axios';
 
-export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy, genres = [] }) => {
-    const s = genres.reduce((acc, genre) => {
+export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy, genres = [], filter }) => {
+    const s = genres.reduce((acc, genre, index) => {
+        if (index !== genres.length - 1) {
+            return `${acc}BookGroupIds=${genre}&`;
+        }
         return `${acc}BookGroupIds=${genre}`;
     }, '');
     return axios.get(`/Books/searching?${s}`, {
@@ -9,6 +12,7 @@ export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy, ge
             pageNumber,
             pageSize,
             sorting: sortBy,
+            filter,
         },
     });
 };

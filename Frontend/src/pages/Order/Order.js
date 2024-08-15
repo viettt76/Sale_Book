@@ -20,36 +20,37 @@ const Order = () => {
 
     const [orders, setOrders] = useState([]);
 
-    useEffect(() => {
-        const fetchOrder = async () => {
-            try {
-                setLoading(true);
-                const res = await getOrderService();
-                const x = [];
-                res?.data?.forEach((order) => {
-                    return order?.orderItems?.forEach((book) => {
-                        return x.push({
-                            orderId: order?.id,
-                            date: order?.date,
-                            status: order?.status,
-                            totalAmount: order?.totalAmount,
-                            voucherPercent: order?.voucherPercent,
-                            bookId: book?.bookId,
-                            bookImage: book?.bookImage,
-                            bookName: book?.bookName,
-                            bookPrice: book?.bookPrice,
-                            quantity: book?.quantity,
-                            isReviewed: book?.isReviewed,
-                        });
+    const fetchOrder = async () => {
+        try {
+            setLoading(true);
+            const res = await getOrderService();
+            const x = [];
+            res?.data?.forEach((order) => {
+                return order?.orderItems?.forEach((book) => {
+                    return x.push({
+                        orderId: order?.id,
+                        date: order?.date,
+                        status: order?.status,
+                        totalAmount: order?.totalAmount,
+                        voucherPercent: order?.voucherPercent,
+                        bookId: book?.bookId,
+                        bookImage: book?.bookImage,
+                        bookName: book?.bookName,
+                        bookPrice: book?.bookPrice,
+                        quantity: book?.quantity,
+                        isReviewed: book?.isReviewed,
                     });
                 });
+            });
 
-                setOrders(x);
-                setLoading(false);
-            } catch (error) {
-                console.log(error);
-            }
-        };
+            setOrders(x);
+            setLoading(false);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
         fetchOrder();
     }, []);
 
@@ -78,6 +79,7 @@ const Order = () => {
                 bookId: currentBookReview?.bookId,
                 orderId: currentBookReview?.orderId,
             });
+            fetchOrder();
         } catch (error) {
             console.log(error);
         } finally {
@@ -151,7 +153,12 @@ const Order = () => {
 
                                                     <Link
                                                         to={`/book/${order?.bookId}/pay?quantity=1`}
-                                                        className={clsx(styles['order-buy-back'])}
+                                                        className={clsx(
+                                                            {
+                                                                ['d-block']: order?.isReviewed,
+                                                            },
+                                                            styles['order-buy-back'],
+                                                        )}
                                                     >
                                                         Mua lại
                                                     </Link>

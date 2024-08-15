@@ -13,7 +13,7 @@ import customToastify from '~/utils/customToastify';
 import axios from 'axios';
 import Loading from '~/components/Loading';
 
-const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
+const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPaging }) => {
     const [genres, setGenres] = useState([]);
     useEffect(() => {
         const fetchGetGenres = async () => {
@@ -72,7 +72,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
         publicationDate: new Date(),
         totalPageNumber: '',
         remaining: '',
-        image: 'null',
+        image: null,
     });
 
     useEffect(() => {
@@ -144,7 +144,6 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                         image: imgUrl,
                     });
                 }
-                console.log(bookInfo);
                 if (action === 'update-book') {
                     await updateBookService({
                         id: data?.id,
@@ -169,11 +168,12 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                         authorId: bookInfo?.authors?.map((author) => author?.value),
                     });
                 }
-
-                handleCloseModal();
+                fetchGetBookPaging();
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            handleCloseModal();
         }
     };
 
@@ -247,7 +247,13 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             Giá
                         </Form.Label>
                         <Col sm="10">
-                            <Form.Control name="price" value={bookInfo.price} onChange={handleChangeForm} required />
+                            <Form.Control
+                                name="price"
+                                type="number"
+                                value={bookInfo.price}
+                                onChange={handleChangeForm}
+                                required
+                            />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3 ">
@@ -298,14 +304,6 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             />
                         </Col>
                     </Form.Group>
-                    <Form.Group as={Row} className="mb-3 align-items-center">
-                        <Form.Label column sm="2">
-                            Số lượng còn
-                        </Form.Label>
-                        <Col sm="10">
-                            <Form.Control name="remaining" value={bookInfo.remaining} onChange={handleChangeForm} />
-                        </Col>
-                    </Form.Group>
                     <Form.Group as={Row} className="mb-3">
                         <Form.Label column sm="2">
                             Ảnh bìa
@@ -348,11 +346,17 @@ const ManageBook = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
     const pageSize = 5;
+    const [filterByName, setFilterByName] = useState('');
 
     const fetchGetBookPaging = async () => {
         try {
             setLoading(true);
-            const res = await getBookPagingService({ pageNumber: currentPage, pageSize: pageSize });
+            const res = await getBookPagingService({
+                pageNumber: currentPage,
+                pageSize: pageSize,
+                sortBy: 'publishedAt',
+                filter: filterByName,
+            });
             setTotalPage(res.data?.totalPage);
             setBookList(
                 res?.data?.datas?.map((book) => {
@@ -382,21 +386,6 @@ const ManageBook = () => {
         fetchGetBookPaging();
     }, [currentPage]);
 
-    const [genreList, setGenreList] = useState([]);
-
-    useEffect(() => {
-        const fetchGetGenres = async () => {
-            try {
-                const res = await getAllGenresService();
-                setGenreList(res.data);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        fetchGetGenres();
-    }, []);
-
     const handleChangePage = (i) => {
         setCurrentPage(i);
     };
@@ -405,7 +394,6 @@ const ManageBook = () => {
     const [showModalAddBook, setShowModalAddBook] = useState(false);
     const handleCloseModalAddBook = () => {
         setShowModalAddBook(false);
-        fetchGetBookPaging();
     };
     const handleShowModalAddBook = () => setShowModalAddBook(true);
 
@@ -414,7 +402,6 @@ const ManageBook = () => {
     const [showModalUpdateBook, setShowModalUpdateBook] = useState(false);
     const handleCloseModalUpdateBook = () => {
         setShowModalUpdateBook(false);
-        fetchGetBookPaging();
     };
     const handleShowModalUpdateBook = (bookId) => {
         setCurrentBookUpdate(bookList.find((x) => x?.id === bookId));
@@ -447,10 +434,24 @@ const ManageBook = () => {
         }
     };
 
+    const handleSearch = (e) => {
+        if (e.key === 'Enter') {
+            fetchGetBookPaging();
+        }
+    };
+
     return (
         <>
-            <div>
-                <button className="btn btn-primary fz-16 mb-3 float-end" onClick={handleShowModalAddBook}>
+            <div className="d-flex align-items-center justify-content-between">
+                <div style={{ width: '30%' }}>
+                    <input
+                        className="fz-16 form-control"
+                        placeholder="Tìm kiếm theo tên sách"
+                        onChange={(e) => setFilterByName(e.target.value)}
+                        onKeyDown={handleSearch}
+                    />
+                </div>
+                <button className="btn btn-primary fz-16 mb-3" onClick={handleShowModalAddBook}>
                     Thêm sách
                 </button>
             </div>
@@ -532,6 +533,7 @@ const ManageBook = () => {
                     action="create-book"
                     showModal={showModalAddBook}
                     handleCloseModal={handleCloseModalAddBook}
+                    fetchGetBookPaging={fetchGetBookPaging}
                 />
             )}
             {showModalUpdateBook && (
@@ -539,6 +541,7 @@ const ManageBook = () => {
                     action="update-book"
                     showModal={showModalUpdateBook}
                     handleCloseModal={handleCloseModalUpdateBook}
+                    fetchGetBookPaging={fetchGetBookPaging}
                     data={currentBookUpdate}
                 />
             )}

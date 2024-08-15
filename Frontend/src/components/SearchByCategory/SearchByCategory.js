@@ -30,48 +30,49 @@ const SearchByCategory = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [filteredBooks, setFilteredBooks] = useState(bookList);
 
-    useEffect(() => {
-        const fetchGetAllBook = async () => {
-            try {
-                const res = await getBookPagingService({
-                    pageNumber: currentPage,
-                    pageSize: 8,
-                    genres: selectedCategories,
-                });
-                if (res?.data?.datas) {
-                    setTotalPages(res.data?.totalPage);
-                    if (!isFirstLoad && componentRef.current) {
-                        const componentTop = componentRef.current.getBoundingClientRect().top + window.scrollY;
-                        window.scrollTo({
-                            top: componentTop - 90,
-                            behavior: 'smooth',
-                        });
-                    }
-                    const data = res.data.datas;
-                    const clone = data?.map((book) => {
-                        return {
-                            id: book?.id,
-                            name: book?.title,
-                            genres: book?.bookGroupId,
-                            price: book?.price,
-                            description: book?.description,
-                            publicationDate: book?.publishedAt,
-                            totalPageNumber: book?.totalPageNumber,
-                            rated: book?.rate,
-                            remaining: book?.remaining,
-                            image: book?.image,
-                            authors: book?.author?.map((a) => a?.fullName).join(', '),
-                        };
+    const fetchGetAllBook = async () => {
+        try {
+            const res = await getBookPagingService({
+                pageNumber: currentPage,
+                pageSize: 8,
+                genres: selectedCategories,
+            });
+            if (res?.data?.datas) {
+                setTotalPages(res.data?.totalPage);
+                if (!isFirstLoad && componentRef.current) {
+                    const componentTop = componentRef.current.getBoundingClientRect().top + window.scrollY;
+                    window.scrollTo({
+                        top: componentTop - 90,
+                        behavior: 'smooth',
                     });
-                    setBookList(clone);
-                    setFilteredBooks(clone);
-
-                    setIsFirstLoad(false);
                 }
-            } catch (error) {
-                console.log(error);
+                const data = res.data.datas;
+                const clone = data?.map((book) => {
+                    return {
+                        id: book?.id,
+                        name: book?.title,
+                        genres: book?.bookGroupId,
+                        price: book?.price,
+                        description: book?.description,
+                        publicationDate: book?.publishedAt,
+                        totalPageNumber: book?.totalPageNumber,
+                        rated: book?.rate,
+                        remaining: book?.remaining,
+                        image: book?.image,
+                        authors: book?.author?.map((a) => a?.fullName).join(', '),
+                    };
+                });
+                setBookList(clone);
+                setFilteredBooks(clone);
+
+                setIsFirstLoad(false);
             }
-        };
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
         fetchGetAllBook();
     }, [currentPage]);
 
@@ -84,13 +85,8 @@ const SearchByCategory = () => {
     };
 
     const handleSearch = () => {
-        // const data =
-        //     selectedCategories?.length > 0
-        //         ? bookList.filter((book) => selectedCategories.some((genresId) => genresId === book.genres))
-        //         : bookList;
-        // setFilteredBooks(data);
-        // setCurrentPage(1);
-        // setTotalPages(Math.ceil(data?.length / 8));
+        setCurrentPage(1);
+        fetchGetAllBook();
     };
 
     const handleChangePage = (i) => {
