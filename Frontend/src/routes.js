@@ -21,7 +21,7 @@ const routes = [
     { path: '/search', element: SearchResult },
     { path: '/book/:id/pay', element: Pay, layout: OnlyHeaderLayout },
     { path: '/cart', element: Cart, layout: OnlyHeaderLayout },
-    { path: '/order', element: Order, layout: OnlyHeaderLayout },
+    { path: '/order', element: Order },
     { path: '/404', element: NotFound, layout: null },
 ];
 

@@ -123,9 +123,9 @@ namespace BookStore.Bussiness.Services
             return new PaginationSet<OrderViewModel>(pageParams.PageNumber, pageParams.PageSize, vm.TotalCount, vm.TotalPage, vm);
         }
 
-        public async Task<int> CancelledOrder(int id)
+        public async Task<int> CancelledOrder(int id, string userId)
         {
-            var res = await _orderRepository.CancelledOrder(id);
+            var res = await _orderRepository.CancelledOrder(id, userId);
 
             if (res == 0)
                 return 0;

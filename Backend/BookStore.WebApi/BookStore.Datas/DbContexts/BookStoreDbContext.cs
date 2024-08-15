@@ -71,5 +71,10 @@ namespace BookStore.Datas.DbContexts
             }
             // -----
         }
+
+        internal object Include()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

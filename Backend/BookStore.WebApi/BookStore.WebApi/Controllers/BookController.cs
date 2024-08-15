@@ -15,6 +15,29 @@ namespace BookStore.WebApi.Controllers
             _bookService = bookService;
         }
 
+        /// <summary>
+        /// Lấy các quyển sách liên quan
+        /// </summary>
+        /// <param name="authorId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("book-related")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetBookRelated([FromQuery] List<int> authorId, [FromQuery] int groupId)
+        {
+            try
+            {
+                var res = await _bookService.GetBookRelated(authorId, groupId);
+
+                return Ok(res);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            };
+        }
+
         public override async Task<IActionResult> GetAllPaging([FromQuery] BaseSpecification spec, [FromQuery] PaginationParams pageParams)
         {
             try

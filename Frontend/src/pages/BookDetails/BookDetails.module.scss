@@ -49,6 +49,8 @@
     .book-price {
         font-size: 2.4rem;
         margin-top: 1.6rem;
+        color: #c92127;
+        font-weight: bold;
     }
 
     .book-quantity {
@@ -104,11 +106,14 @@
 }
 
 .book-introduction {
-    margin-top: 4rem;
+    // margin-top: 4rem;
+    padding: 2rem;
 
     .book-introduction-title {
         font-size: 2.2rem;
         font-weight: 700;
+        padding: 1rem;
+        background-color: #f3f3f3;
     }
 
     .intro-tab-content {

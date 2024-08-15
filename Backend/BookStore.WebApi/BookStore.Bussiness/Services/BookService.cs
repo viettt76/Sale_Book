@@ -141,7 +141,7 @@ namespace BookStore.Bussiness.Services
                 {
                     entities = entities.Where(x => 
                         x.Title.ToLower().Contains(spec.Filter.ToLower()) ||
-                        x.BookAuthors.Any(x => x.Author.FullName.Contains(spec.Filter))
+                        x.BookAuthors.Any(x => x.Author.FullName.ToLower().Contains(spec.Filter.ToLower()))
                     );
                 }
 
@@ -157,7 +157,7 @@ namespace BookStore.Bussiness.Services
 
                 if (spec.BookGroupIds != null)
                 {
-                    entities = entities.Where(x => x.BookAuthors.Any(ba => spec.BookGroupIds.Contains(ba.AuthorId)));
+                    entities = entities.Where(x => spec.BookGroupIds.Contains(x.BookGroupId));
                 }
 
                 entities = spec.Sorting switch
@@ -175,6 +175,13 @@ namespace BookStore.Bussiness.Services
             var pagingList_map = _mapper.Map<PaginationList<BookViewModel>>(pagingList);
 
             return new PaginationSet<BookViewModel>(pageParams.PageNumber, pageParams.PageSize, pagingList_map.TotalCount, pagingList_map.TotalPage, pagingList_map);
+        }
+
+        public async Task<IEnumerable<BookViewModel>> GetBookRelated(List<int>? authorId, int groupId)
+        {
+            var res = await _bookRepository.GetBookRelated(authorId, groupId);
+
+            return res.Select(x => ChangeToViewModel(x)).ToList();
         }
     }
 }

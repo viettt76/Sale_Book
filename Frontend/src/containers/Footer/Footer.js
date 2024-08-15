@@ -25,11 +25,11 @@ const Footer = () => {
                         </div>
                         <div className={clsx(styles['contact-des'])}>
                             <FontAwesomeIcon className={clsx(styles['icon'])} icon={faPhoneVolume} />
-                            <p className={clsx(styles['item'])}>Ngõ 177, Lai Xá, Kim Chung, Hoài Đức, Hà Nội</p>
+                            <p className={clsx(styles['item'])}>(+84) 0345126789</p>
                         </div>
                         <div className={clsx(styles['contact-des'])}>
                             <FontAwesomeIcon className={clsx(styles['icon'])} icon={faEnvelope} />
-                            <p className={clsx(styles['item'])}>Ngõ 177, Lai Xá, Kim Chung, Hoài Đức, Hà Nội</p>
+                            <p className={clsx(styles['item'])}>admin@example.com</p>
                         </div>
                         <div className={clsx(styles['box-bct'])}>
                             <a
@@ -63,13 +63,13 @@ const Footer = () => {
                     <div className={clsx(styles['social'])}>
                         <h4 className={clsx(styles['title-menu'])}>KẾT NỐI VỚI CHÚNG TÔI</h4>
                         <div className={clsx(styles['social-icon'])}>
-                            <Link className={clsx(styles['item'])} to="/">
+                            <Link className={clsx(styles['item'])} to="https://www.facebook.com/">
                                 <img width="32" height="32" src={facebook} alt="facebook" />
                             </Link>
-                            <Link className={clsx(styles['item'])} to="/">
+                            <Link className={clsx(styles['item'])} to="https://shopee.vn/">
                                 <img width="32" height="32" src={shopee} alt="shopee" />
                             </Link>
-                            <Link className={clsx(styles['item'])} to="/">
+                            <Link className={clsx(styles['item'])} to="https://www.tiktok.com/">
                                 <img width="32" height="32" src={tiktok} alt="tiktok" />
                             </Link>
                         </div>
