@@ -139,6 +139,13 @@ body {
     color: #0a58ca;
 }
 
+/**
+    React datepicker
+**/
+.react-datepicker-popper {
+    z-index: 200;
+}
+
 .react-datepicker__header {
     font-size: 1.6rem;
 }

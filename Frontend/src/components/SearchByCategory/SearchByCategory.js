@@ -25,6 +25,7 @@ const SearchByCategory = () => {
     const [bookList, setBookList] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     useEffect(() => {
         const fetchGetAllBook = async () => {
@@ -32,8 +33,7 @@ const SearchByCategory = () => {
                 const res = await getBookPagingService({ pageNumber: currentPage, pageSize: 8 });
                 if (res?.data?.datas) {
                     setTotalPages(res.data?.totalPage);
-                    console.log(res?.data?.datas?.length <= 4);
-                    if (componentRef.current) {
+                    if (!isFirstLoad && componentRef.current) {
                         const componentTop = componentRef.current.getBoundingClientRect().top + window.scrollY;
                         window.scrollTo({
                             top: componentTop - 90,
@@ -60,6 +60,8 @@ const SearchByCategory = () => {
                     });
                     setBookList(clone);
                     setFilteredBooks(clone);
+
+                    setIsFirstLoad(false);
                 }
             } catch (error) {
                 console.log(error);

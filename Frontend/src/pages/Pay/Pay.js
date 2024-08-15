@@ -5,6 +5,11 @@ import styles from './Payment.module.scss';
 import avatar from '~/assets/imgs/avatar-default.png';
 import { formatPrice, totalPayment } from '~/utils/commonUtils';
 import { Modal } from 'react-bootstrap';
+import { getBookByIdService } from '~/services/bookService';
+import { getMyVoucherService } from '~/services/voucherService';
+import { useSelector } from 'react-redux';
+import { userInfoSelector } from '~/redux/selectors';
+import { orderService } from '~/services/orderService';
 
 const Pay = () => {
     const { id } = useParams();
@@ -12,20 +17,28 @@ const Pay = () => {
     const queryParams = new URLSearchParams(location.search);
     const quantityParam = queryParams.get('quantity');
 
+    const userInfo = useSelector(userInfoSelector);
+
     const [quantity, setQuantity] = useState(Number(quantityParam));
 
-    const [bookInfo, setBookInfo] = useState({
-        id: 'abc',
-        name: 'The Great Gatsby',
-        genres: [1],
-        price: '200000',
-        description: 'A classic novel of the Roaring Twenties.',
-        publicationDate: 'April 10, 1925',
-        totalPageNumber: '180',
-        rated: '4.5/5',
-        remaining: 20,
-        image: avatar,
-    });
+    const [bookInfo, setBookInfo] = useState(null);
+
+    useEffect(() => {
+        const fetchGetBookInfo = async () => {
+            try {
+                const res = await getBookByIdService(id);
+                console.log(res?.data);
+                setBookInfo({
+                    name: res?.data?.title,
+                    price: res?.data?.price,
+                    image: res?.data?.image,
+                });
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchGetBookInfo();
+    }, [id]);
 
     const handleSetQuantity = (e) => {
         if (!isNaN(e.target.value)) {
@@ -34,20 +47,18 @@ const Pay = () => {
     };
 
     const [showVoucher, setShowVoucher] = useState(false);
-    const [vouchers, setVouchers] = useState([
-        {
-            id: 'voucher-1',
-            percent: 20,
-        },
-        {
-            id: 'voucher-2',
-            percent: 40,
-        },
-        {
-            id: 'voucher-3',
-            percent: 50,
-        },
-    ]);
+    const [vouchers, setVouchers] = useState([]);
+    useEffect(() => {
+        const fetchVoucher = async () => {
+            try {
+                const res = await getMyVoucherService();
+                setVouchers(res?.data);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        fetchVoucher();
+    }, []);
     const [voucherSelected, setVoucherSelected] = useState(null);
 
     const handleShowVoucher = () => setShowVoucher(true);
@@ -67,6 +78,18 @@ const Pay = () => {
                 : bookInfo?.price * quantity,
         );
     }, [voucherSelected, bookInfo, quantity]);
+
+    const handlePay = async () => {
+        try {
+            await orderService({
+                userId: userInfo?.id,
+                voucherId: voucherSelected ? voucherSelected?.voucherId : 0,
+                orderList: [{ bookId: id, quantity: quantity }],
+            });
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className={clsx(styles['overlay'])}>
@@ -123,7 +146,9 @@ const Pay = () => {
                     </Modal>
                 </div>
                 <div className={clsx(styles['total-payment'])}>Tổng tiền: {formatPrice(totalPay, 'VND')}</div>
-                <button className={clsx(styles['btn-pay'])}>Thanh toán</button>
+                <button className={clsx(styles['btn-pay'])} onClick={handlePay}>
+                    Thanh toán
+                </button>
             </div>
         </div>
     );

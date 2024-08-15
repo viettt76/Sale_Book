@@ -35,15 +35,17 @@ const NoticeOfBookList = ({
                 try {
                     const res = await getCartService();
                     setBookList(
-                        res?.data?.cartItems?.map((c) => {
-                            return {
-                                id: c?.bookId,
-                                name: c?.bookName,
-                                img: c?.bookImage,
-                                price: c?.bookPrice,
-                                quantity: c?.quantity,
-                            };
-                        }),
+                        res?.data?.cartItems
+                            ?.map((c) => {
+                                return {
+                                    id: c?.bookId,
+                                    name: c?.bookName,
+                                    img: c?.bookImage,
+                                    price: c?.bookPrice,
+                                    quantity: c?.quantity,
+                                };
+                            })
+                            .reverse(),
                     );
                 } catch (error) {
                     console.log(error);
@@ -61,15 +63,17 @@ const NoticeOfBookList = ({
                         });
                     });
                     setBookList(
-                        x?.map((c) => {
-                            return {
-                                id: c?.bookId,
-                                name: c?.bookName,
-                                img: c?.bookImage,
-                                price: c?.bookPrice,
-                                quantity: c?.quantity,
-                            };
-                        }),
+                        x
+                            ?.map((c) => {
+                                return {
+                                    id: c?.bookId,
+                                    name: c?.bookName,
+                                    img: c?.bookImage,
+                                    price: c?.bookPrice,
+                                    quantity: c?.quantity,
+                                };
+                            })
+                            .reverse(),
                     );
                 } catch (error) {
                     console.log(error);

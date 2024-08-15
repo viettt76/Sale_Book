@@ -84,16 +84,6 @@ const Header = () => {
         }
     };
 
-    // useEffect(() => {
-    //     const handleClickOutsideVoucher = (e) => {
-    //         if (voucherWrapperRef.current && !voucherWrapperRef.current.contains(e.target)) {
-    //             setShowVouchers(false);
-    //         }
-    //     };
-    //     document.addEventListener('mousedown', handleClickOutsideVoucher);
-    //     return () => document.removeEventListener('mousedown', handleClickOutsideVoucher);
-    // }, []);
-
     return (
         <div className={clsx(styles['header'])}>
             <Link to="/">
@@ -156,20 +146,28 @@ const Header = () => {
                         className={clsx(styles['icon'])}
                         icon={faTicket}
                     />
-                    {showVouchers && (
-                        <div className={clsx(styles['voucher-list'])}>
-                            {vouchers?.map((voucher) => {
-                                if (voucher?.used) {
-                                    return <></>;
-                                }
-                                return (
-                                    <div key={`voucher-${voucher?.voucherId}`} className={clsx(styles['voucher-item'])}>
-                                        Giảm giá {voucher?.percent}%
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
+                    {showVouchers &&
+                        (vouchers?.length > 0 ? (
+                            <div className={clsx(styles['voucher-list'])}>
+                                {vouchers?.map((voucher) => {
+                                    if (voucher?.used) {
+                                        return <></>;
+                                    }
+                                    return (
+                                        <div
+                                            key={`voucher-${voucher?.voucherId}`}
+                                            className={clsx(styles['voucher-item'])}
+                                        >
+                                            Giảm giá {voucher?.percent}%
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className={clsx(styles['voucher-empty'])}>
+                                <p>Bạn không có voucher nào</p>
+                            </div>
+                        ))}
                 </div>
                 <NoticeOfBookList
                     title="Giỏ hàng"
@@ -181,14 +179,6 @@ const Header = () => {
                     textLinkWhenEmpty="Tiếp tục mua sắm"
                     linkWhenEmpty="/"
                 />
-                {/* <NoticeOfBookList
-                    title="Voucher"
-                    type="voucher"
-                    icon={faTicket}
-                    textWhenEmpty="Bạn không có voucher nào"
-                    textLinkWhenEmpty=""
-                    linkWhenEmpty="/"
-                /> */}
                 <NoticeOfBookList
                     title="Sách đã mua"
                     type="order"
