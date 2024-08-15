@@ -54,7 +54,6 @@ const Header = () => {
             try {
                 const res = await getMyVoucherService();
                 setVouchers(res?.data);
-                console.log(res.data);
             } catch (error) {
                 console.log(error);
             }
@@ -147,20 +146,28 @@ const Header = () => {
                         className={clsx(styles['icon'])}
                         icon={faTicket}
                     />
-                    {showVouchers && (
-                        <div className={clsx(styles['voucher-list'])}>
-                            {vouchers?.map((voucher) => {
-                                if (voucher?.used) {
-                                    return <></>;
-                                }
-                                return (
-                                    <div key={`voucher-${voucher?.voucherId}`} className={clsx(styles['voucher-item'])}>
-                                        Giảm giá {voucher?.percent}%
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
+                    {showVouchers &&
+                        (vouchers?.length > 0 ? (
+                            <div className={clsx(styles['voucher-list'])}>
+                                {vouchers?.map((voucher) => {
+                                    if (voucher?.used) {
+                                        return <></>;
+                                    }
+                                    return (
+                                        <div
+                                            key={`voucher-${voucher?.voucherId}`}
+                                            className={clsx(styles['voucher-item'])}
+                                        >
+                                            Giảm giá {voucher?.percent}%
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        ) : (
+                            <div className={clsx(styles['voucher-empty'])}>
+                                <p>Bạn không có voucher nào</p>
+                            </div>
+                        ))}
                 </div>
                 <NoticeOfBookList
                     title="Giỏ hàng"
