@@ -12,6 +12,7 @@ import { searchBookByNameOrAuthor } from '~/services/bookService';
 import { formatPrice } from '~/utils/commonUtils';
 import { getMyVoucherService } from '~/services/voucherService';
 import Loading from '~/components/Loading';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
 const Header = () => {
     const location = useLocation();
@@ -58,6 +59,7 @@ const Header = () => {
             try {
                 setLoading(true);
                 const res = await getMyVoucherService();
+                console.log(res);
                 setLoading(false);
                 setVouchers(res?.data);
             } catch (error) {
@@ -89,8 +91,6 @@ const Header = () => {
         }
     };
 
-    console.log(showSearchResult);
-
     return (
         <div className={clsx(styles['header'])}>
             <Link to="/">
@@ -121,7 +121,13 @@ const Header = () => {
                                                 key={`book-${book?.id}`}
                                                 className={clsx(styles['result-item'])}
                                             >
-                                                <img src={book?.image} />
+                                                <img
+                                                    src={book?.image || bookImageDefault}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = bookImageDefault;
+                                                    }}
+                                                />
                                                 <div className={clsx(styles['result-item-info'])}>
                                                     <h6 className={clsx(styles['result-item-header'])}>
                                                         {book?.title}

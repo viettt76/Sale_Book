@@ -13,6 +13,7 @@ import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { formatDateTime, formatPrice } from '~/utils/commonUtils';
 import Loading from '~/components/Loading';
 import BreadCrumb from '~/containers/BreadCrumb';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
 const Order = () => {
     const userInfo = useSelector(userInfoSelector);
@@ -59,7 +60,11 @@ const Order = () => {
     const [reviewRate, setReviewRate] = useState(0);
     const [reviewContent, setReviewContent] = useState('');
 
-    const handleCloseModalReview = () => setShowModalReview(false);
+    const handleCloseModalReview = () => {
+        setShowModalReview(false);
+        setReviewContent('');
+        setReviewRate(0);
+    };
     const handleShowModalReview = (bookInfo) => {
         setShowModalReview(true);
         setCurrentBookReview({
@@ -110,7 +115,14 @@ const Order = () => {
                                     <div className={clsx(styles['order-status'])}>{obj[order?.status]}</div>
                                     <div className={clsx(styles['order-book-info'])}>
                                         <div className={clsx(styles['order-book-img'])}>
-                                            <img src={order?.bookImage} alt={order?.bookName} />
+                                            <img
+                                                src={order?.bookImage}
+                                                alt={order?.bookName || bookImageDefault}
+                                                onError={(e) => {
+                                                    e.target.onerror = null;
+                                                    e.target.src = bookImageDefault;
+                                                }}
+                                            />
                                         </div>
                                         <div className={clsx(styles['order-book-name-quantity'])}>
                                             <h5 className={clsx(styles['order-book-name'])}>{order?.bookName}</h5>
@@ -231,11 +243,16 @@ const Order = () => {
                                     className="form-control"
                                     placeholder="Viết đánh giá"
                                     onChange={(e) => setReviewContent(e.target.value)}
+                                    required
                                 />
                             </div>
                         </Modal.Body>
                         <Modal.Footer>
-                            <button disabled={reviewRate <= 0} className="btn btn-primary fz-16" onClick={handleReview}>
+                            <button
+                                disabled={reviewRate <= 0 || reviewContent === ''}
+                                className="btn btn-primary fz-16"
+                                onClick={handleReview}
+                            >
                                 Gửi đánh giá
                             </button>
                         </Modal.Footer>

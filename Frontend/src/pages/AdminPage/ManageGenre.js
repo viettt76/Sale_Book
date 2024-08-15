@@ -16,7 +16,7 @@ const ManageGenre = () => {
     const [genres, setGenres] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
-    const pageSize = 3;
+    const pageSize = 10;
 
     const fetchGetGenres = async () => {
         try {

@@ -15,11 +15,13 @@ import { userInfoSelector } from '~/redux/selectors';
 import { addToCartService } from '~/services/cartService';
 import customToastify from '~/utils/customToastify';
 import Loading from '~/components/Loading';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
 const BookDetails = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [timeDisableAddToCart, setTimeDisableAddToCart] = useState(0);
 
     const userInfo = useSelector(userInfoSelector);
 
@@ -44,7 +46,6 @@ const BookDetails = () => {
         try {
             setLoading(true);
             const res = await getBookByIdService(id);
-            console.log(res);
             if (res?.data) {
                 setBookInfo({
                     name: res.data?.title,
@@ -78,10 +79,24 @@ const BookDetails = () => {
         }
     };
 
+    useEffect(() => {
+        let timer;
+        if (timeDisableAddToCart > 0) {
+            timer = setInterval(() => {
+                setTimeDisableAddToCart((prevTime) => prevTime - 1);
+            }, 1000);
+        }
+
+        return () => clearInterval(timer);
+    }, [timeDisableAddToCart]);
+
     const handleAddToCart = async () => {
         try {
-            await addToCartService({ cartId: userInfo?.cartId, bookId: id, quantity });
-            customToastify.success('Thêm vào giỏ hàng thành công');
+            if (timeDisableAddToCart === 0) {
+                setTimeDisableAddToCart(30);
+                await addToCartService({ cartId: userInfo?.cartId, bookId: id, quantity });
+                customToastify.success('Thêm vào giỏ hàng thành công');
+            }
         } catch (error) {
             console.log(error);
         }
@@ -96,7 +111,14 @@ const BookDetails = () => {
                     <div>
                         <div className="row">
                             <div className="col-5">
-                                <img className={clsx(styles['book-img'])} src={bookInfo?.image} />
+                                <img
+                                    className={clsx(styles['book-img'])}
+                                    src={bookInfo?.image || bookImageDefault}
+                                    onError={(e) => {
+                                        e.target.onerror = null;
+                                        e.target.src = bookImageDefault;
+                                    }}
+                                />
                             </div>
                             <div className={clsx('col-7', styles['buy-book'])}>
                                 <h3 className={clsx(styles['book-name'])}>{bookInfo?.name}</h3>
@@ -152,7 +174,9 @@ const BookDetails = () => {
                                 </div>
                                 <div>
                                     <button
-                                        className={clsx(styles['btn'], styles['btn-cart'])}
+                                        className={clsx(styles['btn'], styles['btn-cart'], {
+                                            [[styles['disable']]]: timeDisableAddToCart > 0,
+                                        })}
                                         onClick={handleAddToCart}
                                     >
                                         Thêm vào giỏ hàng

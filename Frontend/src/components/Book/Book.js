@@ -5,11 +5,20 @@ import { formatPrice } from '~/utils/commonUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStarHalfStroke, faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
 const Book = ({ bookId, img, name, nameAuthor, price, rated = 0 }) => {
     return (
         <Link to={`/book/${bookId}`} className={clsx(styles['wrapper'])}>
-            <img className={clsx(styles['img'])} src={img} alt={name} />
+            <img
+                className={clsx(styles['img'])}
+                src={img || bookImageDefault}
+                alt={name}
+                onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = bookImageDefault;
+                }}
+            />
             <p className={clsx(styles['name'])}>{name}</p>
             <div className={clsx(styles['author-time'])}>
                 <div className={clsx(styles['author-info'])}>

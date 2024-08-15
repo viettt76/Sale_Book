@@ -32,6 +32,31 @@ const ManageOrder = () => {
             //     })),
             // );
             // setLoading(false);
+
+            // {
+            //     "id": 1,
+            //     "userId": "48771cd6-eb49-4518-a55f-c27bf1bb1513",
+            //     "userName": "hoangquocviet@gmail.com",
+            //     "userEmail": "hoangquocviet@gmail.com",
+            //     "userPhoneNumber": "0909123457",
+            //     "totalAmount": 200000,
+            //     "status": 3,
+            //     "voucherId": 0,
+            //     "voucherPercent": 0,
+            //     "date": "2022-12-06T00:00:00",
+            //     "orderItems": [
+            //         {
+            //             "id": 1,
+            //             "orderId": 1,
+            //             "bookId": 1,
+            //             "bookName": "Doraemon Movie Story Màu - Tân Nobita và lịch sử khai phá vũ trụ",
+            //             "bookImage": "https://bit.ly/46G92Jk",
+            //             "bookPrice": 31500,
+            //             "isReviewed": false,
+            //             "quantity": 13
+            //         }
+            //     ]
+            // }
         } catch (error) {
             console.log(error);
         }
@@ -78,7 +103,7 @@ const ManageOrder = () => {
                 <table className="w-100">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>User</th>
                             <th>Action</th>
                         </tr>
                     </thead>

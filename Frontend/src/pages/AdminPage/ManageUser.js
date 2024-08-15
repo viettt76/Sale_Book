@@ -22,7 +22,7 @@ const ManageUser = () => {
 
     const [currentPageUser, setCurrentPageUser] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
-    const pageSize = 3;
+    const pageSize = 10;
 
     useEffect(() => {
         const fetchGetAllUsers = async () => {
