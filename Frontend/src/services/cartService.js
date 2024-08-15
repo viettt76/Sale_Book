@@ -21,3 +21,7 @@ export const updateBookQuantityInCartService = ({ cartId, bookId, quantity }) =>
         },
     });
 };
+
+export const deleteBookInCartService = ({ cartId, bookId }) => {
+    return axios.delete(`/Cart/delete-cart-item?cartId=${cartId}&bookId=${bookId}`);
+};

@@ -7,6 +7,7 @@ const initialState = {
     role: null,
     address: null,
     phoneNumber: null,
+    cartId: null,
 };
 
 const userReducer = (state = initialState, action) => {
@@ -20,6 +21,7 @@ const userReducer = (state = initialState, action) => {
                 role: action.payload?.role,
                 address: action.payload?.address,
                 phoneNumber: action.payload?.phoneNumber,
+                cartId: action.payload?.cartId,
             };
         case CLEAR_USER_INFO:
             return {
@@ -29,6 +31,7 @@ const userReducer = (state = initialState, action) => {
                 role: null,
                 address: null,
                 phoneNumber: null,
+                cartId: null,
             };
         default:
             return state;

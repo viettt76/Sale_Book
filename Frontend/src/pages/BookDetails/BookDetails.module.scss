@@ -87,47 +87,6 @@
         &.btn-buy-now {
             background-color: #23272b;
         }
-
-        &.btn-reviews {
-            margin-top: 1.6rem;
-            font-size: 1.6rem;
-            cursor: pointer;
-            background-color: #23272b;
-        }
-    }
-}
-
-.modal-review {
-    .review-header {
-        font-size: 1.6rem;
-
-        .review-title {
-            font-size: 2.6rem !important;
-        }
-    }
-
-    .review-body {
-        .review-rated {
-            font-size: 1.8rem;
-
-            svg {
-                margin-right: 0.6rem;
-                cursor: pointer;
-
-                &.active {
-                    color: #f69c08;
-                }
-            }
-        }
-
-        .review-content {
-            font-size: 1.6rem;
-            margin-top: 1.2rem;
-
-            input {
-                font-size: 1.6rem;
-            }
-        }
     }
 }
 

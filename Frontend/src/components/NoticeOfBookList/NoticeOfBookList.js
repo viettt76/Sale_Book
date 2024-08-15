@@ -5,9 +5,8 @@ import { useEffect, useRef, useState } from 'react';
 import { ListGroup } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '~/utils/commonUtils';
-import avatarDefault from '~/assets/imgs/avatar-default.png';
-import { useSelector } from 'react-redux';
-import { cartSelector } from '~/redux/selectors';
+import { getCartService } from '~/services/cartService';
+import { getOrderService } from '~/services/orderService';
 
 const NoticeOfBookList = ({
     title,
@@ -22,8 +21,6 @@ const NoticeOfBookList = ({
     const [bookList, setBookList] = useState([]);
     const [showBookList, setShowBookList] = useState(false);
 
-    const cart = useSelector(cartSelector);
-
     const ref = useRef(null);
 
     const handleClickOutside = (event) => {
@@ -34,19 +31,53 @@ const NoticeOfBookList = ({
 
     useEffect(() => {
         if (type === 'cart') {
-            setBookList(
-                cart?.map((c) => {
-                    return {
-                        id: c?.bookId,
-                        name: c?.bookName,
-                        img: c?.img,
-                        price: c?.bookPrice,
-                        quantity: c?.quantity,
-                    };
-                }),
-            );
+            const fetchCart = async () => {
+                try {
+                    const res = await getCartService();
+                    setBookList(
+                        res?.data?.cartItems?.map((c) => {
+                            return {
+                                id: c?.bookId,
+                                name: c?.bookName,
+                                img: c?.bookImage,
+                                price: c?.bookPrice,
+                                quantity: c?.quantity,
+                            };
+                        }),
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            fetchCart();
+        } else if (type === 'order') {
+            const fetchOrder = async () => {
+                try {
+                    const res = await getOrderService();
+                    const x = [];
+                    res?.data?.forEach((order) => {
+                        return order?.orderItems?.forEach((book) => {
+                            return x.push(book);
+                        });
+                    });
+                    setBookList(
+                        x?.map((c) => {
+                            return {
+                                id: c?.bookId,
+                                name: c?.bookName,
+                                img: c?.bookImage,
+                                price: c?.bookPrice,
+                                quantity: c?.quantity,
+                            };
+                        }),
+                    );
+                } catch (error) {
+                    console.log(error);
+                }
+            };
+            fetchOrder();
         }
-    }, [type, cart]);
+    }, [type, showBookList]);
 
     useEffect(() => {
         document.addEventListener('click', handleClickOutside, true);
@@ -75,20 +106,25 @@ const NoticeOfBookList = ({
                                 return (
                                     <ListGroup.Item key={`book-${index}`}>
                                         <Link
-                                            onClick={() => setShowBookList(false)}
+                                            onClick={type === 'cart' ? () => setShowBookList(false) : undefined}
                                             className={clsx(styles['book'])}
-                                            to={`/book/${item?.id}`}
+                                            to={type === 'cart' && `/book/${item?.id}`}
                                         >
                                             <img
                                                 className={clsx(styles['book-img'])}
-                                                src={avatarDefault}
+                                                src={item?.img}
                                                 alt={item?.name}
                                             />
                                             <div>
                                                 <h5 className={clsx(styles['book-name'])}>{item?.name}</h5>
-                                                <span className={clsx(styles['book-price'])}>
-                                                    {formatPrice(item?.price, 'VND')}
-                                                </span>
+                                                <div className="d-flex align-items-center">
+                                                    <span className={clsx(styles['book-price'])}>
+                                                        {formatPrice(item?.price, 'VND')}
+                                                    </span>
+                                                    <span className={clsx(styles['book-quantity'])}>
+                                                        x {item?.quantity}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </Link>
                                     </ListGroup.Item>

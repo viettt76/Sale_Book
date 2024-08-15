@@ -195,3 +195,72 @@
         font-size: 1.6rem;
     }
 }
+
+.voucher-wrapper {
+    position: relative;
+
+    .icon {
+        padding: 0.4rem;
+        margin: 0 1.2rem;
+        width: 2.4rem;
+        height: 2.4rem;
+        color: #707070;
+
+        &:hover {
+            color: $main-color;
+        }
+    }
+
+    .voucher-list {
+        position: absolute;
+        border: 0.1rem solid #d1d7dc;
+        box-shadow: 0 0 0 0.1rem #d1d7dc, 0 0.2rem 0.4rem rgba(0, 0, 0, 0.08), 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
+        background-color: #fff;
+        width: 25rem;
+        right: 0rem;
+        padding: 1.2rem;
+        animation: fadeIn 0.4s ease-in-out;
+        max-height: 32rem;
+        overflow-y: auto;
+
+        &::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        &::-webkit-scrollbar-track {
+            background-color: #f1f1f1;
+        }
+
+        &::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 10px;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+
+        .voucher-item {
+            font-size: 1.8rem;
+            box-shadow: 0 0 0.2rem 0 $box-shadow;
+            padding: 1.2rem 1.6rem;
+            background-color: #f3421f;
+            color: #fff;
+            cursor: pointer;
+
+            & + .voucher-item {
+                margin-top: 1rem;
+            }
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}

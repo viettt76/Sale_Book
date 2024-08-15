@@ -42,3 +42,21 @@ export const totalPayment = (payment, voucher = { type: '', value: 0 }) => {
         return Number(payment) - Number(voucher?.value);
     }
 };
+
+export const formatDateTime = (isoDateStr) => {
+    const dateObj = new Date(isoDateStr);
+
+    const day = String(dateObj.getDate()).padStart(2, '0');
+    const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+    const year = dateObj.getFullYear();
+
+    // Định dạng ngày tháng năm
+    const formattedDate = `${day}/${month}/${year}`;
+
+    // Lấy giờ phút
+    const hours = String(dateObj.getHours()).padStart(2, '0');
+    const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+    const time = `${hours}:${minutes}`;
+
+    return `${time}, ${formattedDate}`;
+};

@@ -1,15 +1,11 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import routes, { adminRoutes } from '~/routes';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { getPersonalInfoService } from '~/services/userServices';
-import * as actions from '~/redux/actions';
-import { useDispatch } from 'react-redux';
-import customToastify from '~/utils/customToastify';
-import { getCartService } from '~/services/cartService';
+import useFetchUserData from '~/hooks/useFetchUserData';
 
 const ScrollToTop = () => {
     const { pathname } = useLocation();
@@ -22,46 +18,14 @@ const ScrollToTop = () => {
 };
 
 function FetchUserInfo() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
     const location = useLocation();
+    const fetchUserData = useFetchUserData();
 
     useEffect(() => {
-        const fetchGetPersonalInfo = async () => {
-            try {
-                const resUserInfo = await getPersonalInfoService();
-                dispatch(
-                    actions.saveUserInfo({
-                        id: resUserInfo?.data?.id,
-                        username: resUserInfo?.data?.userName,
-                        email: resUserInfo?.data?.email,
-                        role: resUserInfo?.data?.role,
-                        phoneNumber: resUserInfo?.data?.phoneNumber,
-                        address: resUserInfo?.data?.address,
-                    }),
-                );
-            } catch (error) {
-                customToastify.info('Bạn đã hết phiên đăng nhập');
-                localStorage.removeItem('token');
-                navigate('/login');
-            }
-        };
-
-        const fetchGetCart = async () => {
-            try {
-                const resCart = await getCartService();
-                dispatch(actions.addBooksToCart(resCart?.data?.cartItems));
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
         if (location.pathname !== '/login') {
-            fetchGetPersonalInfo();
-            fetchGetCart();
+            fetchUserData();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [fetchUserData, location.pathname]);
 
     return null;
 }
