@@ -12,6 +12,7 @@ import moment from 'moment';
 import customToastify from '~/utils/customToastify';
 import axios from 'axios';
 import Loading from '~/components/Loading';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
 const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPaging }) => {
     const [genres, setGenres] = useState([]);
@@ -490,7 +491,14 @@ const ManageBook = () => {
                                     <td>{book?.rated}</td>
                                     <td>{book?.authors?.map((author) => author?.fullName).join(', ')}</td>
                                     <td>
-                                        <img src={book?.image} alt="The Great Gatsby" />
+                                        <img
+                                            src={book?.image || bookImageDefault}
+                                            alt="The Great Gatsby"
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = bookImageDefault;
+                                            }}
+                                        />
                                     </td>
                                     <td>
                                         <Button

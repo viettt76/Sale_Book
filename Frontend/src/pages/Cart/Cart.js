@@ -9,10 +9,11 @@ import { getMyVoucherService } from '~/services/voucherService';
 import { orderService } from '~/services/orderService';
 import { userInfoSelector } from '~/redux/selectors';
 import Loading from '~/components/Loading';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
 const Cart = () => {
     const userInfo = useSelector(userInfoSelector);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const [cart, setCart] = useState([]);
 
@@ -21,9 +22,10 @@ const Cart = () => {
             // setLoading(true);
             const res = await getCartService();
             setCart(res?.data?.cartItems);
-            // setLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
     useEffect(() => {
@@ -127,7 +129,14 @@ const Cart = () => {
                                         </button>
                                     </div>
                                     <div className={clsx(styles['book-info'])}>
-                                        <img className={clsx(styles['book-image'])} src={book?.bookImage} />
+                                        <img
+                                            className={clsx(styles['book-image'])}
+                                            src={book?.bookImage || bookImageDefault}
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = bookImageDefault;
+                                            }}
+                                        />
                                         <div>
                                             <h6 className={clsx(styles['book-name'])}>{book?.bookName}</h6>
                                             <div className={clsx(styles['book-price'])}>{book?.bookPrice}</div>
@@ -184,17 +193,21 @@ const Cart = () => {
                                     <Modal.Title className={clsx(styles['fz-24'])}>Chọn voucher</Modal.Title>
                                 </Modal.Header>
                                 <Modal.Body>
-                                    {vouchers?.map((voucher) => {
-                                        return (
-                                            <div
-                                                key={`voucher-${voucher?.voucherId}`}
-                                                className={clsx(styles['voucher-item'])}
-                                                onClick={() => handleAddVoucher(voucher)}
-                                            >
-                                                Giảm giá {voucher?.percent}%
-                                            </div>
-                                        );
-                                    })}
+                                    {vouchers?.length > 0 ? (
+                                        vouchers?.map((voucher) => {
+                                            return (
+                                                <div
+                                                    key={`voucher-${voucher?.voucherId}`}
+                                                    className={clsx(styles['voucher-item'])}
+                                                    onClick={() => handleAddVoucher(voucher)}
+                                                >
+                                                    Giảm giá {voucher?.percent}%
+                                                </div>
+                                            );
+                                        })
+                                    ) : (
+                                        <div className="text-center fz-16">Bạn không có voucher nào</div>
+                                    )}
                                 </Modal.Body>
                             </Modal>
                         </div>

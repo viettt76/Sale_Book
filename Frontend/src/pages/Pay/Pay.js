@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { userInfoSelector } from '~/redux/selectors';
 import { orderService } from '~/services/orderService';
 import Loading from '~/components/Loading';
+import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
 const Pay = () => {
     const { id } = useParams();
@@ -103,7 +104,14 @@ const Pay = () => {
             ) : (
                 <div className={clsx(styles['pay-wrapper'])}>
                     <div className={clsx(styles['book-info'])}>
-                        <img className={clsx(styles['book-image'])} src={bookInfo?.image} />
+                        <img
+                            className={clsx(styles['book-image'])}
+                            src={bookInfo?.image || bookImageDefault}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = bookImageDefault;
+                            }}
+                        />
                         <div>
                             <h6 className={clsx(styles['book-name'])}>{bookInfo?.name}</h6>
                             <div className={clsx(styles['book-price'])}>{bookInfo?.price}</div>
@@ -143,17 +151,21 @@ const Pay = () => {
                                 <Modal.Title className={clsx(styles['fz-24'])}>Chọn voucher</Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                {vouchers?.map((voucher) => {
-                                    return (
-                                        <div
-                                            key={`voucher-${voucher?.id}`}
-                                            className={clsx(styles['voucher-item'])}
-                                            onClick={() => handleAddVoucher(voucher)}
-                                        >
-                                            Giảm giá {voucher?.percent}%
-                                        </div>
-                                    );
-                                })}
+                                {vouchers?.length > 0 ? (
+                                    vouchers?.map((voucher) => {
+                                        return (
+                                            <div
+                                                key={`voucher-${voucher?.id}`}
+                                                className={clsx(styles['voucher-item'])}
+                                                onClick={() => handleAddVoucher(voucher)}
+                                            >
+                                                Giảm giá {voucher?.percent}%
+                                            </div>
+                                        );
+                                    })
+                                ) : (
+                                    <div className="text-center fz-16">Bạn không có voucher nào</div>
+                                )}
                             </Modal.Body>
                         </Modal>
                     </div>
