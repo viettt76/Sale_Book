@@ -24,6 +24,7 @@ using CloudinaryDotNet;
 using static Org.BouncyCastle.Math.EC.ECCurve;
 using BookStore.WebApi.Models;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using BookStore.Bussiness.ViewModel.Payment.Momo;
 
 namespace BookStore.WebApi
 {
@@ -157,6 +158,7 @@ namespace BookStore.WebApi
                     .EnableSensitiveDataLogging();
                 });
 
+                builder.Services.AddHttpClient<Bussiness.Services.PaymentRequestService>();
                 #region Cloudinary
                 //var cloudinarySettings = builder.Configuration.GetSection("Cloudinary").Get<CloudinarySetings>();
                 //var cloudinary = new Cloudinary(new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret));
@@ -235,6 +237,10 @@ namespace BookStore.WebApi
                 builder.Services.AddSingleton(mapper);
                 #endregion
 
+                #region Đăng ký Momoconfig
+                builder.Services.Configure<MomoConfig>(builder.Configuration.GetSection(MomoConfig.ConfigName));
+                #endregion
+                
                 #region Đăng ký dịch vụ email
                 builder.Services.AddOptions(); // Kích hoạt Options
                 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
