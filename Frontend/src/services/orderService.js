@@ -19,6 +19,18 @@ export const orderService = ({ userId, voucherId = 0, orderList }) => {
     });
 };
 
-export const adminGetAllOrdersService = (status) => {
-    return axios.get('/Orders/all-orders', { params: { status } });
+export const adminGetAllOrdersService = ({ pageNumber = 1, pageSize = 10, status }) => {
+    return axios.get('/Orders/all-orders', { params: { pageNumber, pageSize, ...(status && { ...status }) } });
+};
+
+export const cancelOrderService = (orderId) => {
+    return axios.put('/Orders/cancelled-order/' + orderId);
+};
+
+export const adminChangeStatusOfOrderService = ({ orderId, status }) => {
+    return axios.put('/Orders/status-order-update/' + orderId, null, {
+        params: {
+            orderStatus: status,
+        },
+    });
 };

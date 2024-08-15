@@ -29,9 +29,10 @@ const ManageAuthor = () => {
                     name: author?.fullName,
                 })),
             );
-            setLoading(false);
         } catch (error) {
             console.log(error);
+        } finally {
+            setLoading(false);
         }
     };
 

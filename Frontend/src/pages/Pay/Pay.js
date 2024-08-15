@@ -37,10 +37,11 @@ const Pay = () => {
                     price: res?.data?.price,
                     image: res?.data?.image,
                 });
-                setLoading(false);
             } catch (error) {
                 console.log(error);
                 navigate('/404');
+            } finally {
+                setLoading(false);
             }
         };
         fetchGetBookInfo();
