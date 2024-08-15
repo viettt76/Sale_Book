@@ -32,6 +32,27 @@ namespace BookStore.Datas.Repositories
             return authorNames;
         }
 
+        public async Task<IEnumerable<Book>> GetBookRelated(List<int>? authorId, int groupId)
+        {
+            var query = _dbContext.Books
+                          .Include(x => x.BookGroup)
+                          .Include(x => x.BookAuthors)
+                          .ThenInclude(x => x.Author)
+                          .AsQueryable();
+
+            if (authorId != null && authorId.Any())
+            {
+                query = query.Where(x => x.BookAuthors.Any(e => authorId.Contains(e.AuthorId)));
+            }
+
+            if (groupId != null)
+            {
+                query = query.Where(x => x.BookGroupId == groupId);
+            }
+
+            return query.AsEnumerable();
+        }
+
         public override async Task<Book> GetByIdAsync(int id, string[] includes = null)
         {
             IQueryable<Book> query = _dbContext.Books;

@@ -16,9 +16,9 @@ namespace BookStore.Datas.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<int> CancelledOrder(int id)
+        public async Task<int> CancelledOrder(int id, string userId)
         {
-            var order = await _dbContext.Orders.FindAsync(id);
+            var order = await _dbContext.Orders.SingleOrDefaultAsync(x => x.Id == id && x.UserId == userId);
 
             if (order == null)
             {
@@ -28,7 +28,7 @@ namespace BookStore.Datas.Repositories
             if (order.Status == OrderStatusEnum.DaThanhToan || order.Status == OrderStatusEnum.DaHuy)
                 return 0;
 
-            order.Status = OrderStatusEnum.DaThanhToan;
+            order.Status = OrderStatusEnum.DaHuy;
 
             return await _dbContext.SaveChangesAsync();
         }

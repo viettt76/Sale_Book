@@ -176,5 +176,12 @@ namespace BookStore.Bussiness.Services
 
             return new PaginationSet<BookViewModel>(pageParams.PageNumber, pageParams.PageSize, pagingList_map.TotalCount, pagingList_map.TotalPage, pagingList_map);
         }
+
+        public async Task<IEnumerable<BookViewModel>> GetBookRelated(List<int>? authorId, int groupId)
+        {
+            var res = await _bookRepository.GetBookRelated(authorId, groupId);
+
+            return res.Select(x => ChangeToViewModel(x)).ToList();
+        }
     }
 }

@@ -47,7 +47,7 @@ namespace BookStore.WebApi.Controllers
         /// <remarks>
         /// Sample request:
         /// 
-        ///     POST /api/v1.0/Login/login
+        ///     POST /api/v1/Login/login
         ///     
         ///     {
         ///         "userName": "admin@example.com",

@@ -139,21 +139,22 @@ namespace BookStore.WebApi.Controllers
         /// <param name="create"></param>
         /// <returns></returns>
         /// <remarks>
-        /// Sample request
+        /// Sample request:
         /// 
-        /// POST 
-        ///  {
-        ///     "userId": "string",
-        ///     "status": 4,
-        ///     "date": "2024-08-15T13:41:59.192Z",
-        ///     "voucherId": 7,
-        ///     "orderItems": [
+        ///      POST /api/v1/Order/order
+        ///      
         ///       {
-        ///         "bookId": 49,
-        ///         "quantity": 3
-        ///       }
-        ///     ]
-        ///   }
+        ///          "userId": "string",
+        ///          "status": 4,
+        ///          "date": "2024-08-15T13:41:59.192Z",
+        ///          "voucherId": 7,
+        ///          "orderItems": [
+        ///            {
+        ///              "bookId": 49,
+        ///              "quantity": 3
+        ///            }
+        ///          ]
+        ///        }
         /// 
         /// </remarks>
         /// <response code="200">Returns the newly created item</response>
@@ -208,16 +209,18 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
-                var res = await _orderService.CancelledOrder(id);
+                var userId = _userManager.GetUserId(User);
+
+                var res = await _orderService.CancelledOrder(id, userId);
 
                 if (res == 0)
-                    return BadRequest();
+                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, "Không thể hủy đơn hàng này"));
 
                 return Ok(res);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
             }
         }
 

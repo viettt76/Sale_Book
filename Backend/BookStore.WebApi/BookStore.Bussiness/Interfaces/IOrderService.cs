@@ -10,7 +10,7 @@ namespace BookStore.Bussiness.Interfaces
         Task<PaginationSet<OrderViewModel>> GetOrders(OrderSpecification spec, PaginationParams pageParams);
         Task<OrderViewModel> GetOrder(int orderId, string userId, string[] includes = null);
         Task<IEnumerable<OrderViewModel>> GetOrdersUser(string userId, OrderSpecification spec, string[] includes);
-        Task<int> CancelledOrder(int id);
+        Task<int> CancelledOrder(int id, string userId);
         Task<int> UpdateOrderStatus(int id, OrderStatusEnum statusOrder);
     }
 }
