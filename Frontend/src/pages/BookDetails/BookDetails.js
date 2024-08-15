@@ -16,6 +16,8 @@ import { addToCartService } from '~/services/cartService';
 import customToastify from '~/utils/customToastify';
 import Loading from '~/components/Loading';
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
+import { Breadcrumb } from 'react-bootstrap';
+import BreadCrumb from '~/containers/BreadCrumb';
 
 const BookDetails = () => {
     const { id } = useParams();
@@ -109,6 +111,8 @@ const BookDetails = () => {
             ) : (
                 <Container className="mt-3">
                     <div>
+                        <BreadCrumb title="Thông tin chi tiết sách" item={bookInfo.name} />
+
                         <div className="row">
                             <div className="col-5">
                                 <img
@@ -192,9 +196,16 @@ const BookDetails = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className={clsx(styles['book-introduction'])}>
-                            <h6 className={clsx(styles['book-introduction-title'])}>Giới thiệu sách</h6>
-                            <div className={clsx(styles['intro-tab-content'])}>{bookInfo?.description}</div>
+                        <div className="card mt-3">
+                            <div className="card-body">
+                                <div className={clsx(styles['book-introduction'])}>
+                                    <h6 className={clsx(styles['book-introduction-title'])}>Giới thiệu sách</h6>
+
+                                    <div className={clsx(styles['intro-tab-content'], 'mt-3')}>
+                                        {bookInfo?.description}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div className={clsx(styles['comment-list'])}>
