@@ -54,6 +54,7 @@ const Header = () => {
             try {
                 const res = await getMyVoucherService();
                 setVouchers(res?.data);
+                console.log(res.data);
             } catch (error) {
                 console.log(error);
             }
@@ -83,16 +84,6 @@ const Header = () => {
             navigate(`/search?keyword=${keyword}`);
         }
     };
-
-    // useEffect(() => {
-    //     const handleClickOutsideVoucher = (e) => {
-    //         if (voucherWrapperRef.current && !voucherWrapperRef.current.contains(e.target)) {
-    //             setShowVouchers(false);
-    //         }
-    //     };
-    //     document.addEventListener('mousedown', handleClickOutsideVoucher);
-    //     return () => document.removeEventListener('mousedown', handleClickOutsideVoucher);
-    // }, []);
 
     return (
         <div className={clsx(styles['header'])}>
@@ -181,14 +172,6 @@ const Header = () => {
                     textLinkWhenEmpty="Tiếp tục mua sắm"
                     linkWhenEmpty="/"
                 />
-                {/* <NoticeOfBookList
-                    title="Voucher"
-                    type="voucher"
-                    icon={faTicket}
-                    textWhenEmpty="Bạn không có voucher nào"
-                    textLinkWhenEmpty=""
-                    linkWhenEmpty="/"
-                /> */}
                 <NoticeOfBookList
                     title="Sách đã mua"
                     type="order"

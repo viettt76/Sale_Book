@@ -6,7 +6,6 @@ import DatePicker from 'react-datepicker';
 import { createBookService, deleteBookService, getBookPagingService, updateBookService } from '~/services/bookService';
 import { getAllGenresService } from '~/services/genreService';
 import { getAllAuthorsService } from '~/services/authorService';
-import ReactQuill from 'react-quill';
 import clsx from 'clsx';
 import styles from './AdminPage.module.scss';
 import moment from 'moment';
@@ -81,7 +80,10 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                 name: data?.name,
                 genres: data?.genres,
                 price: data?.price,
-                author: data?.authorName,
+                authors: data?.authors?.map((author) => ({
+                    value: author?.id,
+                    label: author?.fullName,
+                })),
                 description: data?.description,
                 publicationDate: data?.publicationDate,
                 totalPageNumber: data?.totalPageNumber,
@@ -123,32 +125,36 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
             if (form.checkValidity() === false) {
                 setValidated(true);
             } else {
-                let formData = new FormData();
+                let imgUrl;
+                if (fileUpload) {
+                    let formData = new FormData();
 
-                formData.append('api_key', import.meta.env.VITE_CLOUDINARY_KEY);
-                formData.append('file', fileUpload);
-                formData.append('public_id', `file_${Date.now()}`);
-                formData.append('timestamp', (Date.now() / 1000) | 0);
-                formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
+                    formData.append('api_key', import.meta.env.VITE_CLOUDINARY_KEY);
+                    formData.append('file', fileUpload);
+                    formData.append('public_id', `file_${Date.now()}`);
+                    formData.append('timestamp', (Date.now() / 1000) | 0);
+                    formData.append('upload_preset', import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET);
 
-                const res = await axios.post(import.meta.env.VITE_CLOUDINARY_URL, formData);
-                const imgUrl = res.data?.secure_url;
-                setBookInfo({
-                    ...bookInfo,
-                    image: imgUrl,
-                });
+                    const res = await axios.post(import.meta.env.VITE_CLOUDINARY_URL, formData);
+                    imgUrl = res.data?.secure_url;
 
+                    setBookInfo({
+                        ...bookInfo,
+                        image: imgUrl,
+                    });
+                }
+                console.log(bookInfo);
                 if (action === 'update-book') {
                     await updateBookService({
                         id: data?.id,
                         title: bookInfo?.name,
                         description: bookInfo?.description,
-                        image: imgUrl,
+                        image: fileUpload ? imgUrl : bookInfo?.image,
                         price: Number(bookInfo?.price),
                         totalPageNumber: Number(bookInfo?.totalPageNumber),
                         bookGroupId: Number(bookInfo?.genres),
                         publishedAt: bookInfo?.publicationDate,
-                        authorId: bookInfo?.authors,
+                        authorId: bookInfo?.authors?.map((author) => author?.value),
                     });
                 } else if (action === 'create-book') {
                     await createBookService({
@@ -159,15 +165,18 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                         totalPageNumber: Number(bookInfo?.totalPageNumber),
                         bookGroupId: Number(bookInfo?.genres),
                         publishedAt: bookInfo?.publicationDate,
-                        authorId: bookInfo?.authors,
+                        authorId: bookInfo?.authors?.map((author) => author?.value),
                     });
                 }
+
                 handleCloseModal();
             }
         } catch (error) {
             console.log(error);
         }
     };
+
+    console.log(bookInfo?.authors);
 
     return (
         <Modal show={showModal} onHide={handleCloseModal}>
@@ -183,7 +192,13 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             Tên sách
                         </Form.Label>
                         <Col sm="10">
-                            <Form.Control name="name" value={bookInfo.name} onChange={handleChangeForm} required />
+                            <Form.Control
+                                name="name"
+                                value={bookInfo.name}
+                                onChange={handleChangeForm}
+                                minLength={3}
+                                required
+                            />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3 align-items-center">
@@ -192,6 +207,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                         </Form.Label>
                         <Col sm="10" className="fz-16">
                             <Select
+                                value={bookInfo?.authors}
                                 components={animatedComponents}
                                 options={authors}
                                 isMulti={true}
@@ -201,7 +217,10 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                                     handleChangeForm({
                                         target: {
                                             name: 'authors',
-                                            value: e.map((item) => item.value),
+                                            value: e.map((item) => ({
+                                                value: item.value,
+                                                label: item.label,
+                                            })),
                                         },
                                     })
                                 }
@@ -285,12 +304,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data }) => {
                             Số lượng còn
                         </Form.Label>
                         <Col sm="10">
-                            <Form.Control
-                                name="remaining"
-                                value={bookInfo.remaining}
-                                onChange={handleChangeForm}
-                                required
-                            />
+                            <Form.Control name="remaining" value={bookInfo.remaining} onChange={handleChangeForm} />
                         </Col>
                     </Form.Group>
                     <Form.Group as={Row} className="mb-3">
@@ -352,7 +366,7 @@ const ManageBook = () => {
                         rated: book?.rate,
                         remaining: book?.remaining,
                         image: book?.image,
-                        authorName: book?.authorName,
+                        authors: book?.author,
                     };
                 }),
             );
@@ -386,13 +400,19 @@ const ManageBook = () => {
 
     // Create book
     const [showModalAddBook, setShowModalAddBook] = useState(false);
-    const handleCloseModalAddBook = () => setShowModalAddBook(false);
+    const handleCloseModalAddBook = () => {
+        setShowModalAddBook(false);
+        fetchGetBookPaging();
+    };
     const handleShowModalAddBook = () => setShowModalAddBook(true);
 
     // Update book
     const [currentBookUpdate, setCurrentBookUpdate] = useState(null);
     const [showModalUpdateBook, setShowModalUpdateBook] = useState(false);
-    const handleCloseModalUpdateBook = () => setShowModalUpdateBook(false);
+    const handleCloseModalUpdateBook = () => {
+        setShowModalUpdateBook(false);
+        fetchGetBookPaging();
+    };
     const handleShowModalUpdateBook = (bookId) => {
         setCurrentBookUpdate(bookList.find((x) => x?.id === bookId));
         setShowModalUpdateBook(true);
@@ -441,7 +461,7 @@ const ManageBook = () => {
                         <th>Publication Date</th>
                         <th>Total Page Number</th>
                         <th>Rated</th>
-                        <th>Remaining</th>
+                        <th>Authors</th>
                         <th>Image</th>
                         <th>Action</th>
                     </tr>
@@ -457,7 +477,7 @@ const ManageBook = () => {
                                 <td>{moment(book?.publicationDate).format('DD/MM/YYYY')}</td>
                                 <td>{book?.totalPageNumber}</td>
                                 <td>{book?.rated}</td>
-                                <td>{book?.remaining}</td>
+                                <td>{book?.authors?.map((author) => author?.fullName).join(', ')}</td>
                                 <td>
                                     <img src={book?.image} alt="The Great Gatsby" />
                                 </td>
