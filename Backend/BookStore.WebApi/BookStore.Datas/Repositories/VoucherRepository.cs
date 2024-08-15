@@ -67,6 +67,9 @@ namespace BookStore.Datas.Repositories
 
             if (voucher == null)
                 return 0;
+            voucher.VoucherUsers.First().Used = true;
+
+            await _dbContext.SaveChangesAsync();
 
             return 1;
         }

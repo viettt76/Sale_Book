@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Models.Enums;
@@ -29,7 +30,7 @@ namespace BookStore.WebApi.Controllers
         }
 
         /// <summary>
-        /// Hiển thị các đơn hàng của tất cả user
+        /// Hiển thị các đơn hàng của tất cả user (chức năng danh cho admin)
         /// </summary>
         /// <param name="spec"></param>
         /// <returns></returns>
@@ -45,19 +46,22 @@ namespace BookStore.WebApi.Controllers
         /// </remarks>
         [HttpGet]
         [Route("all-orders")]
+        [Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetOrder([FromQuery] OrderSpecification spec)
+        public async Task<IActionResult> GetOrders([FromQuery] OrderSpecification spec, [FromQuery] PaginationParams pageParams)
         {
             try
             {
-                var res = await _orderService.GetOrders(spec);
+                if (pageParams.PageNumber <= 0) pageParams.PageNumber = 1;
+
+                var res = await _orderService.GetOrders(spec, pageParams);
 
                 if (res == null)
-                    return BadRequest();
+                    return NotFound(new ErrorDetails(StatusCodes.Status404NotFound, "Không tìm thấy đơn hàng nào"));
 
                 return Ok(res);
             }
@@ -67,6 +71,11 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
+        /// <summary>
+        /// Lấy thông tin chi tiết của các order
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <returns></returns>
         [HttpGet]
         [Route("order-detail")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -129,6 +138,24 @@ namespace BookStore.WebApi.Controllers
         /// </summary>
         /// <param name="create"></param>
         /// <returns></returns>
+        /// <remarks>
+        /// Sample request
+        /// 
+        /// POST 
+        ///  {
+        ///     "userId": "string",
+        ///     "status": 4,
+        ///     "date": "2024-08-15T13:41:59.192Z",
+        ///     "voucherId": 7,
+        ///     "orderItems": [
+        ///       {
+        ///         "bookId": 49,
+        ///         "quantity": 3
+        ///       }
+        ///     ]
+        ///   }
+        /// 
+        /// </remarks>
         /// <response code="200">Returns the newly created item</response>
         /// <response code="401">Unauthorize</response>
         /// <response code="404">If not found any item</response>

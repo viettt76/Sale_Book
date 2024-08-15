@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using BookStore.Businesses.Services;
+using BookStore.Bussiness.Extensions;
 using BookStore.Bussiness.Interfaces;
+using BookStore.Bussiness.ViewModel.Book;
 using BookStore.Bussiness.ViewModel.Order;
 using BookStore.Datas.Interfaces;
 using BookStore.Models.Enums;
@@ -74,6 +76,8 @@ namespace BookStore.Bussiness.Services
             if (vouchers != null)
             {
                 totalAmount = totalAmount - (totalAmount * vouchers.Percent / 100);
+
+                await _voucherService.UseVoucher(create.VoucherId, create.UserId);
             }
 
             var entity = ChangeToEntity(create);
@@ -89,7 +93,7 @@ namespace BookStore.Bussiness.Services
             return 1;
         }
 
-        public async Task<IEnumerable<OrderViewModel>> GetOrders(OrderSpecification spec)
+        public async Task<PaginationSet<OrderViewModel>> GetOrders(OrderSpecification spec, PaginationParams pageParams)
         {
             var entities = await _orderRepository.GetAllAsync(new[] { "OrderItems", "OrderItems.Book", "User" });
 
@@ -103,9 +107,11 @@ namespace BookStore.Bussiness.Services
                     "date" => entities.OrderBy(x => x.Date),
                     _ => entities.OrderBy(x => x.Date),
                 };
-            }            
+            }
 
-            var vm = entities.Select(x => ChangeToViewModel(x)).ToList();
+            var pagingList = PaginationList<Order>.Create(entities, pageParams.PageNumber, pageParams.PageSize);
+
+            var vm = _mapper.Map<PaginationList<OrderViewModel>>(pagingList);
             foreach (var item in vm)
             {
                 var voucher = await _voucherService.GetVoucherUserById(item.VoucherId, item.UserId);
@@ -114,7 +120,7 @@ namespace BookStore.Bussiness.Services
                     item.VoucherPercent = voucher.Percent;
             }
 
-            return vm;
+            return new PaginationSet<OrderViewModel>(pageParams.PageNumber, pageParams.PageSize, vm.TotalCount, vm.TotalPage, vm);
         }
 
         public async Task<int> CancelledOrder(int id)

@@ -152,7 +152,7 @@ namespace BookStore.WebApi
 
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
-                    // Server=localhost,1433;Database=BookStore_Group2;User ID=sa;Password=your_password;MultipleActiveResultSets=true;Encrypt=False
+                    // Server=database-1.ct84kk2asl0t.us-east-1.rds.amazonaws.com,1433;Database=BookStore_Group2;User ID=sa;Password=your_password;MultipleActiveResultSets=true;Encrypt=False
                     //Server=localhost,1433;Database=BookStore_Group2;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCOnnection"))
                     .EnableSensitiveDataLogging();

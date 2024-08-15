@@ -11,6 +11,7 @@ namespace BookStore.Bussiness.ViewModel.Order
         public string UserName { get; set; }
         public string UserEmail { get; set; }
         public string UserPhoneNumber { get; set; }
+        public string UserAddress { get; set; }
         public decimal TotalAmount { get; set; }
         public OrderStatusEnum Status { get; set; }
         public int VoucherId { get; set; }

@@ -73,7 +73,8 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<Order, OrderViewModel>()
                 .ForMember(x => x.UserName, e => e.MapFrom(x => x.User.UserName))
                 .ForMember(x => x.UserEmail, e => e.MapFrom(x => x.User.Email))
-                .ForMember(x => x.UserPhoneNumber, e => e.MapFrom(x => x.User.PhoneNumber));
+                .ForMember(x => x.UserPhoneNumber, e => e.MapFrom(x => x.User.PhoneNumber))
+                .ForMember(x => x.UserAddress, e => e.MapFrom(x => x.User.Address));
             CreateMap<OrderViewModel, Order>();
             CreateMap<OrderCreateViewModel, Order>();
             CreateMap<OrderUpdateViewModel, Order>();
