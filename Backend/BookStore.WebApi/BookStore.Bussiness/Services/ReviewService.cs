@@ -49,7 +49,7 @@ namespace BookStore.Bussiness.Services
         public override async Task<int> CreateAsync(ReviewCreateViewModel create)
         {
             var vm = ChangeToEntity(create);
-            var isExist = await _reviewRepository.GetReviewByUserId(vm.UserId, vm.BookId);
+            var isExist = await _reviewRepository.GetReviewByUserId(vm.UserId, vm.OrderId, vm.BookId);
 
             if (isExist != null)
             {
