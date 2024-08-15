@@ -77,12 +77,13 @@ function Login() {
                 if (res?.data?.token) {
                     localStorage.setItem('token', res?.data.token);
                     fetchUserData();
-                    setLoading(false);
                     navigate('/');
                 }
             }
         } catch (error) {
             setErrorLogin('Tài khoản hoặc mật khẩu của bạn không chính xác');
+        } finally {
+            setLoading(false);
         }
     };
 

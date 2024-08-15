@@ -44,6 +44,7 @@ const BookDetails = () => {
         try {
             setLoading(true);
             const res = await getBookByIdService(id);
+            console.log(res);
             if (res?.data) {
                 setBookInfo({
                     name: res.data?.title,
@@ -57,6 +58,7 @@ const BookDetails = () => {
                     publishedAt: res.data?.publishedAt,
                     authors: res.data?.author?.map((a) => a?.fullName).join(', '),
                     reviews: res.data?.reviews,
+                    numberOfReview: res?.data?.totalReviewNumber,
                 });
             }
             setLoading(false);

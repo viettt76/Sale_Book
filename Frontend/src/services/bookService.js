@@ -1,7 +1,10 @@
 import axios from '~/utils/axios';
 
-export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy }) => {
-    return axios.get('/Books/searching', {
+export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy, genres = [] }) => {
+    const s = genres.reduce((acc, genre) => {
+        return `${acc}BookGroupIds=${genre}`;
+    }, '');
+    return axios.get(`/Books/searching?${s}`, {
         params: {
             pageNumber,
             pageSize,

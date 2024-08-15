@@ -6,11 +6,12 @@ import ManageBook from './ManageBook';
 import ManageAuthor from './ManageAuthor';
 import Statistic from './Statistic';
 import ManageGenre from './ManageGenre';
+import ManageOrder from './ManageOrder';
 
 const AdminPage = () => {
     return (
         <div className={clsx(styles['header-wrapper'])}>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="manage-user">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="manage-order">
                 <Nav variant="pills" className="mb-3 d-flex justify-content-center ">
                     <Nav.Item>
                         <Nav.Link style={{ fontSize: '2rem' }} eventKey="manage-user">
@@ -33,6 +34,11 @@ const AdminPage = () => {
                         </Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
+                        <Nav.Link style={{ fontSize: '2rem' }} eventKey="manage-order">
+                            Management Order
+                        </Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
                         <Nav.Link style={{ fontSize: '2rem' }} eventKey="statistic">
                             Statistic
                         </Nav.Link>
@@ -50,6 +56,9 @@ const AdminPage = () => {
                     </Tab.Pane>
                     <Tab.Pane eventKey="manage-genre">
                         <ManageGenre />
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="manage-order">
+                        <ManageOrder />
                     </Tab.Pane>
                     <Tab.Pane eventKey="statistic">
                         <Statistic />

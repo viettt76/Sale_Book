@@ -3,7 +3,7 @@ import axios from '~/utils/axios';
 export const getOrderService = ({ status, sorted = 'date' } = {}) => {
     return axios.get('/Orders/orders-of-user', {
         params: {
-            // ...(status && { status }),
+            ...(status && { status }),
             sorted,
         },
     });
@@ -17,4 +17,8 @@ export const orderService = ({ userId, voucherId = 0, orderList }) => {
         voucherId,
         orderItems: orderList,
     });
+};
+
+export const adminGetAllOrdersService = (status) => {
+    return axios.get('/Orders/all-orders', { params: { status } });
 };

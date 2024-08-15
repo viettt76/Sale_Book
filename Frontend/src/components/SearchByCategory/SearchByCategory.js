@@ -27,10 +27,17 @@ const SearchByCategory = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
 
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [filteredBooks, setFilteredBooks] = useState(bookList);
+
     useEffect(() => {
         const fetchGetAllBook = async () => {
             try {
-                const res = await getBookPagingService({ pageNumber: currentPage, pageSize: 8 });
+                const res = await getBookPagingService({
+                    pageNumber: currentPage,
+                    pageSize: 8,
+                    genres: selectedCategories,
+                });
                 if (res?.data?.datas) {
                     setTotalPages(res.data?.totalPage);
                     if (!isFirstLoad && componentRef.current) {
@@ -41,7 +48,6 @@ const SearchByCategory = () => {
                         });
                     }
                     const data = res.data.datas;
-                    console.log(data);
                     const clone = data?.map((book) => {
                         return {
                             id: book?.id,
@@ -69,9 +75,6 @@ const SearchByCategory = () => {
         fetchGetAllBook();
     }, [currentPage]);
 
-    const [selectedCategories, setSelectedCategories] = useState([]);
-    const [filteredBooks, setFilteredBooks] = useState(bookList);
-
     const handleCheckboxChange = (genresId) => {
         setSelectedCategories((prevSelected) =>
             prevSelected.includes(genresId)
@@ -81,7 +84,13 @@ const SearchByCategory = () => {
     };
 
     const handleSearch = () => {
-        setFilteredBooks(bookList.filter((book) => selectedCategories.some((genresId) => genresId === book.genres)));
+        // const data =
+        //     selectedCategories?.length > 0
+        //         ? bookList.filter((book) => selectedCategories.some((genresId) => genresId === book.genres))
+        //         : bookList;
+        // setFilteredBooks(data);
+        // setCurrentPage(1);
+        // setTotalPages(Math.ceil(data?.length / 8));
     };
 
     const handleChangePage = (i) => {

@@ -44,6 +44,7 @@ const Header = () => {
                     setSearchResult([]);
                 }
             } catch (error) {
+                setSearchResult([]);
                 console.log(error);
             }
         };

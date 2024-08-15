@@ -159,7 +159,11 @@ const NoticeOfBookList = ({
                     })}
                 >
                     <p>{textWhenEmpty}</p>
-                    {textLinkWhenEmpty && linkWhenEmpty && <Link to={linkWhenEmpty}>{textLinkWhenEmpty}</Link>}
+                    {textLinkWhenEmpty && linkWhenEmpty && (
+                        <Link to={linkWhenEmpty} onClick={() => setShowBookList(false)}>
+                            {textLinkWhenEmpty}
+                        </Link>
+                    )}
                 </div>
             )}
         </div>
