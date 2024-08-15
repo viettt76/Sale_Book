@@ -3,7 +3,7 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    width: 21.5rem;
+    min-width: 21.5rem;
     height: 35.5rem;
     color: $main-color;
     padding: 1rem;

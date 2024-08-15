@@ -193,7 +193,15 @@ const ManageOrder = () => {
                                 Trạng thái
                             </Form.Label>
                             <Col sm="10">
-                                <Form.Select value={orderUpdateInfo?.status}>
+                                <Form.Select
+                                    value={orderUpdateInfo?.status}
+                                    onChange={(e) =>
+                                        setOrderUpdateInfo({
+                                            ...orderUpdateInfo,
+                                            status: e.target.value,
+                                        })
+                                    }
+                                >
                                     <option value={0}>Đã huỷ</option>
                                     <option value={1}>Đã thanh toán</option>
                                     <option value={2}>Chưa thanh toán</option>

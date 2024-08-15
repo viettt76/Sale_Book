@@ -22,13 +22,12 @@ const SearchByCategory = () => {
         fetchGetGenres();
     }, []);
 
-    const [bookList, setBookList] = useState([]);
     const [totalPages, setTotalPages] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     const [selectedCategories, setSelectedCategories] = useState([]);
-    const [filteredBooks, setFilteredBooks] = useState(bookList);
+    const [filteredBooks, setFilteredBooks] = useState([]);
 
     const fetchGetAllBook = async () => {
         try {
@@ -62,10 +61,11 @@ const SearchByCategory = () => {
                         authors: book?.author?.map((a) => a?.fullName).join(', '),
                     };
                 });
-                setBookList(clone);
                 setFilteredBooks(clone);
 
                 setIsFirstLoad(false);
+            } else {
+                setFilteredBooks([]);
             }
         } catch (error) {
             console.log(error);
