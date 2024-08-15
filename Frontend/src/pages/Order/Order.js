@@ -12,6 +12,7 @@ import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
 import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
 import { formatDateTime, formatPrice } from '~/utils/commonUtils';
 import Loading from '~/components/Loading';
+import BreadCrumb from '~/containers/BreadCrumb';
 
 const Order = () => {
     const userInfo = useSelector(userInfoSelector);
@@ -61,7 +62,8 @@ const Order = () => {
     const handleShowModalReview = (bookInfo) => {
         setShowModalReview(true);
         setCurrentBookReview({
-            id: bookInfo?.id,
+            orderId: bookInfo?.orderId,
+            bookId: bookInfo?.bookId,
             bookImage: bookInfo?.bookImage,
             bookName: bookInfo?.bookName,
         });
@@ -90,6 +92,8 @@ const Order = () => {
             ) : (
                 <div className={clsx(styles['overlay'])}>
                     <div className={clsx('container', styles['order-wrapper'])}>
+                        <BreadCrumb title="Your order" item="Order" />
+
                         {orders?.map((order) => {
                             const obj = {
                                 0: 'Đã huỷ',
@@ -134,7 +138,8 @@ const Order = () => {
                                                             className={clsx(styles['order-review'])}
                                                             onClick={() =>
                                                                 handleShowModalReview({
-                                                                    id: order?.bookId,
+                                                                    orderId: order?.orderId,
+                                                                    bookId: order?.bookId,
                                                                     bookImage: order?.bookImage,
                                                                     bookName: order?.bookName,
                                                                 })
