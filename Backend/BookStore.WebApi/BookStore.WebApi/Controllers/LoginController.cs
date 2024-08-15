@@ -109,17 +109,19 @@ namespace BookStore.WebApi.Controllers
 
                 var userId = await _userManager.GetUserIdAsync(res);
                 var code = await _userManager.GenerateEmailConfirmationTokenAsync(res);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                //var callbackUrl = Url.Page(
-                //"/Account/ConfirmEmail",
-                //pageHandler: null,
-                //values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
-                //        protocol: Request.Scheme);
+                // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var confirmEmailResult = await _userManager.ConfirmEmailAsync(res, code);
 
-                var callbackUrl = Url.Action("ConfirmEmail", "Login", new { userId = res.Id, token = code }, Request.Scheme);
+                ////var callbackUrl = Url.Page(
+                ////"/Account/ConfirmEmail",
+                ////pageHandler: null,
+                ////values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
+                ////        protocol: Request.Scheme);
 
-                await _emailSender.SendEmailAsync(res.Email, "Confirm your email",
-                    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                //var callbackUrl = Url.Action("ConfirmEmail", "Login", new { userId = res.Id, token = code }, Request.Scheme);
+
+                //await _emailSender.SendEmailAsync(res.Email, "Confirm your email",
+                //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                 var uservm = _mapper.Map<UserViewModel>(res);
 
@@ -162,51 +164,51 @@ namespace BookStore.WebApi.Controllers
             }
         }
 
-        /// <summary>
-        /// Xác nhận email khi đăng ký mới được đăng nhập
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
-        /// <response code="200">Returns the newly created item</response>
-        /// <response code="401">Unauthorize</response>
-        /// <response code="404">If not found any item</response>
-        /// <response code="403">Access denined</response>
-        /// <response code="400">If the item is null</response>
-        [HttpGet]
-        [Route("confirm-email")]
-        public async Task<IActionResult> ConfirmEmail(string userId, string token)
-        {
-            try
-            {
-                if (userId == null || token == null)
-                {
-                    return BadRequest("Invalid user ID");
-                }
+        ///// <summary>
+        ///// Xác nhận email khi đăng ký mới được đăng nhập
+        ///// </summary>
+        ///// <param name="userId"></param>
+        ///// <param name="token"></param>
+        ///// <returns></returns>
+        ///// <response code="200">Returns the newly created item</response>
+        ///// <response code="401">Unauthorize</response>
+        ///// <response code="404">If not found any item</response>
+        ///// <response code="403">Access denined</response>
+        ///// <response code="400">If the item is null</response>
+        //[HttpGet]
+        //[Route("confirm-email")]
+        //public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        //{
+        //    try
+        //    {
+        //        if (userId == null || token == null)
+        //        {
+        //            return BadRequest("Invalid user ID");
+        //        }
 
-                var user = await _userManager.FindByIdAsync(userId);
-                if (user == null)
-                {
-                    return NotFound($"Unable to load user with ID '{userId}'.");
-                }
+        //        var user = await _userManager.FindByIdAsync(userId);
+        //        if (user == null)
+        //        {
+        //            return NotFound($"Unable to load user with ID '{userId}'.");
+        //        }
 
-                token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
-                var result = await _userManager.ConfirmEmailAsync(user, token);
+        //        token = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(token));
+        //        var result = await _userManager.ConfirmEmailAsync(user, token);
 
-                if (result.Succeeded)
-                {
-                    return Ok("Thank you for confirming your email.");
-                }
-                else
-                {
-                    return BadRequest("Error confirming your email.");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.Message);
-                return BadRequest(ex);
-            }
-        }
+        //        if (result.Succeeded)
+        //        {
+        //            return Ok("Thank you for confirming your email.");
+        //        }
+        //        else
+        //        {
+        //            return BadRequest("Error confirming your email.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex.Message);
+        //        return BadRequest(ex);
+        //    }
+        //}
     }
 }
