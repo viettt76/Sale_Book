@@ -5,6 +5,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 import { getStatistic } from '~/services/statisticService';
 import Loading from '~/components/Loading';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import clsx from 'clsx';
+import styles from './AdminPage.module.scss';
 
 const Statistic = () => {
     const [loading, setLoading] = useState(false);
@@ -13,25 +17,33 @@ const Statistic = () => {
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
     const [statistics, setStatistics] = useState([]);
+    const [sortType, setSortType] = useState('DESC');
 
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
-                const start = new Date(startDate).getTime();
-                const end = new Date(endDate).getTime();
-
                 setLoading(true);
-                const res = await getStatistic(filterType);
+                const res = await getStatistic({ type: filterType, sortType: sortType });
                 if (filterType === 'DAY') {
                     const cloneRes = res?.data?.map((statistic) => ({
-                        date: new Date(statistic?.dateTime).getTime(),
+                        date: new Date(statistic?.dateTime),
                         revenue: statistic?.revenue,
                         numberOfBooksSold: statistic?.numberOfBookSold,
                     }));
 
+                    const convertDate = (date) => {
+                        return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+                    };
+
+                    const start = convertDate(startDate);
+                    const end = convertDate(endDate);
+
                     setStatistics(
                         cloneRes
-                            .filter((statistic) => statistic.date >= start && statistic.date <= end)
+                            .filter((statistic) => {
+                                const dateOnly = convertDate(statistic.date);
+                                return dateOnly >= start && dateOnly <= end;
+                            })
                             .map((i) => ({
                                 ...i,
                                 date: moment(i?.date).format('DD/MM/YYYY'),
@@ -67,7 +79,7 @@ const Statistic = () => {
         };
 
         fetchStatistics();
-    }, [filterType, startDate, endDate]);
+    }, [filterType, startDate, endDate, sortType]);
 
     const handleFilterTypeChange = (event) => {
         const value = event.target.value;
@@ -93,6 +105,10 @@ const Statistic = () => {
             default:
                 break;
         }
+    };
+
+    const handleChangeSortType = (type) => {
+        setSortType(type);
     };
 
     return (
@@ -154,7 +170,31 @@ const Statistic = () => {
             <Table striped bordered hover>
                 <thead>
                     <tr>
-                        <th>Ngày</th>
+                        <th>
+                            <div className="d-flex align-items-center justify-content-between">
+                                <div>
+                                    {filterType === 'DAY' && 'Ngày'}
+                                    {filterType === 'MONTH' && 'Tháng'}
+                                    {filterType === 'YEAR' && 'Năm'}
+                                </div>
+                                <div>
+                                    <FontAwesomeIcon
+                                        className={clsx('me-3', {
+                                            [[styles['sort-type-active']]]: sortType === 'ASC',
+                                        })}
+                                        icon={faArrowUp}
+                                        onClick={() => handleChangeSortType('ASC')}
+                                    />
+                                    <FontAwesomeIcon
+                                        className={clsx('me-3', {
+                                            [[styles['sort-type-active']]]: sortType === 'DESC',
+                                        })}
+                                        icon={faArrowDown}
+                                        onClick={() => handleChangeSortType('DESC')}
+                                    />
+                                </div>
+                            </div>
+                        </th>
                         <th>Số lượng sách bán</th>
                         <th>Doanh thu (VND)</th>
                     </tr>
