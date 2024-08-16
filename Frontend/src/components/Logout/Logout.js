@@ -4,7 +4,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { clearUserInfo } from '~/redux/actions/';
 import Swal from 'sweetalert2';
-import 'sweetalert2/src/sweetalert2.scss';
 
 const Logout = () => {
     const navigate = useNavigate();
