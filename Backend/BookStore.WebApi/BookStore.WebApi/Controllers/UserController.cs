@@ -158,6 +158,26 @@ namespace BookStore.WebApi.Controllers
 
                 var user = _mapper.Map<User>(uservm);
 
+                var userNameIsExist = await _userManager.FindByNameAsync(user.UserName);
+                if (userNameIsExist != null)
+                {
+                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
+                    {
+                        property = "UserName",
+                        Message = "Tên người dùng đã tồn tại"
+                    }));
+                }
+
+                var emailIsExist = await _userManager.FindByEmailAsync(user.Email);
+                if (emailIsExist != null)
+                {
+                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
+                    {
+                        property = "Email",
+                        Message = "Tên người dùng đã tồn tại"
+                    }));
+                }
+
                 var userResult = await _userManager.CreateAsync(user, uservm.Password);
 
                 if (!userResult.Succeeded)
@@ -165,9 +185,14 @@ namespace BookStore.WebApi.Controllers
                     return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, userResult.Errors.ToList()));
                 }
 
+                var userId = await _userManager.GetUserIdAsync(user);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var confirmEmailResult = await _userManager.ConfirmEmailAsync(user, code);
+
                 var roleResult = await _userManager.AddToRoleAsync(user, uservm.Role);
 
-                return Ok();
+                return Ok(1);
             }
             catch (Exception ex)
             {

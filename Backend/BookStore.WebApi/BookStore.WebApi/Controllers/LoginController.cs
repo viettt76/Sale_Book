@@ -2,6 +2,7 @@
 using BookStore.Bussiness.Interfaces;
 using BookStore.Bussiness.ViewModel.Auth;
 using BookStore.Models.Models;
+using BookStore.WebApi.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -102,6 +103,30 @@ namespace BookStore.WebApi.Controllers
         {
             try
             {
+                var userParse = _mapper.Map<User>(register);
+
+                var userNameIsExist = await _userManager.FindByNameAsync(userParse.UserName);
+
+                if (userNameIsExist != null)
+                {
+                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
+                    {
+                        property = "UserName",
+                        Message = "Tên người dùng đã tồn tại"
+                    }));
+                }
+
+                var emailIsExist = await _userManager.FindByEmailAsync(userParse.Email);
+
+                if (emailIsExist != null)
+                {
+                    return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
+                    {
+                        property = "Email",
+                        Message = "Tên người dùng đã tồn tại"
+                    }));
+                }
+
                 var res = await _authService.Register(register);
 
                 if (res == null)
@@ -130,7 +155,7 @@ namespace BookStore.WebApi.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message);
-                return BadRequest(ex);
+                return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, ex.Message));
             }
         }
 

@@ -45,7 +45,7 @@ namespace BookStore.Bussiness.Services
                     // UserInformation = JsonConvert.SerializeObject(user),
                     Token = token.Item1,
                     RefreshToken = token.Item2,
-                    ExpiresAt = DateTime.UtcNow.AddHours(1)
+                    ExpiresAt = DateTime.UtcNow.AddDays(1)
                 };
             }
 
@@ -165,7 +165,7 @@ namespace BookStore.Bussiness.Services
                 issuer: _configuration["JWT:Issuer"],
                 audience: _configuration["JWT:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);
 
             var oldRefreshTokens = _dbContext.RefreshTokens

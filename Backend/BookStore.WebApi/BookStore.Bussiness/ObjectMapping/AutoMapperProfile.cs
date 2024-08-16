@@ -68,6 +68,7 @@ namespace BookStore.Bussiness.ObjectMapping
             CreateMap<CartItemUpdateViewModel, CartItem>();
 
             CreateMap<User, UserViewModel>();
+            CreateMap<RegisterViewModel, User>();
             CreateMap<UserCreateViewModel, User>();
 
             CreateMap<Order, OrderViewModel>()
