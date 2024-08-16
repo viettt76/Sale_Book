@@ -196,9 +196,9 @@ function Login() {
                 <Button className="w-100 fz-16" onClick={handleSubmitFormLogin}>
                     Đăng nhập
                 </Button>
-                <Link to="forgot-password" className={clsx(styles['forgot-password'])}>
+                {/* <Link to="forgot-password" className={clsx(styles['forgot-password'])}>
                     Quên mật khẩu?
-                </Link>
+                </Link> */}
                 <div className={clsx('d-flex justify-content-center', styles['sign-up-wrapper'])}>
                     <Button className={clsx(styles['sign-up-btn'])} onClick={handleShowFormSignUp}>
                         Tạo tài khoản mới

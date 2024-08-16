@@ -59,7 +59,7 @@ const Header = () => {
             try {
                 setLoading(true);
                 const res = await getMyVoucherService();
-                setVouchers(res?.data);
+                setVouchers(res?.data?.filter((v) => v?.used === false));
             } catch (error) {
                 console.log(error);
             } finally {
@@ -181,9 +181,6 @@ const Header = () => {
                             <div className={clsx(styles['voucher-list'])}>
                                 <h2 className="text-center mb-4">Voucher</h2>
                                 {vouchers?.map((voucher) => {
-                                    if (voucher?.used) {
-                                        return <></>;
-                                    }
                                     return (
                                         <div
                                             key={`voucher-${voucher?.voucherId}`}

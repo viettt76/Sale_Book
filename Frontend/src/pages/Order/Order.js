@@ -28,7 +28,7 @@ const Order = () => {
             const x = [];
             res?.data?.forEach((order) => {
                 return order?.orderItems?.forEach((book) => {
-                    return x.push({
+                    return x.unshift({
                         orderId: order?.id,
                         date: order?.date,
                         status: order?.status,
@@ -168,6 +168,7 @@ const Order = () => {
         setShowModalReview(false);
         setReviewContent('');
         setReviewRate(0);
+        window.scrollTo(0, 0);
     };
     const handleShowModalReview = (bookInfo) => {
         setShowModalReview(true);
@@ -202,7 +203,6 @@ const Order = () => {
         setShowModalCancelOrder(false);
     };
     const handleShowModalCancelOrder = (orderId) => {
-        console.log(orderId);
         setCurrentCancelOrder(orderId);
         setShowModalCancelOrder(true);
     };
@@ -216,6 +216,7 @@ const Order = () => {
         } finally {
             setShowModalCancelOrder(false);
             setCurrentCancelOrder(null);
+            window.scrollTo(0, 0);
         }
     };
 

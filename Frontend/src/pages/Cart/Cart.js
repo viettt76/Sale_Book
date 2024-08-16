@@ -10,10 +10,15 @@ import { orderService } from '~/services/orderService';
 import { userInfoSelector } from '~/redux/selectors';
 import Loading from '~/components/Loading';
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
+import { useNavigate } from 'react-router-dom';
+import customToastify from '~/utils/customToastify';
 
 const Cart = () => {
     const userInfo = useSelector(userInfoSelector);
+    const navigate = useNavigate();
+
     const [loading, setLoading] = useState(true);
+    const [paying, setPaying] = useState(false);
 
     const [cart, setCart] = useState([]);
 
@@ -54,7 +59,7 @@ const Cart = () => {
         const fetchVoucher = async () => {
             try {
                 const res = await getMyVoucherService();
-                setVouchers(res?.data);
+                setVouchers(res?.data?.filter((v) => v?.used === false));
             } catch (error) {
                 console.log(error);
             }
@@ -94,133 +99,163 @@ const Cart = () => {
     const handlePay = async () => {
         try {
             const checkedBookList = checkedBook?.map((bookId) => cart?.find((b) => b?.bookId === bookId));
+            setPaying(true);
             await orderService({
                 userId: userInfo?.id,
                 voucherId: voucherSelected ? voucherSelected?.voucherId : 0,
                 orderList: checkedBookList.map((b) => ({ bookId: b?.bookId, quantity: b?.quantity })),
             });
+            setPaying(false);
+            customToastify.success('Thanh toán thành công');
+            navigate('/order');
         } catch (error) {
             console.log(error);
+            setPaying(false);
+            customToastify.error('Thanh toán thất bại. Vui lòng thử lại!');
         }
     };
 
     return (
-        <div className={clsx(styles['overlay'])}>
-            {loading ? (
-                <Loading className="mt-3" />
-            ) : cart?.length > 0 ? (
-                <div className={clsx(styles['pay-wrapper'])}>
-                    <div className={clsx(styles['books-wrapper'])}>
-                        {cart?.map((book) => {
-                            return (
-                                <div className={clsx(styles['book-wrapper'])} key={`book-${book?.bookId}`}>
-                                    <div className={clsx(styles['action'])}>
-                                        <input
-                                            className={clsx(styles['check'])}
-                                            type="checkbox"
-                                            checked={checkedBook?.includes(book?.bookId)}
-                                            onChange={() => handleCheck(book?.bookId)}
-                                        />
-                                        <button
-                                            className={clsx(styles['delete'])}
-                                            onClick={() => handleDeleteBookInCart(book?.cartId, book?.bookId)}
-                                        >
-                                            Xoá
-                                        </button>
-                                    </div>
-                                    <div className={clsx(styles['book-info'])}>
-                                        <img
-                                            className={clsx(styles['book-image'])}
-                                            src={book?.bookImage || bookImageDefault}
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = bookImageDefault;
-                                            }}
-                                        />
-                                        <div>
-                                            <h6 className={clsx(styles['book-name'])}>{book?.bookName}</h6>
-                                            <div className={clsx(styles['book-price'])}>{book?.bookPrice}</div>
-                                            <div className={clsx(styles['book-quantity'])}>
-                                                <button
-                                                    className={clsx(styles['book-quantity-btn'])}
-                                                    disabled={book?.quantity <= 1}
-                                                    onClick={() =>
-                                                        changeQuantity(book?.cartId, book?.bookId, book?.quantity - 1)
-                                                    }
-                                                >
-                                                    -
-                                                </button>
-                                                <input
-                                                    value={book?.quantity}
-                                                    onChange={(e) => {
-                                                        if (
-                                                            !isNaN(e.target.value) &&
-                                                            e.target.value > 0 &&
-                                                            e.target.value <= 50
-                                                        ) {
-                                                            changeQuantity(book?.cartId, book?.bookId, e.target.value);
-                                                        }
-                                                    }}
-                                                    type="number"
-                                                    className={clsx(styles['book-quantity-input'])}
-                                                    min={1}
-                                                    max={50}
-                                                />
-                                                <button
-                                                    disabled={book?.quantity >= 50}
-                                                    className={clsx(styles['book-quantity-btn'])}
-                                                    onClick={() =>
-                                                        changeQuantity(book?.cartId, book?.bookId, book?.quantity + 1)
-                                                    }
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                    <div className={clsx(styles['payment-footer'])}>
-                        <div className={clsx(styles['voucher-wrapper'])}>
-                            <div>Mã giảm giá:</div>
-                            <div className={clsx(styles['voucher-value'])} onClick={handleShowVoucher}>
-                                {voucherSelected ? `Mã giảm giá ${voucherSelected?.percent}%` : 'Chọn mã giảm giá'}
-                            </div>
-                            <Modal show={showVoucher} onHide={handleCloseVoucher}>
-                                <Modal.Header className="fz-16" closeButton>
-                                    <Modal.Title className={clsx(styles['fz-24'])}>Chọn voucher</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body>
-                                    {vouchers?.length > 0 ? (
-                                        vouchers?.map((voucher) => {
-                                            return (
-                                                <div
-                                                    key={`voucher-${voucher?.voucherId}`}
-                                                    className={clsx(styles['voucher-item'])}
-                                                    onClick={() => handleAddVoucher(voucher)}
-                                                >
-                                                    Giảm giá {voucher?.percent}%
-                                                </div>
-                                            );
-                                        })
-                                    ) : (
-                                        <div className="text-center fz-16">Bạn không có voucher nào</div>
-                                    )}
-                                </Modal.Body>
-                            </Modal>
-                        </div>
-                        <div className={clsx(styles['total-payment'])}>Tổng tiền: {formatPrice(totalPay, 'VND')}</div>
-                        <button className={clsx(styles['btn-pay'])} onClick={handlePay}>
-                            Thanh toán
-                        </button>
-                    </div>
+        <>
+            {paying ? (
+                <div className={clsx(styles['paying'])}>
+                    <Loading />
                 </div>
             ) : (
-                <div className="fz-16 mt-3 fw-bold">Giỏ hàng của bạn đang trống</div>
+                <div className={clsx(styles['overlay'])}>
+                    {loading ? (
+                        <Loading className="mt-3" />
+                    ) : cart?.length > 0 ? (
+                        <div className={clsx(styles['pay-wrapper'])}>
+                            <div className={clsx(styles['books-wrapper'])}>
+                                {cart?.map((book) => {
+                                    return (
+                                        <div className={clsx(styles['book-wrapper'])} key={`book-${book?.bookId}`}>
+                                            <div className={clsx(styles['action'])}>
+                                                <input
+                                                    className={clsx(styles['check'])}
+                                                    type="checkbox"
+                                                    checked={checkedBook?.includes(book?.bookId)}
+                                                    onChange={() => handleCheck(book?.bookId)}
+                                                />
+                                                <button
+                                                    className={clsx(styles['delete'])}
+                                                    onClick={() => handleDeleteBookInCart(book?.cartId, book?.bookId)}
+                                                >
+                                                    Xoá
+                                                </button>
+                                            </div>
+                                            <div className={clsx(styles['book-info'])}>
+                                                <img
+                                                    className={clsx(styles['book-image'])}
+                                                    src={book?.bookImage || bookImageDefault}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = bookImageDefault;
+                                                    }}
+                                                />
+                                                <div>
+                                                    <h6 className={clsx(styles['book-name'])}>{book?.bookName}</h6>
+                                                    <div className={clsx(styles['book-price'])}>{book?.bookPrice}</div>
+                                                    <div className={clsx(styles['book-quantity'])}>
+                                                        <button
+                                                            className={clsx(styles['book-quantity-btn'])}
+                                                            disabled={book?.quantity <= 1}
+                                                            onClick={() =>
+                                                                changeQuantity(
+                                                                    book?.cartId,
+                                                                    book?.bookId,
+                                                                    book?.quantity - 1,
+                                                                )
+                                                            }
+                                                        >
+                                                            -
+                                                        </button>
+                                                        <input
+                                                            value={book?.quantity}
+                                                            onChange={(e) => {
+                                                                if (
+                                                                    !isNaN(e.target.value) &&
+                                                                    e.target.value > 0 &&
+                                                                    e.target.value <= 50
+                                                                ) {
+                                                                    changeQuantity(
+                                                                        book?.cartId,
+                                                                        book?.bookId,
+                                                                        e.target.value,
+                                                                    );
+                                                                }
+                                                            }}
+                                                            type="number"
+                                                            className={clsx(styles['book-quantity-input'])}
+                                                            min={1}
+                                                            max={50}
+                                                        />
+                                                        <button
+                                                            disabled={book?.quantity >= 50}
+                                                            className={clsx(styles['book-quantity-btn'])}
+                                                            onClick={() =>
+                                                                changeQuantity(
+                                                                    book?.cartId,
+                                                                    book?.bookId,
+                                                                    book?.quantity + 1,
+                                                                )
+                                                            }
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                            <div className={clsx(styles['payment-footer'])}>
+                                <div className={clsx(styles['voucher-wrapper'])}>
+                                    <div>Mã giảm giá:</div>
+                                    <div className={clsx(styles['voucher-value'])} onClick={handleShowVoucher}>
+                                        {voucherSelected
+                                            ? `Mã giảm giá ${voucherSelected?.percent}%`
+                                            : 'Chọn mã giảm giá'}
+                                    </div>
+                                    <Modal show={showVoucher} onHide={handleCloseVoucher}>
+                                        <Modal.Header className="fz-16" closeButton>
+                                            <Modal.Title className={clsx(styles['fz-24'])}>Chọn voucher</Modal.Title>
+                                        </Modal.Header>
+                                        <Modal.Body>
+                                            {vouchers?.length > 0 ? (
+                                                vouchers?.map((voucher) => {
+                                                    return (
+                                                        <div
+                                                            key={`voucher-${voucher?.voucherId}`}
+                                                            className={clsx(styles['voucher-item'])}
+                                                            onClick={() => handleAddVoucher(voucher)}
+                                                        >
+                                                            Giảm giá {voucher?.percent}%
+                                                        </div>
+                                                    );
+                                                })
+                                            ) : (
+                                                <div className="text-center fz-16">Bạn không có voucher nào</div>
+                                            )}
+                                        </Modal.Body>
+                                    </Modal>
+                                </div>
+                                <div className={clsx(styles['total-payment'])}>
+                                    Tổng tiền: {formatPrice(totalPay, 'VND')}
+                                </div>
+                                <button className={clsx(styles['btn-pay'])} onClick={handlePay}>
+                                    Thanh toán
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="fz-16 mt-3 fw-bold">Giỏ hàng của bạn đang trống</div>
+                    )}
+                </div>
             )}
-        </div>
+        </>
     );
 };
 
