@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import avatarDefault from '~/assets/imgs/avatar-default.png';
 import styles from './BookDetails.module.scss';
 import { formatPrice } from '~/utils/commonUtils';
-import { getBookByIdService } from '~/services/bookService';
+import { getBookByIdService, getBookRelatedService } from '~/services/bookService';
 import moment from 'moment';
 import { useSelector } from 'react-redux';
 import { userInfoSelector } from '~/redux/selectors';
@@ -18,6 +18,7 @@ import Loading from '~/components/Loading';
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
 import { Breadcrumb } from 'react-bootstrap';
 import BreadCrumb from '~/containers/BreadCrumb';
+import Book from '~/components/Book';
 
 const BookDetails = () => {
     const { id } = useParams();
@@ -44,10 +45,17 @@ const BookDetails = () => {
         numberOfReview: 0,
     });
 
+    const [bookRelated, setBookRelated] = useState([]);
+
+    var [relatedBookParamsAuthorId, setRelatedBookParamsAuthorId] = useState([]);
+
     const fetchGetBookById = async () => {
         try {
             setLoading(true);
             const res = await getBookByIdService(id);
+
+            console.log(res);
+
             if (res?.data) {
                 setBookInfo({
                     name: res.data?.title,
@@ -63,18 +71,61 @@ const BookDetails = () => {
                     reviews: res.data?.reviews,
                     numberOfReview: res?.data?.totalReviewNumber,
                 });
+
+                setRelatedBookParamsAuthorId(res.data?.author?.map((x) => x.id));
             }
+            setLoading(false);
         } catch (error) {
             console.log(error);
             navigate('/404');
-        } finally {
-            setLoading(false);
+        }
+    };
+
+    const fetchGetRelatedBook = async (authorId = [], groupId) => {
+        try {
+            console.log(authorId);
+            console.log(groupId);
+
+            var relatedBookResult = await getBookRelatedService({ authorId: authorId, groupId: groupId });
+
+            console.log(relatedBookResult);
+
+            if (relatedBookResult && relatedBookResult.data) {
+                var rs = relatedBookResult.data.map((book) => {
+                    return {
+                        id: book.id,
+                        name: book.title,
+                        description: book.description,
+                        image: book.image,
+                        price: book.price,
+                        totalPageNumber: book.totalPageNumber,
+                        rated: book.rate,
+                        bookGroupId: book.bookGroupId,
+                        bookGroupName: book.bookGroupName,
+                        publishedAt: book.publishedAt,
+                        authors: book.author?.map((a) => a?.fullName).join(', '),
+                        reviews: book.reviews,
+                        numberOfReview: book?.totalReviewNumber,
+                    };
+                });
+
+                setBookRelated(rs);
+            }
+        } catch (error) {
+            console.log(error);
+            //navigate('/404');
         }
     };
 
     useEffect(() => {
         fetchGetBookById();
     }, [id]);
+
+    useEffect(() => {
+        if (relatedBookParamsAuthorId.length > 0 && bookInfo.bookGroupId) {
+            fetchGetRelatedBook(relatedBookParamsAuthorId, bookInfo.bookGroupId);
+        }
+    }, [relatedBookParamsAuthorId, bookInfo.bookGroupId]);
 
     const handleSetQuantity = (e) => {
         if (!isNaN(e.target.value) && e.target.value > 0 && e.target.value <= 50) {
@@ -112,7 +163,7 @@ const BookDetails = () => {
             ) : (
                 <Container className="mt-3">
                     <div>
-                        <BreadCrumb title="Thông tin chi tiết sách" item={bookInfo.name} />
+                        <BreadCrumb title="" item={bookInfo.name} />
 
                         <div className="row">
                             <div className="col-5">
@@ -202,6 +253,8 @@ const BookDetails = () => {
                                 <div className={clsx(styles['book-introduction'])}>
                                     <h6 className={clsx(styles['book-introduction-title'])}>Giới thiệu sách</h6>
 
+                                    <h4 className={clsx(styles['book-intro-name'])}>{bookInfo.name}</h4>
+
                                     <div className={clsx(styles['intro-tab-content'], 'mt-3')}>
                                         {bookInfo?.description}
                                     </div>
@@ -209,30 +262,75 @@ const BookDetails = () => {
                             </div>
                         </div>
                     </div>
+
                     <div className={clsx(styles['comment-list'])}>
                         <div className={clsx(styles['comment-list-title'])}>Đánh giá ({bookInfo?.numberOfReview})</div>
-                        {bookInfo?.reviews?.map((review) => {
-                            const s = review?.userName?.split('@')[0]
-                                ? review?.userName?.split('@')[0]
-                                : review?.userName;
-                            const usernameDisplay = s.slice(0, 2) + '***' + s.slice(5);
-                            return (
-                                <div key={`review-${review?.id}`} className={clsx(styles['comment'])}>
-                                    <div className={clsx(styles['comment-avatar-date'])}>
-                                        <img className={clsx(styles['commentator-avatar'])} src={avatarDefault} />
-                                        <div className={clsx(styles['comment-date'])}>
-                                            {moment(review?.date).format('DD/MM/YYYY')}
-                                        </div>
-                                    </div>
-                                    <div className={clsx(styles['comment-info-wrapper'])}>
-                                        <div className={clsx(styles['commentator-name-comment-content'])}>
-                                            <div className={clsx(styles['commentator-name'])}>{usernameDisplay}</div>
-                                            <div className={clsx(styles['comment-content'])}>{review?.content}</div>
-                                        </div>
-                                    </div>
+                        {bookInfo?.reviews.length == 0 ? (
+                            <>
+                                <div
+                                    className={clsx(
+                                        styles['no-comment'],
+                                        'fz-16 d-flex justify-content-center align-items-center',
+                                    )}
+                                >
+                                    Hiện không có bình luận nào
                                 </div>
-                            );
-                        })}
+                            </>
+                        ) : (
+                            <>
+                                {bookInfo?.reviews?.map((review) => {
+                                    const s = review?.userName?.split('@')[0]
+                                        ? review?.userName?.split('@')[0]
+                                        : review?.userName;
+                                    const usernameDisplay = s.slice(0, 2) + '***' + s.slice(5);
+                                    return (
+                                        <div key={`review-${review?.id}`} className={clsx(styles['comment'])}>
+                                            <div className={clsx(styles['comment-avatar-date'])}>
+                                                <img
+                                                    className={clsx(styles['commentator-avatar'])}
+                                                    src={avatarDefault}
+                                                />
+                                                <div className={clsx(styles['comment-date'])}>
+                                                    {moment(review?.date).format('DD/MM/YYYY')}
+                                                </div>
+                                            </div>
+                                            <div className={clsx(styles['comment-info-wrapper'])}>
+                                                <div className={clsx(styles['commentator-name-comment-content'])}>
+                                                    <div className={clsx(styles['commentator-name'])}>
+                                                        {usernameDisplay}
+                                                    </div>
+                                                    <div className={clsx(styles['comment-content'])}>
+                                                        {review?.content}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </>
+                        )}
+                    </div>
+
+                    <div className="mt-5">
+                        <hr></hr>
+                        <h1 className={clsx(styles['book-introduction-title'])}>Các cuốn sách liên quan</h1>
+
+                        <ul className={clsx(styles['book-list'], 'mt-5')}>
+                            {bookRelated.map((book, index) => {
+                                return (
+                                    <div key={book.id} className={clsx(styles['book'])}>
+                                        <Book
+                                            bookId={book.id}
+                                            img={book.image}
+                                            name={book.name}
+                                            nameAuthor={book.authors}
+                                            price={book.price}
+                                            rated={book?.rated}
+                                        />
+                                    </div>
+                                );
+                            })}
+                        </ul>
                     </div>
                 </Container>
             )}

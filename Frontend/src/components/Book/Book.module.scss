@@ -3,7 +3,7 @@
 .wrapper {
     display: flex;
     flex-direction: column;
-    min-width: 21.5rem;
+    width: 21.5rem;
     height: 35.5rem;
     color: $main-color;
     padding: 1rem;
@@ -33,7 +33,13 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     line-clamp: 2;
+    height: 45px;
     -webkit-box-orient: vertical;
+
+    &:hover {
+        text-decoration: underline;
+        color: #2a6496;
+    }
 }
 
 .author-time {
@@ -57,6 +63,7 @@
 
         .name-author {
             font-size: 1.2rem;
+            color: #1d9d74;
             font-weight: bold;
         }
     }
@@ -79,6 +86,8 @@
 
     .price {
         font-size: 1.4rem;
+        color: #f15c22;
+        font-weight: bold;
     }
 
     .rated {

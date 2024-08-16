@@ -17,6 +17,18 @@ export const getBookPagingService = ({ pageNumber = 1, pageSize = 10, sortBy, ge
     });
 };
 
+export const getBookRelatedService = ({ authorId = [], groupId }) => {
+    var authorIdStr = authorId.reduce((prev, id, index) => {
+        return `${prev}authorId=${id}`;
+    });
+
+    return axios.get(`Books/book-related?${authorIdStr}`, {
+        params: {
+            groupId,
+        },
+    });
+};
+
 export const getBookByIdService = (id) => {
     return axios.get(`/Books/${id}`);
 };

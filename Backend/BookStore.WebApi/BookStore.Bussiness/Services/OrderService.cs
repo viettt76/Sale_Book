@@ -104,8 +104,8 @@ namespace BookStore.Bussiness.Services
 
                 entities = spec.Sorted switch
                 {
-                    "date" => entities.OrderBy(x => x.Date),
-                    _ => entities.OrderBy(x => x.Date),
+                    "date" => entities.OrderByDescending(x => x.Date),
+                    _ => entities.OrderByDescending(x => x.Date),
                 };
             }
 
@@ -149,8 +149,8 @@ namespace BookStore.Bussiness.Services
 
                 entities = spec.Sorted switch
                 {
-                    "date" => entities.OrderBy(x => x.Date),
-                    _ => entities.OrderBy(x => x.Date),
+                    "date" => entities.OrderByDescending(x => x.Date),
+                    _ => entities.OrderByDescending(x => x.Date),
                 };
             }
 
