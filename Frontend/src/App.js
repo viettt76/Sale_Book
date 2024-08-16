@@ -1,5 +1,5 @@
-import React from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import React, { useState } from 'react';
+import { BrowserRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import routes, { adminRoutes } from '~/routes';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
@@ -9,6 +9,7 @@ import useFetchUserData from '~/hooks/useFetchUserData';
 import { useSelector } from 'react-redux';
 import { userInfoSelector } from './redux/selectors';
 import NotFound from '~/pages/NotFound';
+import { SetupInterceptors } from './utils/axios';
 
 const ScrollToTop = () => {
     const { pathname } = useLocation();
@@ -33,10 +34,26 @@ function FetchUserInfo() {
     return null;
 }
 
+function NavigateFunctionComponent() {
+    let navigate = useNavigate();
+    const [ran, setRan] = useState(false);
+
+    {
+        /* only run setup once */
+    }
+    if (!ran) {
+        SetupInterceptors(navigate);
+        setRan(true);
+    }
+    return <></>;
+}
+
 function App() {
     const userInfo = useSelector(userInfoSelector);
+
     return (
-        <HashRouter>
+        <BrowserRouter>
+            {<NavigateFunctionComponent />}
             <ScrollToTop />
             <FetchUserInfo />
             <Routes>
@@ -84,7 +101,7 @@ function App() {
                 <Route element={NotFound} />
             </Routes>
             <ToastContainer />
-        </HashRouter>
+        </BrowserRouter>
     );
 }
 

@@ -151,8 +151,6 @@ function Login() {
         }
     };
 
-    console.log(errorCreateUser);
-
     return (
         <div className="d-flex justify-content-center mt-5">
             <div className={clsx('p-4', styles['login-wrapper'])}>
