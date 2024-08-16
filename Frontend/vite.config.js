@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 // https://vitejs.dev/config/
 export default defineConfig({
-    // base: '/Sale_Book/',
+    base: '/Sale_Book/',
     plugins: [
         {
             name: 'treat-js-files-as-jsx',
