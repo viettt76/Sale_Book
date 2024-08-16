@@ -272,8 +272,8 @@ const Order = () => {
                                         <div className="d-flex flex-column align-items-end">
                                             <div className="fz-16">
                                                 Giảm giá:{' '}
-                                                {formatPrice((order.totalAmount * order.voucherPercent) / 100, 'VNĐ')}{' '}
-                                                {order?.voucherPercent} %
+                                                {formatPrice((order.totalAmount * order.voucherPercent) / 100, 'VND')}
+                                                <span className="ms-4">({order?.voucherPercent}%)</span>
                                             </div>
 
                                             <div className={clsx(styles['order-total-amount'])}>

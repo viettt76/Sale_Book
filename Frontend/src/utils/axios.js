@@ -42,7 +42,7 @@ instance.interceptors.response.use(
         if (error?.response?.data)
             return Promise.reject({
                 status: error?.response?.status,
-                data: error?.response,
+                data: error?.response?.data,
             });
         return Promise.reject(error);
     },

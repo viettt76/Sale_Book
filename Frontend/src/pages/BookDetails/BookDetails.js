@@ -88,8 +88,6 @@ const BookDetails = () => {
 
             var relatedBookResult = await getBookRelatedService({ authorId: authorId, groupId: groupId });
 
-            console.log(relatedBookResult);
-
             if (relatedBookResult && relatedBookResult.data) {
                 var rs = relatedBookResult.data.map((book) => {
                     return {
@@ -118,7 +116,9 @@ const BookDetails = () => {
     };
 
     useEffect(() => {
+        setTimeDisableAddToCart(0);
         fetchGetBookById();
+        setQuantity(1);
     }, [id]);
 
     useEffect(() => {

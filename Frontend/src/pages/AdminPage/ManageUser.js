@@ -23,30 +23,36 @@ const ManageUser = ({ setSpinning }) => {
     const [currentPageUser, setCurrentPageUser] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
     const pageSize = 10;
+    const [searchUserKeyword, setSearchUserKeyword] = useState('');
+
+    const fetchGetAllUsers = async () => {
+        try {
+            setLoading(true);
+            const res = await getAllUsersService({
+                pageNumber: currentPageUser,
+                pageSize: pageSize,
+                filter: searchUserKeyword,
+            });
+            setTotalPage(res?.data?.totalPage || 0);
+            setUserList(
+                res?.data?.datas?.map((user) => {
+                    return {
+                        id: user?.userName,
+                        username: user?.userName,
+                        email: user?.email,
+                        address: user?.address,
+                        phoneNumber: user?.phoneNumber,
+                    };
+                }),
+            );
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchGetAllUsers = async () => {
-            try {
-                setLoading(true);
-                const res = await getAllUsersService({ pageNumber: currentPageUser, pageSize: pageSize });
-                setTotalPage(res?.data?.totalPage || 0);
-                setUserList(
-                    res?.data?.datas?.map((user) => {
-                        return {
-                            id: user?.userName,
-                            username: user?.userName,
-                            email: user?.email,
-                            address: user?.address,
-                            phoneNumber: user?.phoneNumber,
-                        };
-                    }),
-                );
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchGetAllUsers();
     }, [currentPageUser]);
 
@@ -71,7 +77,10 @@ const ManageUser = ({ setSpinning }) => {
 
     const [showPasswordCreateUser, setShowPasswordCreateUser] = useState(false);
     const [validatedFormCreateUser, setValidatedFormCreateUser] = useState(false);
-    const [usernameExisted, setUsernameExisted] = useState([]);
+    const [errorCreateUser, setErrorCreateUser] = useState({
+        field: '',
+        message: '',
+    });
 
     const toggleShowPasswordCreateUser = () => {
         setShowPasswordCreateUser(!showPasswordCreateUser);
@@ -119,7 +128,10 @@ const ManageUser = ({ setSpinning }) => {
         } catch (error) {
             if (Number(error.status) === 400) {
                 setValidatedFormCreateUser(true);
-                setUsernameExisted([...usernameExisted, createUserInfo.username]);
+                setErrorCreateUser({
+                    field: error?.data?.message?.property,
+                    message: error?.data?.message?.message,
+                });
             }
         } finally {
             setSpinning(false);
@@ -132,13 +144,34 @@ const ManageUser = ({ setSpinning }) => {
         }
     };
 
+    const handleSearchUser = () => {
+        fetchGetAllUsers();
+    };
+
     return (
         <>
             <div className="d-flex justify-content-between">
-                <input
-                    className={clsx('fz-16 form-control mb-3', styles['search-user-input'])}
-                    placeholder="Tìm kiếm theo email/số điện thoại"
-                />
+                <div className={clsx('d-flex align-items-center mb-3', styles['search-user-input'])}>
+                    <input
+                        value={searchUserKeyword}
+                        className={clsx('fz-16 form-control')}
+                        placeholder="Tìm kiếm theo email/số điện thoại"
+                        onChange={(e) => setSearchUserKeyword(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                handleSearchUser();
+                            }
+                        }}
+                    />
+                    <Button
+                        variant="primary"
+                        className="fz-16 ms-3"
+                        style={{ whiteSpace: 'nowrap' }}
+                        onClick={handleSearchUser}
+                    >
+                        Tìm kiếm
+                    </Button>
+                </div>
                 <div>
                     <button className="btn btn-primary fz-16 me-4" onClick={handleShowModalAddUser}>
                         Tạo user
@@ -212,17 +245,17 @@ const ManageUser = ({ setSpinning }) => {
                                 value={createUserInfo.username}
                                 name="username"
                                 className={clsx('fz-16', {
-                                    [styles['invalid']]: usernameExisted.includes(createUserInfo.username),
+                                    [styles['invalid']]: errorCreateUser.field === 'UserName',
                                 })}
                                 placeholder="Tài khoản"
                                 required
                                 onKeyUp={handleEnterToSignup}
-                                isInvalid={usernameExisted.includes(createUserInfo.username)}
+                                isInvalid={errorCreateUser.field === 'UserName'}
                                 onChange={handleChangeFormCreateUser}
                             />
-                            {usernameExisted.includes(createUserInfo.username) && (
+                            {errorCreateUser.field === 'UserName' && (
                                 <Form.Control.Feedback className="fz-16" type="invalid">
-                                    Tài khoản đã tồn tại
+                                    {errorCreateUser.message}
                                 </Form.Control.Feedback>
                             )}
                         </Form.Group>
@@ -231,15 +264,19 @@ const ManageUser = ({ setSpinning }) => {
                                 value={createUserInfo.email}
                                 name="email"
                                 type="email"
-                                className="fz-16"
+                                className={clsx('fz-16', {
+                                    [styles['invalid']]: errorCreateUser.field === 'Email',
+                                })}
                                 placeholder="Email"
                                 required
                                 onKeyUp={handleEnterToSignup}
                                 onChange={handleChangeFormCreateUser}
                             />
-                            <Form.Control.Feedback className="fz-16" type="invalid">
-                                Email không hợp lệ
-                            </Form.Control.Feedback>
+                            {errorCreateUser.field === 'Email' && (
+                                <Form.Control.Feedback className="fz-16" type="invalid">
+                                    {errorCreateUser.message}
+                                </Form.Control.Feedback>
+                            )}
                         </Form.Group>
                         <Form.Group className="mb-3 position-relative" as={Col} md="12">
                             <Form.Control

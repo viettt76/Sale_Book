@@ -119,9 +119,9 @@ const NoticeOfBookList = ({
                                     return (
                                         <ListGroup.Item key={`book-${index}`}>
                                             <Link
-                                                onClick={type === 'cart' ? () => setShowBookList(false) : undefined}
+                                                onClick={() => setShowBookList(false)}
                                                 className={clsx(styles['book'])}
-                                                to={type === 'cart' && `/book/${item?.id}`}
+                                                to={type === 'cart' ? `/book/${item?.id}` : '/order'}
                                             >
                                                 <img
                                                     className={clsx(styles['book-img'])}

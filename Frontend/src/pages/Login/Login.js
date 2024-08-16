@@ -43,7 +43,10 @@ function Login() {
     const [showFormSignUp, setShowFormSignUp] = useState(false);
     const [showPasswordSignUp, setShowPasswordSignUp] = useState(false);
     const [validatedFormSignUp, setValidatedFormSignUp] = useState(false);
-    const [usernameExisted, setUsernameExisted] = useState([]);
+    const [errorCreateUser, setErrorCreateUser] = useState({
+        field: '',
+        message: '',
+    });
 
     const toggleShowPasswordLogin = () => {
         setShowPasswordLogin(!showPasswordLogin);
@@ -134,7 +137,10 @@ function Login() {
         } catch (error) {
             if (Number(error.status) === 400) {
                 setValidatedFormSignUp(true);
-                setUsernameExisted([...usernameExisted, signUpInfo.username]);
+                setErrorCreateUser({
+                    field: error?.data?.message?.property,
+                    message: error?.data?.message?.message,
+                });
             }
         }
     };
@@ -144,6 +150,8 @@ function Login() {
             handleSubmitFormSignUp(e);
         }
     };
+
+    console.log(errorCreateUser);
 
     return (
         <div className="d-flex justify-content-center mt-5">
@@ -218,17 +226,17 @@ function Login() {
                                         value={signUpInfo.username}
                                         name="username"
                                         className={clsx('fz-16', {
-                                            [styles['invalid']]: usernameExisted.includes(signUpInfo.username),
+                                            [styles['invalid']]: errorCreateUser.field === 'UserName',
                                         })}
                                         placeholder="Tài khoản"
                                         required
                                         onKeyUp={handleEnterToSignup}
-                                        isInvalid={usernameExisted.includes(signUpInfo.username)}
+                                        isInvalid={errorCreateUser.field === 'UserName'}
                                         onChange={handleChangeFormSignUp}
                                     />
-                                    {usernameExisted.includes(signUpInfo.username) && (
+                                    {errorCreateUser.field === 'UserName' && (
                                         <Form.Control.Feedback className="fz-16" type="invalid">
-                                            Tài khoản đã tồn tại
+                                            {errorCreateUser.message}
                                         </Form.Control.Feedback>
                                     )}
                                 </Form.Group>
@@ -237,15 +245,20 @@ function Login() {
                                         value={signUpInfo.email}
                                         name="email"
                                         type="email"
-                                        className="fz-16"
+                                        className={clsx('fz-16', {
+                                            [styles['invalid']]: errorCreateUser.field === 'Email',
+                                        })}
                                         placeholder="Email"
                                         required
+                                        isInvalid={errorCreateUser.field === 'Email'}
                                         onKeyUp={handleEnterToSignup}
                                         onChange={handleChangeFormSignUp}
                                     />
-                                    <Form.Control.Feedback className="fz-16" type="invalid">
-                                        Email không hợp lệ
-                                    </Form.Control.Feedback>
+                                    {errorCreateUser.field === 'Email' && (
+                                        <Form.Control.Feedback className="fz-16" type="invalid">
+                                            {errorCreateUser.message}
+                                        </Form.Control.Feedback>
+                                    )}
                                 </Form.Group>
                                 <Form.Group className="mb-3 position-relative" as={Col} md="12">
                                     <Form.Control
@@ -319,7 +332,7 @@ function Login() {
                                         className="fz-16"
                                         placeholder="Số điện thoại"
                                         required
-                                        minLength="10"
+                                        minLength={10}
                                         maxLength={10}
                                         onKeyUp={handleEnterToSignup}
                                         onChange={handleChangeFormSignUp}

@@ -15,11 +15,12 @@ export const getPersonalInfoService = () => {
     return axios.get('/User/user-info');
 };
 
-export const getAllUsersService = ({ pageNumber = 1, pageSize = 10 }) => {
+export const getAllUsersService = ({ pageNumber = 1, pageSize = 10, filter = '' }) => {
     return axios.get('/User/all-user', {
         params: {
             pageNumber,
             pageSize,
+            filter,
         },
     });
 };
