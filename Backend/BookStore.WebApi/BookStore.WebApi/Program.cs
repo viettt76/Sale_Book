@@ -57,10 +57,7 @@ namespace BookStore.WebApi
                 builder.Services.AddSerilog();
                 builder.Services.AddLogging();
 
-                // Add services to the container.
-
                 builder.Services.AddControllers().AddNewtonsoftJson();
-                // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
                 builder.Services.AddEndpointsApiExplorer();
 
                 #region Swagger
@@ -139,26 +136,31 @@ namespace BookStore.WebApi
 
                 #endregion
 
+                #region AWS
                 builder.Services.AddAWSLambdaHosting(LambdaEventSource.HttpApi);
+                #endregion
 
+                #region CORS
                 builder.Services.AddCors(p => p.AddPolicy("BookStoreAPIPolicy",
                 build =>
                 {
-                    build.WithOrigins("http://localhost:3000") // Chỉ định chính xác URL frontend
+                    build.WithOrigins("http://localhost:3000", "https://viettt76.github.io")
                              .AllowAnyMethod()
                              .AllowAnyHeader()
-                             .AllowCredentials(); // Cho phép gửi thông tin đăng nhập
+                             .AllowCredentials();
                 }));
+                #endregion
 
                 builder.Services.AddDbContext<BookStoreDbContext>(options =>
                 {
-                    // Server=database-1.ct84kk2asl0t.us-east-1.rds.amazonaws.com,1433;Database=BookStore_Group2;User ID=sa;Password=your_password;MultipleActiveResultSets=true;Encrypt=False
+                    // Server=database-1.ct84kk2asl0t.us-east-1.rds.amazonaws.com,1433;Database=BookStore_Group2;User ID=admin;Password=Anh12062003;MultipleActiveResultSets=true;Encrypt=False
                     //Server=localhost,1433;Database=BookStore_Group2;Trusted_Connection=True;MultipleActiveResultSets=true;Encrypt=False
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultCOnnection"))
                     .EnableSensitiveDataLogging();
                 });
 
                 builder.Services.AddHttpClient<Bussiness.Services.PaymentRequestService>();
+
                 #region Cloudinary
                 //var cloudinarySettings = builder.Configuration.GetSection("Cloudinary").Get<CloudinarySetings>();
                 //var cloudinary = new Cloudinary(new Account(cloudinarySettings.CloudName, cloudinarySettings.ApiKey, cloudinarySettings.ApiSecret));

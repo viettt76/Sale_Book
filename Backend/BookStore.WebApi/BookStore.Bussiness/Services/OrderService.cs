@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace BookStore.Bussiness.Services
 {
-    public class OrderService 
+    public class OrderService
         : BaseService<OrderViewModel, Order, OrderCreateViewModel, OrderUpdateViewModel>, IOrderService
     {
         private readonly IOrderRepository _orderRepository;
@@ -20,13 +20,17 @@ namespace BookStore.Bussiness.Services
         private readonly IBookRepository _bookRepository;
         private readonly IVoucherService _voucherService;
         private readonly UserManager<User> _userManager;
+        private readonly ICartService _cartService;
+        private readonly ICartItemService _cartItemService;
         private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository, 
-            IOrderItemRepository orderItemRepository, 
+        public OrderService(IOrderRepository orderRepository,
+            IOrderItemRepository orderItemRepository,
             IBookRepository bookRepository,
             IVoucherService voucherService,
             UserManager<User> userManager,
+            ICartService cartService,
+            ICartItemService cartItemService,
             IMapper mapper) : base(orderRepository, mapper)
         {
             _orderRepository = orderRepository;
@@ -34,6 +38,8 @@ namespace BookStore.Bussiness.Services
             _bookRepository = bookRepository;
             _voucherService = voucherService;
             _userManager = userManager;
+            _cartService = cartService;
+            _cartItemService = cartItemService;
             _mapper = mapper;
         }
 
@@ -90,6 +96,18 @@ namespace BookStore.Bussiness.Services
                 return 0;
             }
 
+            var cart = await _cartService.GetCartByUserId(create.UserId);
+
+            if (cart != null)
+            {
+                foreach (var item in create.OrderItems)
+                {
+                    var cartItemOrdered = await _cartItemService.GetCartItemAsync(cart.Id, item.BookId);
+
+                    await _cartItemService.DeleteAsync(cartItemOrdered.Id);
+                }
+            }
+
             return 1;
         }
 
@@ -104,8 +122,8 @@ namespace BookStore.Bussiness.Services
 
                 entities = spec.Sorted switch
                 {
-                    "date" => entities.OrderBy(x => x.Date),
-                    _ => entities.OrderBy(x => x.Date),
+                    "date" => entities.OrderByDescending(x => x.Date),
+                    _ => entities.OrderByDescending(x => x.Date),
                 };
             }
 
@@ -140,7 +158,7 @@ namespace BookStore.Bussiness.Services
 
         public async Task<IEnumerable<OrderViewModel>> GetOrdersUser(string userId, OrderSpecification spec, string[] includes)
         {
-            var entities =  await _orderRepository.GetOrderUser(userId, includes);
+            var entities = await _orderRepository.GetOrderUser(userId, includes);
 
             if (spec != null)
             {
@@ -149,8 +167,8 @@ namespace BookStore.Bussiness.Services
 
                 entities = spec.Sorted switch
                 {
-                    "date" => entities.OrderBy(x => x.Date),
-                    _ => entities.OrderBy(x => x.Date),
+                    "date" => entities.OrderByDescending(x => x.Date),
+                    _ => entities.OrderByDescending(x => x.Date),
                 };
             }
 

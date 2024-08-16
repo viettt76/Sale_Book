@@ -270,6 +270,12 @@ const Order = () => {
                                             Ngày mua: {formatDateTime(order?.date)}
                                         </div>
                                         <div className="d-flex flex-column align-items-end">
+                                            <div className="fz-16">
+                                                Giảm giá:{' '}
+                                                {formatPrice((order.totalAmount * order.voucherPercent) / 100, 'VNĐ')}{' '}
+                                                {order?.voucherPercent} %
+                                            </div>
+
                                             <div className={clsx(styles['order-total-amount'])}>
                                                 Thành tiền: {formatPrice(order?.totalAmount, 'VND')}
                                             </div>

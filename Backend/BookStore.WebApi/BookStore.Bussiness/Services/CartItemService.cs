@@ -24,6 +24,11 @@ namespace BookStore.Bussiness.Services
             return await _cartItemRepository.DeleteCartItem(bookId, cartid, userId);
         }
 
+        public async Task<CartItemViewModel> GetCartItemAsync(int cartId, int bookId)
+        {
+            return ChangeToViewModel(await _cartItemRepository.GetCartItemAsync(cartId, bookId));
+        }
+
         public async Task<CartItemViewModel> GetCartItemIsExist(int bookId, int cartId, string userId)
         {
             return ChangeToViewModel(await _cartItemRepository.GetCartItemIsExist(bookId, cartId, userId));

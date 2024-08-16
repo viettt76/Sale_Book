@@ -11,6 +11,7 @@ namespace BookStore.Bussiness.Interfaces
 {
     public interface ICartItemService : IBaseService<CartItemViewModel, CartItemCreateViewModel, CartItemUpdateViewModel>
     {
+        Task<CartItemViewModel> GetCartItemAsync(int cartId, int bookId);
         Task<CartItemViewModel> GetCartItemIsExist(int bookId, int cartId, string userId);
         Task<CartItemViewModel> UpdateCartItemQuantity(int bookId, int cartid, int quantity, string userid);
         Task<CartItemViewModel> UpdateQuantity(int bookId, int cartid, int quantity, string userid);

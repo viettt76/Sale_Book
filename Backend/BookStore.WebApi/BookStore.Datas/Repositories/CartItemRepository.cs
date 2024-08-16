@@ -33,6 +33,13 @@ namespace BookStore.Datas.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<CartItem> GetCartItemAsync(int cartId, int bookId)
+        {
+            var res = await _dbContext.CartItems.Where(x => x.CartId == cartId).FirstOrDefaultAsync(x => x.BookId == bookId);
+
+            return res;
+        }
+
         public async Task<CartItem> GetCartItemIsExist(int bookId, int cartId, string userId)
         {
             var itemOfCart = _dbContext.CartItems.Where(x => x.CartId == cartId);
