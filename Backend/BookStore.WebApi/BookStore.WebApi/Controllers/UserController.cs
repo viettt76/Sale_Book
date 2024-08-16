@@ -174,7 +174,7 @@ namespace BookStore.WebApi.Controllers
                     return BadRequest(new ErrorDetails(StatusCodes.Status400BadRequest, new
                     {
                         property = "Email",
-                        Message = "Tên người dùng đã tồn tại"
+                        Message = "Email đã tồn tại"
                     }));
                 }
 

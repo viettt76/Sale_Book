@@ -96,7 +96,7 @@ namespace BookStore.Bussiness.Services
                 return 0;
             }
 
-            var cart = await _cartService.GetCartByUserId(create.UserId);
+            var cart = await _cartService.GetCartByUserId(create.UserId, new[] {"CartItems"});
 
             if (cart != null)
             {
@@ -104,7 +104,8 @@ namespace BookStore.Bussiness.Services
                 {
                     var cartItemOrdered = await _cartItemService.GetCartItemAsync(cart.Id, item.BookId);
 
-                    await _cartItemService.DeleteAsync(cartItemOrdered.Id);
+                    if (cartItemOrdered != null)
+                        await _cartItemService.DeleteAsync(cartItemOrdered.Id);
                 }
             }
 
