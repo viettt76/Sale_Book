@@ -10,7 +10,7 @@ import {
 import styles from './AdminPage.module.scss';
 import Loading from '~/components/Loading';
 
-const ManageAuthor = () => {
+const ManageAuthor = ({ setSpinning }) => {
     const [loading, setLoading] = useState(false);
 
     const [authors, setAuthors] = useState([]);
@@ -55,12 +55,14 @@ const ManageAuthor = () => {
 
     const handleSubmitAddAuthor = async () => {
         try {
+            setSpinning(true);
             await createAuthorService(authorAddInfo);
             fetchGetAuthors();
         } catch (error) {
             console.log(error);
         } finally {
             handleCloseModalAddAuthor();
+            setSpinning(false);
         }
     };
 
@@ -82,12 +84,14 @@ const ManageAuthor = () => {
 
     const handleSubmitUpdateAuthor = async () => {
         try {
+            setSpinning(true);
             await updateAuthorService(authorUpdateInfo);
             fetchGetAuthors();
         } catch (error) {
             console.log(error);
         } finally {
             handleCloseModalUpdateAuthor();
+            setSpinning(false);
         }
     };
 
@@ -107,12 +111,14 @@ const ManageAuthor = () => {
     const handleCloseModalDeleteAuthor = () => setShowModalDeleteAuthor(false);
     const handleDeleteAuthor = async () => {
         try {
+            setSpinning(true);
             await deleteAuthorService(authorInfoDelete?.id);
             fetchGetAuthors();
         } catch (error) {
             console.log(error);
         } finally {
             setShowModalDeleteAuthor(false);
+            setSpinning(false);
         }
     };
 

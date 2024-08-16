@@ -85,7 +85,7 @@
 .show-hide-password {
     position: absolute;
     right: 3rem;
-    top: 50%;
+    top: 1.6rem;
     transform: translateY(-50%);
     font-size: 1.4rem;
 }
@@ -106,4 +106,17 @@
 
 .sort-type-active {
     color: blue;
+}
+
+.overlay-loading {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
 }

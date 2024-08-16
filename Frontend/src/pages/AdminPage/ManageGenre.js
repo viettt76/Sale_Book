@@ -10,7 +10,7 @@ import {
 import styles from './AdminPage.module.scss';
 import Loading from '~/components/Loading';
 
-const ManageGenre = () => {
+const ManageGenre = ({ setSpinning }) => {
     const [loading, setLoading] = useState(false);
 
     const [genres, setGenres] = useState([]);
@@ -55,12 +55,14 @@ const ManageGenre = () => {
 
     const handleSubmitAddGenre = async () => {
         try {
+            setSpinning(true);
             await createGenreService(genreAddInfo);
             fetchGetGenres();
         } catch (error) {
             console.log(error);
         } finally {
             handleCloseModalAddGenre();
+            setSpinning(false);
         }
     };
 
@@ -82,12 +84,15 @@ const ManageGenre = () => {
 
     const handleSubmitUpdateGenre = async () => {
         try {
+            setSpinning(true);
+
             await updateGenreService(genreUpdateInfo);
             fetchGetGenres();
         } catch (error) {
             console.log(error);
         } finally {
             handleCloseModalUpdateGenre();
+            setSpinning(false);
         }
     };
 
@@ -107,12 +112,15 @@ const ManageGenre = () => {
     const handleCloseModalDeleteGenre = () => setShowModalDeleteGenre(false);
     const handleDeleteGenre = async () => {
         try {
+            setSpinning(true);
+
             await deleteGenreService(genreInfoDelete?.id);
             fetchGetGenres();
         } catch (error) {
             console.log(error);
         } finally {
             setShowModalDeleteGenre(false);
+            setSpinning(false);
         }
     };
 

@@ -7,7 +7,7 @@ import { adminChangeStatusOfOrderService, adminGetAllOrdersService } from '~/ser
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
 import moment from 'moment';
 
-const ManageOrder = () => {
+const ManageOrder = ({ setSpinning }) => {
     const [loading, setLoading] = useState(false);
 
     const [orders, setOrders] = useState([]);
@@ -79,12 +79,14 @@ const ManageOrder = () => {
 
     const handleSubmitUpdateOrder = async () => {
         try {
+            setSpinning(true);
             await adminChangeStatusOfOrderService({ orderId: orderUpdateInfo?.id, status: orderUpdateInfo?.status });
             fetchGetOrders();
         } catch (error) {
             console.log(error);
         } finally {
             handleCloseModalUpdateOrder();
+            setSpinning(false);
         }
     };
 

@@ -7,11 +7,15 @@ import ManageAuthor from './ManageAuthor';
 import Statistic from './Statistic';
 import ManageGenre from './ManageGenre';
 import ManageOrder from './ManageOrder';
+import { useState } from 'react';
+import Loading from '~/components/Loading';
 
 const AdminPage = () => {
+    const [spinning, setSpinning] = useState(false);
+
     return (
         <div className={clsx(styles['header-wrapper'])}>
-            <Tab.Container id="left-tabs-example" defaultActiveKey="statistic">
+            <Tab.Container id="left-tabs-example" defaultActiveKey="manage-user">
                 <Nav variant="pills" className="mb-3 d-flex justify-content-center ">
                     <Nav.Item>
                         <Nav.Link style={{ fontSize: '2rem' }} eventKey="manage-user">
@@ -46,25 +50,30 @@ const AdminPage = () => {
                 </Nav>
                 <Tab.Content>
                     <Tab.Pane eventKey="manage-user">
-                        <ManageUser />
+                        <ManageUser setSpinning={setSpinning} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="manage-book">
-                        <ManageBook />
+                        <ManageBook setSpinning={setSpinning} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="manage-author">
-                        <ManageAuthor />
+                        <ManageAuthor setSpinning={setSpinning} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="manage-genre">
-                        <ManageGenre />
+                        <ManageGenre setSpinning={setSpinning} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="manage-order">
-                        <ManageOrder />
+                        <ManageOrder setSpinning={setSpinning} />
                     </Tab.Pane>
                     <Tab.Pane eventKey="statistic">
-                        <Statistic />
+                        <Statistic setSpinning={setSpinning} />
                     </Tab.Pane>
                 </Tab.Content>
             </Tab.Container>
+            {spinning && (
+                <div className={clsx(styles['overlay-loading'])}>
+                    <Loading />
+                </div>
+            )}
         </div>
     );
 };

@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import Loading from '~/components/Loading';
 
-const ManageUser = () => {
+const ManageUser = ({ setSpinning }) => {
     const [loading, setLoading] = useState(false);
 
     const headersExportUser = [
@@ -93,6 +93,8 @@ const ManageUser = () => {
                 e.stopPropagation();
                 setValidatedFormCreateUser(true);
             } else {
+                setSpinning(true);
+
                 await userCreateByAdminService({
                     userName: createUserInfo.username,
                     email: createUserInfo.email,
@@ -119,6 +121,8 @@ const ManageUser = () => {
                 setValidatedFormCreateUser(true);
                 setUsernameExisted([...usernameExisted, createUserInfo.username]);
             }
+        } finally {
+            setSpinning(false);
         }
     };
 

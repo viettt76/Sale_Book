@@ -26,7 +26,7 @@ const Cart = () => {
         try {
             // setLoading(true);
             const res = await getCartService();
-            setCart(res?.data?.cartItems);
+            setCart(res?.data?.cartItems?.reverse());
         } catch (error) {
             console.log(error);
         } finally {

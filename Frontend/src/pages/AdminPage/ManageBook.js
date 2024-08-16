@@ -14,7 +14,7 @@ import axios from 'axios';
 import Loading from '~/components/Loading';
 import bookImageDefault from '~/assets/imgs/book-default.jpg';
 
-const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPaging }) => {
+const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPaging, setSpinning }) => {
     const [genres, setGenres] = useState([]);
     useEffect(() => {
         const fetchGetGenres = async () => {
@@ -128,6 +128,8 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
                 setValidated(true);
             } else {
                 let imgUrl;
+                setSpinning(true);
+
                 if (fileUpload) {
                     let formData = new FormData();
 
@@ -175,6 +177,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
             console.log(error);
         } finally {
             handleCloseModal();
+            setSpinning(false);
         }
     };
 
@@ -340,7 +343,7 @@ const CustomModal = ({ action, showModal, handleCloseModal, data, fetchGetBookPa
     );
 };
 
-const ManageBook = () => {
+const ManageBook = ({ setSpinning }) => {
     const [loading, setLoading] = useState(false);
 
     const [bookList, setBookList] = useState([]);
@@ -426,6 +429,7 @@ const ManageBook = () => {
     const handleCloseModalDeleteBook = () => setShowModalDeleteBook(false);
     const handleDeleteBook = async (bookId) => {
         try {
+            setSpinning(true);
             await deleteBookService(bookId);
             fetchGetBookPaging();
             customToastify.success('Xoá sách thành công');
@@ -433,6 +437,7 @@ const ManageBook = () => {
             console.log(error);
         } finally {
             setShowModalDeleteBook(false);
+            setSpinning(false);
         }
     };
 
@@ -543,6 +548,7 @@ const ManageBook = () => {
                     showModal={showModalAddBook}
                     handleCloseModal={handleCloseModalAddBook}
                     fetchGetBookPaging={fetchGetBookPaging}
+                    setSpinning={setSpinning}
                 />
             )}
             {showModalUpdateBook && (
@@ -552,6 +558,7 @@ const ManageBook = () => {
                     handleCloseModal={handleCloseModalUpdateBook}
                     fetchGetBookPaging={fetchGetBookPaging}
                     data={currentBookUpdate}
+                    setSpinning={setSpinning}
                 />
             )}
             <Modal show={showModalDeleteBook} onHide={handleCloseModalDeleteBook}>
