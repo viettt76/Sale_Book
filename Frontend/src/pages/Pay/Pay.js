@@ -89,22 +89,12 @@ const Pay = () => {
     }, [voucherSelected, bookInfo, quantity]);
 
     const handlePay = async () => {
-        if (!userInfo?.id || !id || !quantity) {
-            customToastify.error('Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.');
-            return;
-        }
-
         setPaying(true);
         try {
             await orderService({
-                userId: '94df3fe8-2374-4272-b238-7937cac1ffad',
-                voucherId: 0,
-                orderList: [
-                    {
-                        bookId: 46,
-                        quantity: 3,
-                    },
-                ],
+                userId: userInfo?.id,
+                voucherId: voucherSelected ? voucherSelected?.voucherId : 0,
+                orderList: [{ bookId: Number(id), quantity: Number(quantity) }],
             });
             customToastify.success('Thanh toán thành công');
             navigate('/order');

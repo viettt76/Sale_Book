@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes } from 'react-router-dom';
 import routes, { adminRoutes } from '~/routes';
 import DefaultLayout from '~/layouts/DefaultLayout';
 import { ToastContainer } from 'react-toastify';
@@ -36,7 +36,7 @@ function FetchUserInfo() {
 function App() {
     const userInfo = useSelector(userInfoSelector);
     return (
-        <BrowserRouter>
+        <HashRouter>
             <ScrollToTop />
             <FetchUserInfo />
             <Routes>
@@ -84,7 +84,7 @@ function App() {
                 <Route element={NotFound} />
             </Routes>
             <ToastContainer />
-        </BrowserRouter>
+        </HashRouter>
     );
 }
 
